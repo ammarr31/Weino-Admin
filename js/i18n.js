@@ -25,6 +25,7 @@
       'mobile.menu': 'Open menu',
 
       'lang.label': 'Language',
+      'lang.toolbarAria': 'Choose interface language',
       'lang.en': 'EN',
       'lang.ar': 'عربي',
 
@@ -46,7 +47,7 @@
       'nav.bookingsAll': 'All bookings',
       'nav.lifecycle': 'Lifecycle',
       'nav.archive': 'Archive',
-      'nav.analytics': 'Analytics',
+      'nav.analytics': 'Booking analytics',
       'nav.tickets': 'Tickets',
       'nav.users': 'Users',
       'nav.notifications': 'Push Notifications',
@@ -54,7 +55,7 @@
 
       'scope.regionAria': 'Country scope',
       'scope.label': 'Country scope',
-      'scope.hint': 'Users, applications, bookings, archive, analytics, platform fees',
+      'scope.hint': 'Users, applications, bookings, archive, booking analytics, platform fees',
       'scope.selectTitle': 'Filter lists by professional country (when multiple countries are active)',
       'scope.allCountries': 'All countries',
       'breadcrumb.aria': 'Breadcrumb',
@@ -75,7 +76,7 @@
       'bc.page.bookingsSimple': 'All bookings',
       'bc.page.lifecycle': 'Lifecycle',
       'bc.page.archive': 'Archive',
-      'bc.page.analytics': 'Analytics',
+      'bc.page.analytics': 'Booking analytics',
       'bc.page.tickets': 'Tickets',
       'bc.page.users': 'Users',
       'bc.page.notifications': 'Push notifications',
@@ -207,6 +208,7 @@
       'mobile.menu': 'فتح القائمة',
 
       'lang.label': 'اللغة',
+      'lang.toolbarAria': 'اختر لغة الواجهة',
       'lang.en': 'EN',
       'lang.ar': 'عربي',
 
@@ -228,7 +230,7 @@
       'nav.bookingsAll': 'كل الحجوزات',
       'nav.lifecycle': 'دورة الحياة',
       'nav.archive': 'الأرشيف',
-      'nav.analytics': 'التحليلات',
+      'nav.analytics': 'تحليلات الحجوزات',
       'nav.tickets': 'التذاكر',
       'nav.users': 'المستخدمون',
       'nav.notifications': 'إشعارات الدفع',
@@ -236,7 +238,7 @@
 
       'scope.regionAria': 'نطاق الدولة',
       'scope.label': 'نطاق الدولة',
-      'scope.hint': 'المستخدمون، الطلبات، الحجوزات، الأرشيف، التحليلات، رسوم المنصة',
+      'scope.hint': 'المستخدمون، الطلبات، الحجوزات، الأرشيف، تحليلات الحجوزات، رسوم المنصة',
       'scope.selectTitle': 'تصفية القوائم حسب دولة المحترف (عند تفعيل أكثر من دولة)',
       'scope.allCountries': 'كل الدول',
       'breadcrumb.aria': 'مسار التنقل',
@@ -257,7 +259,7 @@
       'bc.page.bookingsSimple': 'كل الحجوزات',
       'bc.page.lifecycle': 'دورة الحياة',
       'bc.page.archive': 'الأرشيف',
-      'bc.page.analytics': 'التحليلات',
+      'bc.page.analytics': 'تحليلات الحجوزات',
       'bc.page.tickets': 'التذاكر',
       'bc.page.users': 'المستخدمون',
       'bc.page.notifications': 'إشعارات الدفع',
@@ -379,6 +381,7 @@
   }
 
   function setLang(lang) {
+    lang = String(lang || '').trim().toLowerCase();
     if (lang !== 'en' && lang !== 'ar') return;
     localStorage.setItem(STORAGE_KEY, lang);
     applyDocumentLang();
@@ -437,18 +440,23 @@
 
   function syncLangToggleUi() {
     var L = getLang();
-    var en = document.getElementById('lang-en');
-    var ar = document.getElementById('lang-ar');
-    if (en) en.classList.toggle('is-active', L === 'en');
-    if (ar) ar.classList.toggle('is-active', L === 'ar');
+    document.querySelectorAll('[data-set-lang="en"]').forEach(function (el) {
+      el.classList.toggle('is-active', L === 'en');
+    });
+    document.querySelectorAll('[data-set-lang="ar"]').forEach(function (el) {
+      el.classList.toggle('is-active', L === 'ar');
+    });
   }
 
+  var langToggleBound = false;
   function initLangToggle() {
-    document.getElementById('lang-en')?.addEventListener('click', function () {
-      setLang('en');
-    });
-    document.getElementById('lang-ar')?.addEventListener('click', function () {
-      setLang('ar');
+    if (langToggleBound) return;
+    langToggleBound = true;
+    document.body.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest('[data-set-lang]') : null;
+      if (!btn) return;
+      var lang = btn.getAttribute('data-set-lang');
+      setLang(lang);
     });
   }
 
@@ -467,4 +475,15 @@
     init: init,
     STR: STR,
   };
+
+  function bootAdminI18nOnce() {
+    if (global.__adminI18nBooted) return;
+    global.__adminI18nBooted = true;
+    init();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootAdminI18nOnce);
+  } else {
+    bootAdminI18nOnce();
+  }
 })(typeof globalThis !== 'undefined' ? globalThis : window);

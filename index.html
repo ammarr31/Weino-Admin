@@ -21,6 +21,14 @@
   </script>
 </head>
 <body>
+  <!-- Always visible: language works on login screen too (sidebar is inside hidden main-view until login). -->
+  <div id="admin-lang-float" class="admin-lang-float" role="toolbar" data-i18n-aria="lang.toolbarAria" aria-label="Language">
+    <span class="admin-lang-float-label" data-i18n="lang.label">Language</span>
+    <div class="admin-lang-float-btns">
+      <button type="button" class="admin-lang-btn" data-set-lang="en" data-i18n="lang.en">EN</button>
+      <button type="button" class="admin-lang-btn" data-set-lang="ar" data-i18n="lang.ar">عربي</button>
+    </div>
+  </div>
   <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <symbol id="ico-layout" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="11" width="7" height="10" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/></symbol>
@@ -123,7 +131,7 @@
             <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-archive"/></svg></span><span class="nav-t" data-i18n="nav.archive">Archive</span>
           </a>
           <a href="#" data-view="analytics" data-permission="bookings_admin">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-chart"/></svg></span><span class="nav-t" data-i18n="nav.analytics">Analytics</span>
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-chart"/></svg></span><span class="nav-t" data-i18n="nav.analytics">Booking analytics</span>
           </a>
 
           <div class="nav-section-label" data-i18n="nav.section.tickets">Tickets</div>
@@ -148,8 +156,8 @@
           <div class="admin-lang-toggle" role="group" aria-label="Language">
             <span class="admin-lang-toggle-label" data-i18n="lang.label">Language</span>
             <div class="admin-lang-toggle-btns">
-              <button type="button" class="admin-lang-btn" id="lang-en" data-set-lang="en" data-i18n="lang.en">EN</button>
-              <button type="button" class="admin-lang-btn" id="lang-ar" data-set-lang="ar" data-i18n="lang.ar">عربي</button>
+              <button type="button" class="admin-lang-btn" data-set-lang="en" data-i18n="lang.en">EN</button>
+              <button type="button" class="admin-lang-btn" data-set-lang="ar" data-i18n="lang.ar">عربي</button>
             </div>
           </div>
           <div class="admin-badge">
@@ -165,7 +173,7 @@
           <div class="admin-scope-bar-inner">
             <span class="admin-scope-label" data-i18n="scope.label">Country scope</span>
             <select id="admin-scope-country" data-i18n-title="scope.selectTitle" title="Filter lists by professional country (when multiple countries are active)"></select>
-            <span class="admin-scope-hint" data-i18n="scope.hint">Users, applications, bookings, archive, analytics, platform fees</span>
+            <span class="admin-scope-hint" data-i18n="scope.hint">Users, applications, bookings, archive, booking analytics, platform fees</span>
           </div>
         </div>
         <div id="admin-breadcrumb" class="admin-breadcrumb" role="navigation" data-i18n-aria="breadcrumb.aria" aria-label="Breadcrumb">
@@ -472,12 +480,12 @@
           <div class="pagination" id="applications-pagination"></div>
         </div>
 
-        <!-- Platform Fees -->
+        <!-- Platform Fees (operational billing: balances, confirmations, invoices) -->
         <div id="platform-fees-view" class="panel hidden">
           <div class="page-header">
             <div>
               <h1>Platform fees</h1>
-              <p>Track and confirm monthly payments from professionals</p>
+              <p>Operational billing: each professional’s <strong>recorded</strong> vs <strong>confirmed</strong> totals, <strong>amount due</strong>, suspensions, and monthly <strong>invoice export</strong>. This is the place to collect and reconcile payments—not the same screen as booking analytics charts.</p>
             </div>
             <div class="toolbar" style="margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
               <label class="toolbar-time-label" style="margin:0">Invoices</label>
@@ -785,12 +793,12 @@
           <div class="pagination" id="archive-pagination"></div>
         </div>
 
-        <!-- Analytics Dashboard -->
+        <!-- Bookings analytics (period KPIs + trends; not operational fee billing) -->
         <div id="analytics-view" class="panel hidden">
           <div class="page-header">
             <div>
-              <h1>📈 Analytics Dashboard</h1>
-              <p>Platform-wide statistics and insights</p>
+              <h1>📈 Booking analytics</h1>
+              <p>How many bookings completed, cancelled, or expired in the period you pick, plus <strong>revenue and fee totals as derived from bookings</strong> (reports &amp; trends). For <strong>who owes what</strong>, payment confirmation, and PDF/CSV invoices, use <strong>Platform fees</strong>.</p>
             </div>
             <div class="analytics-toolbar">
               <label class="analytics-period-label"><input type="checkbox" id="analytics-all-time"> All time</label>
@@ -820,13 +828,16 @@
           <div class="analytics-grid" id="analytics-grid">
             <div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
           </div>
+          <p class="analytics-vs-fees-hint" style="margin:-8px 0 20px;font-size:0.8125rem;line-height:1.5;color:var(--text-mid);max-width:70ch">
+            <strong>Why two screens?</strong> Numbers here follow <strong>booking activity</strong> for the selected period (good for trends and comparisons). <strong>Platform fees</strong> follows each professional’s <strong>ledger</strong> (recorded bookings, what they’ve paid, suspensions)—use it for day‑to‑day collections.
+          </p>
           
-          <div class="section-title">Revenue Trends</div>
+          <div class="section-title">Revenue &amp; fees (trends from bookings)</div>
           <div class="chart-container">
             <canvas id="revenue-chart" style="max-height:300px"></canvas>
           </div>
           
-          <div class="section-title">Top Professionals</div>
+          <div class="section-title">Top professionals (by activity in period)</div>
           <div class="table-wrap">
             <table class="fees-table">
               <thead>
@@ -835,8 +846,8 @@
                   <th>Professional</th>
                   <th>Total Bookings</th>
                   <th>Completed</th>
-                  <th>Revenue</th>
-                  <th>Platform Fees</th>
+                  <th>Booking revenue</th>
+                  <th>Fees (from bookings)</th>
                 </tr>
               </thead>
               <tbody id="top-professionals-tbody">
@@ -877,9 +888,9 @@
 
               <div class="role-card" data-role="bookings_manager">
                 <div class="role-badge" style="background:#10B981">Bookings & Fees</div>
-                <div class="role-desc">Manage all bookings, lifecycle, archive, analytics, platform fees, and professional applications.</div>
+                <div class="role-desc">Manage all bookings, lifecycle, archive, booking analytics, platform fees (billing), and professional applications.</div>
                 <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Bookings, Lifecycle, Archive, Analytics, Platform Fees, Applications
+                  <strong>Access:</strong> Dashboard, Bookings, Lifecycle, Archive, Booking analytics, Platform fees, Applications
                 </div>
                 <div class="role-use-case">
                   <strong>Best for:</strong> Operations manager handling bookings and revenue

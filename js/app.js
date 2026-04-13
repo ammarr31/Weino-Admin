@@ -9,9 +9,7 @@
     }
     return fallback != null ? fallback : key;
   }
-  if (typeof globalThis.AdminI18n !== 'undefined' && globalThis.AdminI18n.init) {
-    globalThis.AdminI18n.init();
-  }
+  // Admin UI language: i18n.js auto-boots on DOMContentLoaded (see admin-lang-float + sidebar toggles).
 
   // --- Auth helpers ---
   function getToken() { return localStorage.getItem(TOKEN_KEY); }
@@ -3955,13 +3953,15 @@
         </div>
         <div class="analytics-card">
           ${aic('M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z')}
-          <div class="label">Total revenue</div>
+          <div class="label">Booking revenue</div>
           <div class="value">${(Number(data.total_revenue) || 0).toFixed(2)} EGP</div>
+          <div class="change" style="margin-top:6px;font-size:0.72rem;color:var(--text-mid);font-weight:500">From completed bookings in period</div>
         </div>
         <div class="analytics-card">
           ${aic('M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z')}
-          <div class="label">Platform fees</div>
+          <div class="label">Fees (from bookings)</div>
           <div class="value">${(Number(data.total_platform_fees) || 0).toFixed(2)} EGP</div>
+          <div class="change" style="margin-top:6px;font-size:0.72rem;color:var(--text-mid);font-weight:500">Not the same as “amount due” on Platform fees</div>
         </div>
       `;
       document.getElementById('analytics-grid').innerHTML = analyticsHtml;
@@ -4039,7 +4039,7 @@
         labels: labels,
         datasets: [
           {
-            label: 'Revenue',
+            label: 'Booking revenue',
             data: revenueData,
             borderColor: '#6366f1',
             backgroundColor: 'rgba(99, 102, 241, 0.12)',
@@ -4048,7 +4048,7 @@
             tension: 0.4,
           },
           {
-            label: 'Platform Fees',
+            label: 'Fees (from bookings)',
             data: feesData,
             borderColor: '#22C55E',
             backgroundColor: 'rgba(34, 197, 94, 0.1)',
@@ -4149,7 +4149,7 @@
     
     try {
       // Create CSV
-      let csv = 'Rank,Professional,Username,Total Bookings,Completed,Revenue,Platform Fees\n';
+      let csv = 'Rank,Professional,Username,Total Bookings,Completed,Booking revenue,Fees from bookings\n';
       cachedAnalyticsData.top_professionals.forEach((pro, index) => {
         csv += `${index + 1},"${pro.professional_name || 'Unknown'}","${pro.professional_username || 'unknown'}",${pro.total_bookings},${pro.completed},${pro.revenue.toFixed(2)},${pro.platform_fees.toFixed(2)}\n`;
       });

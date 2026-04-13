@@ -112,4 +112,5 @@
   }
 
   global.platformFeesDownloadBlob = platformFeesDownloadBlob;
+  global.extractApiErrorMessage = extractApiErrorMessage;
 })(typeof globalThis !== 'undefined' ? globalThis : window);

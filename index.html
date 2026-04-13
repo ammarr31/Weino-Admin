@@ -12,6 +12,10 @@
 <body>
   <header class="admin-topbar">
     <h1 data-i18n="brand">Admin</h1>
+    <div id="header-session" class="header-session hidden">
+      <span id="session-info" class="session-info"></span>
+      <button type="button" class="secondary sm" id="btn-logout" data-i18n="logout">Log out</button>
+    </div>
     <div class="lang-switch">
       <span class="lang-label" data-i18n="lang_pick">Language</span>
       <button type="button" id="btn-lang-en" class="active" aria-pressed="true">English</button>
@@ -19,75 +23,59 @@
     </div>
   </header>
 
-  <div class="admin-layout">
-    <aside class="admin-sidebar">
-      <nav>
-        <button type="button" class="nav-item active" data-view="home" data-i18n="nav_home">Home</button>
-        <button type="button" class="nav-item" data-view="export" data-i18n="nav_export">Fee invoices export</button>
-        <button type="button" class="nav-item" data-view="settings" data-i18n="nav_settings">More tools (soon)</button>
-      </nav>
-    </aside>
-
-    <main class="admin-main">
-      <section id="view-home" class="view active">
-        <div class="card">
-          <h2 data-i18n="home_welcome_title">Welcome</h2>
-          <p class="intro" data-i18n="home_welcome_p"></p>
+  <div id="screen-login" class="screen-login">
+    <div class="login-card card">
+      <h2 data-i18n="login_title">Sign in</h2>
+      <p class="intro" data-i18n="login_intro"></p>
+      <form id="login-form">
+        <div class="form-row">
+          <label for="login-api" data-i18n="login_api">API base URL</label>
+          <input id="login-api" type="url" autocomplete="off" placeholder="https://…/api/v1" />
         </div>
-      </section>
-
-      <section id="view-export" class="view">
-        <div class="card">
-          <h2 data-i18n="pf_card_title">Platform fee invoices</h2>
-          <p class="intro" data-i18n="pf_card_intro" data-i18n-mode="html"></p>
-
-          <div class="form-row">
-            <label for="pf-year" data-i18n="pf_year">Year</label>
-            <input id="pf-year" type="number" min="2000" max="2100" />
-          </div>
-          <div class="form-row">
-            <label for="pf-month" data-i18n="pf_month">Month</label>
-            <select id="pf-month"></select>
-          </div>
-          <div class="form-row">
-            <label for="pf-country" data-i18n="pf_country">Country</label>
-            <input id="pf-country" type="text" maxlength="2" data-i18n-placeholder="pf_country_ph" autocomplete="off" />
-          </div>
-          <div class="form-row">
-            <label for="pf-token" data-i18n="pf_token">Token</label>
-            <input id="pf-token" type="password" autocomplete="off" />
-            <p class="hint" data-i18n="pf_token_hint"></p>
-          </div>
-          <div class="form-row">
-            <label class="checkbox">
-              <input id="pf-remember" type="checkbox" />
-              <span data-i18n="pf_remember">Remember token</span>
-            </label>
-          </div>
-
-          <div class="actions">
-            <button type="button" class="primary" id="btn-pdf" data-i18n="btn_pdf">Download PDF</button>
-            <button type="button" class="secondary" id="btn-csv" data-i18n="btn_csv">Download CSV</button>
-          </div>
-
-          <p id="export-status" class="msg-ok"></p>
-          <div id="export-error" class="msg-error" role="alert"></div>
+        <div class="form-row">
+          <label for="login-user" data-i18n="login_user">Username</label>
+          <input id="login-user" name="username" autocomplete="username" required />
         </div>
-      </section>
-
-      <section id="view-settings" class="view">
-        <div class="card">
-          <h2 data-i18n="settings_placeholder_title">Coming soon</h2>
-          <p class="intro" data-i18n="settings_placeholder_p"></p>
+        <div class="form-row">
+          <label for="login-pass" data-i18n="login_pass">Password</label>
+          <input id="login-pass" type="password" name="password" autocomplete="current-password" required />
         </div>
-      </section>
-
-      <p class="footer-note" data-i18n="footer_note"></p>
-    </main>
+        <div class="actions">
+          <button type="submit" class="primary" data-i18n="login_submit">Sign in</button>
+        </div>
+      </form>
+      <div id="login-error" class="msg-error" role="alert"></div>
+    </div>
   </div>
+
+  <div id="screen-app" class="hidden">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <nav id="admin-nav">
+          <button type="button" class="nav-route" data-route="dashboard" data-perm="dashboard" data-hash="#dashboard" data-i18n="nav_dashboard"></button>
+          <button type="button" class="nav-route" data-route="users" data-perm="users" data-hash="#users" data-i18n="nav_users"></button>
+          <button type="button" class="nav-route" data-route="bookings" data-perm="bookings_admin" data-hash="#bookings" data-i18n="nav_bookings"></button>
+          <button type="button" class="nav-route" data-route="bookingtools" data-perm="bookings_admin" data-hash="#bookingtools" data-i18n="nav_bookingtools"></button>
+          <button type="button" class="nav-route" data-route="matches" data-perm="matches" data-hash="#matches" data-i18n="nav_matches"></button>
+          <button type="button" class="nav-route" data-route="categories" data-perm="categories" data-hash="#categories" data-i18n="nav_categories"></button>
+          <button type="button" class="nav-route" data-route="locations" data-perm="locations" data-hash="#locations/countries" data-i18n="nav_locations"></button>
+          <button type="button" class="nav-route" data-route="appconfig" data-perm="app_config" data-hash="#appconfig" data-i18n="nav_appconfig"></button>
+          <button type="button" class="nav-route" data-route="platformfees" data-perm="platform_fees" data-hash="#platformfees" data-i18n="nav_platformfees"></button>
+          <button type="button" class="nav-route" data-route="tickets" data-perm="tickets" data-hash="#tickets" data-i18n="nav_tickets"></button>
+          <button type="button" class="nav-route" data-route="notifications" data-perm="notifications" data-hash="#notifications" data-i18n="nav_notifications"></button>
+          <button type="button" class="nav-route" data-route="professionals" data-perm="professionals" data-hash="#professionals" data-i18n="nav_professionals"></button>
+          <button type="button" class="nav-route" data-route="accounts" data-perm="accounts" data-hash="#accounts" data-i18n="nav_accounts"></button>
+        </nav>
+      </aside>
+      <main id="admin-main" class="admin-main"></main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
   <script src="js/i18n.js"></script>
   <script src="js/platformFeesInvoiceExport.js"></script>
+  <script src="js/admin-core.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

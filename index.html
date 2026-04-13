@@ -1,81 +1,1330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weino — Admin</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/admin.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Weino Admin</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="admin-topbar">
-    <h1 data-i18n="brand">Admin</h1>
-    <div id="header-session" class="header-session hidden">
-      <span id="session-info" class="session-info"></span>
-      <button type="button" class="secondary sm" id="btn-logout" data-i18n="logout">Log out</button>
-    </div>
-    <div class="lang-switch">
-      <span class="lang-label" data-i18n="lang_pick">Language</span>
-      <button type="button" id="btn-lang-en" class="active" aria-pressed="true">English</button>
-      <button type="button" id="btn-lang-ar" aria-pressed="false">العربية</button>
-    </div>
-  </header>
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="ico-layout" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="11" width="7" height="10" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/></symbol>
+      <symbol id="ico-folder" viewBox="0 0 24 24"><path d="M4 6a2 2 0 0 1 2-2h3l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z"/></symbol>
+      <symbol id="ico-pin" viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+      <symbol id="ico-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M9 21h-1M15 15h-1M7 10H5M17 8h-2"/></symbol>
+      <symbol id="ico-clipboard" viewBox="0 0 24 24"><path d="M9 4h6a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1z"/><path d="M9 4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></symbol>
+      <symbol id="ico-wallet" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 12h3"/></symbol>
+      <symbol id="ico-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></symbol>
+      <symbol id="ico-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></symbol>
+      <symbol id="ico-archive" viewBox="0 0 24 24"><path d="M4 7h16v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M12 12v6"/></symbol>
+      <symbol id="ico-chart" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 15v-3M12 19v-7M16 11v5"/></symbol>
+      <symbol id="ico-ticket" viewBox="0 0 24 24"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/></symbol>
+      <symbol id="ico-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/><circle cx="17" cy="9" r="2.5"/><path d="M21 20v-.5a3 3 0 0 0-3-3h-2"/></symbol>
+      <symbol id="ico-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 5 3 5H3s3 2 3-5"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+      <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 3l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V7l8-4z"/></symbol>
+    </defs>
+  </svg>
+  <div id="app">
 
-  <div id="screen-login" class="screen-login">
-    <div class="login-card card">
-      <h2 data-i18n="login_title">Sign in</h2>
-      <p class="intro" data-i18n="login_intro"></p>
-      <form id="login-form">
-        <div class="form-row">
-          <label for="login-api" data-i18n="login_api">API base URL</label>
-          <input id="login-api" type="url" autocomplete="off" placeholder="https://…/api/v1" />
+    <!-- Login -->
+    <div id="login-view" class="view">
+      <div class="login-card">
+        <div class="login-logo">
+          <h1><span>Weino</span> Admin</h1>
+          <p>Sign in to manage the platform</p>
         </div>
-        <div class="form-row">
-          <label for="login-user" data-i18n="login_user">Username</label>
-          <input id="login-user" name="username" autocomplete="username" required />
+        <form id="login-form">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+          </div>
+          <button type="submit">Sign In</button>
+        </form>
+        <p id="login-error" class="error hidden"></p>
+      </div>
+    </div>
+
+    <!-- Main (after login) -->
+    <div id="main-view" class="view hidden">
+      <!-- Mobile top bar (hidden on desktop) -->
+      <div class="mobile-header">
+        <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="mobile-logo">
+          <div class="sidebar-header-dot">W</div>
+          <span>Weino Admin</span>
         </div>
-        <div class="form-row">
-          <label for="login-pass" data-i18n="login_pass">Password</label>
-          <input id="login-pass" type="password" name="password" autocomplete="current-password" required />
+      </div>
+
+      <!-- Sidebar overlay (mobile) -->
+      <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-dot">W</div>
+          <div>
+            <h2>Weino</h2>
+            <p>Admin Panel</p>
+          </div>
         </div>
-        <div class="actions">
-          <button type="submit" class="primary" data-i18n="login_submit">Sign in</button>
+        <nav>
+          <div class="nav-section-label">Overview</div>
+          <a href="#" data-view="dashboard" data-permission="dashboard" class="active">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-layout"/></svg></span> Dashboard
+          </a>
+
+          <div class="nav-section-label">Content</div>
+          <a href="#" data-view="categories" data-permission="categories">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-folder"/></svg></span> Categories
+          </a>
+          <a href="#" data-view="locations" data-permission="locations">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-pin"/></svg></span> Locations
+          </a>
+          <a href="#" data-view="settings" data-permission="app_config">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-sliders"/></svg></span> App Settings
+          </a>
+
+          <div class="nav-section-label">Professionals</div>
+          <a href="#" data-view="applications" data-permission="professionals">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-clipboard"/></svg></span> Applications
+          </a>
+          <a href="#" data-view="platform-fees" data-permission="platform_fees">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-wallet"/></svg></span> Platform Fees
+          </a>
+          
+          <div class="nav-section-label">Bookings</div>
+          <a href="#" data-view="bookings-simple" data-permission="bookings_admin">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-calendar"/></svg></span> All bookings
+          </a>
+          <a href="#" data-view="booking-lifecycle" data-permission="bookings_admin">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-refresh"/></svg></span> Lifecycle
+          </a>
+          <a href="#" data-view="archive" data-permission="bookings_admin">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-archive"/></svg></span> Archive
+          </a>
+          <a href="#" data-view="analytics" data-permission="bookings_admin">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-chart"/></svg></span> Analytics
+          </a>
+
+          <div class="nav-section-label">Tickets</div>
+          <a href="#" data-view="tickets" data-permission="tickets">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-ticket"/></svg></span> Tickets
+          </a>
+
+          <div class="nav-section-label">Users</div>
+          <a href="#" data-view="users" data-permission="users">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-users"/></svg></span> Users
+          </a>
+          <a href="#" data-view="notifications" data-permission="notifications">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-bell"/></svg></span> Push Notifications
+          </a>
+
+          <div class="nav-section-label">System</div>
+          <a href="#" data-view="accounts" id="nav-accounts" data-permission="accounts">
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-shield"/></svg></span> Admin Accounts
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="admin-badge">
+            <div class="admin-avatar" id="admin-avatar">A</div>
+            <span id="admin-info"></span>
+          </div>
+          <button id="logout-btn">Sign Out</button>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div id="admin-scope-bar" class="admin-scope-bar hidden" role="region" aria-label="Country scope">
+          <div class="admin-scope-bar-inner">
+            <span class="admin-scope-label">Country scope</span>
+            <select id="admin-scope-country" title="Filter lists by professional country (when multiple countries are active)"></select>
+            <span class="admin-scope-hint">Users, applications, bookings, archive, analytics, platform fees</span>
+          </div>
+        </div>
+        <div id="admin-breadcrumb" class="admin-breadcrumb" role="navigation" aria-label="Breadcrumb">
+          <span id="admin-breadcrumb-text"></span>
+        </div>
+        <!-- Dashboard -->
+        <div id="dashboard-view" class="panel hidden">
+          <div class="page-header">
+            <div>
+              <h1>Dashboard</h1>
+              <p>Overview of the platform</p>
+            </div>
+            <button class="btn btn-primary" onclick="loadDashboard()">Refresh</button>
+          </div>
+          <div class="stats-grid" id="dashboard-stats"></div>
+          <div class="section-title">Quick Actions</div>
+          <div class="quick-actions" id="dashboard-quick-actions"></div>
+        </div>
+
+        <!-- Categories -->
+        <div id="categories-view" class="panel hidden">
+          <div class="page-header" style="margin-bottom:16px">
+            <div>
+              <h1>Categories</h1>
+              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Professional types shown in the app (Discover and profiles).</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <input type="search" id="cat-search" placeholder="Search categories...">
+            <button id="cat-add" class="btn btn-primary">+ Add Category</button>
+          </div>
+          <div id="categories-list"></div>
+          <div class="pagination" id="categories-pagination"></div>
+        </div>
+
+        <!-- App Settings (country lists - no code edit) -->
+        <div id="settings-view" class="panel hidden">
+          <div class="page-header" style="margin-bottom:24px">
+            <div>
+              <h1>App Settings</h1>
+              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Control which countries get Discover, professionals, and area picker. Changes apply in the app without code deploy.</p>
+            </div>
+            <div style="display:flex;gap:10px">
+              <button type="button" id="settings-refresh" class="btn btn-secondary">Refresh</button>
+              <button type="button" id="settings-save" class="btn btn-primary">Save all</button>
+            </div>
+          </div>
+          <div id="settings-status" class="settings-status"></div>
+
+          <nav class="admin-settings-toc" aria-label="Jump to settings section">
+            <span class="admin-settings-toc-label">Jump to</span>
+            <a href="#settings-sec-version">App version · الإصدار</a>
+            <a href="#settings-sec-fees-global">Platform fees · العمولات</a>
+            <a href="#settings-sec-booking-policies">Booking policies · سياسات الحجز</a>
+            <a href="#settings-sec-country-lists">Country lists · الدول</a>
+          </nav>
+
+          <div class="admin-settings-stack">
+          <section class="admin-card admin-card--deep" id="settings-sec-version">
+            <header class="admin-card__head">
+              <h2>إصدار التطبيق والتحديثات · App version</h2>
+              <p class="admin-card__lead"><strong>من Flutter تلقائياً:</strong> التطبيق يبعث <code>X-App-Version</code> مع الطلبات؛ السيرفر يسجّل أعلى إصدار ويحسب <strong>latest</strong> للـ API. <strong>Minimum</strong> تضبطيه هنا فقط عند إجبار التحديث؛ لا يتغيّر تلقائياً من Flutter.</p>
+            </header>
+            <div class="admin-card__body">
+              <div class="admin-card__grid">
+                <div class="admin-field">
+                  <label for="settings-min-app-version">Minimum — أقل إصدار مسموح</label>
+                  <input type="text" id="settings-min-app-version" maxlength="32" placeholder="e.g. 1.5.1">
+                </div>
+                <div class="admin-field">
+                  <label for="settings-latest-app-version">Latest — اختياري (تجاوز يدوي)</label>
+                  <input type="text" id="settings-latest-app-version" maxlength="32" placeholder="فاضي = تلقائي من العملاء">
+                </div>
+                <div class="admin-field">
+                  <label for="settings-highest-seen-version">أعلى إصدار وصل من العملاء (قراءة فقط)</label>
+                  <input type="text" id="settings-highest-seen-version" readonly tabindex="-1">
+                </div>
+              </div>
+              <div class="admin-field" style="margin-bottom:14px">
+                <label for="settings-release-notes">ملاحظات الإصدار / Release notes</label>
+                <textarea id="settings-release-notes" rows="3" maxlength="2000" placeholder="نص قصير يظهر مع شاشة التحديث"></textarea>
+              </div>
+              <div class="admin-inset">
+                <label>
+                  <input type="checkbox" id="settings-auto-sync-min">
+                  <span><strong>رفع الحد الأدنى تلقائياً</strong> عند فتح إصدار أحدث (بحذر في الإنتاج).</span>
+                </label>
+                <p id="settings-auto-sync-hint" style="color:#fbbf24;font-size:0.8rem;margin:10px 0 0 28px;line-height:1.4"></p>
+              </div>
+              <button type="button" class="btn btn-primary" id="save-app-version-settings" style="margin-top:4px">حفظ إعدادات الإصدار · Save</button>
+              <div style="padding-top:20px;margin-top:20px;border-top:1px solid rgba(255,255,255,0.08)">
+                <h3 style="font-size:0.95rem;font-weight:700;margin:0 0 8px;color:#fafafa">إعدادات السيرفر (Firebase Console)</h3>
+                <p class="admin-card__lead" style="margin:0;font-size:0.8125rem">متغيرات البيئة: <strong>ALLOWED_ORIGINS</strong>, <strong>ALLOW_DEBUG_ROUTES</strong>, <strong>SENTRY_DSN</strong>, <strong>LOG_HTTP_INCOMING</strong>, <strong>DEFAULT_MIN_APP_VERSION</strong>, <strong>AUTO_SYNC_MIN_FROM_CLIENTS</strong>.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-card admin-accent-bar" id="settings-sec-fees-global">
+            <header class="admin-card__head">
+              <h2>Platform fees · Global</h2>
+              <p class="admin-card__lead">Hierarchy: Professional → City → Governorate → <strong>Country (Locations)</strong> → global default. Country % من جدول <strong>Locations → Countries</strong>.</p>
+            </header>
+            <div class="admin-card__body">
+              <div class="admin-inset">
+                <label style="flex-direction:row;align-items:center;gap:10px">
+                  <input type="checkbox" id="platform-fees-enabled" style="width:auto;margin:0">
+                  <span style="font-weight:600">Enable platform fees system</span>
+                </label>
+                <p class="admin-card__note" style="margin:8px 0 0 28px">When disabled, no fees on completed bookings (dev/testing).</p>
+              </div>
+              <div class="admin-inset">
+                <p style="font-weight:700;margin:0 0 8px;font-size:0.9rem">Fee suspension (Firestore · not in public /app-config)</p>
+                <p class="admin-card__note">API cache ~45s. Use to pause enforcement without deploy.</p>
+                <label style="margin-top:10px"><input type="checkbox" id="enforce-platform-fee-suspension" style="width:auto;margin-right:8px"><strong>Enforce suspension</strong> — block API / booking when flagged unpaid</label>
+                <label style="margin-top:8px"><input type="checkbox" id="platform-fee-auto-suspend-job" style="width:auto;margin-right:8px"><strong>Daily auto-suspend</strong> — <code>is_suspended_for_fees</code> when due &gt; 0</label>
+                <label style="margin-top:8px"><input type="checkbox" id="platform-fee-monthly-billing-suspend" style="width:auto;margin-right:8px"><strong>Monthly billing suspend job</strong></label>
+              </div>
+              <div class="admin-card__grid">
+                <div class="admin-field">
+                  <label for="global-fee-percentage">Global default (%)</label>
+                  <input type="number" id="global-fee-percentage" min="0" max="100" step="0.1" placeholder="e.g. 5">
+                  <small class="admin-hint">When no other tier is set</small>
+                </div>
+              </div>
+              <p class="admin-card__note"><strong>Country fee %</strong> — عدّل من Locations → Countries. حفظ الإعدادات هنا يزيل خرائط الدول المكررة القديمة.</p>
+              <div class="admin-card__grid admin-card__grid--2-1">
+                <div class="admin-field">
+                  <label for="transfer-phone">Payment phone</label>
+                  <input type="text" id="transfer-phone" maxlength="80" placeholder="+201234567890">
+                </div>
+                <div class="admin-field">
+                  <label for="transfer-note">Payment note</label>
+                  <input type="text" id="transfer-note" maxlength="500" placeholder="e.g. Vodafone Cash">
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" id="save-global-fee">Save global fee settings</button>
+            </div>
+          </section>
+
+          <section class="admin-card admin-accent-bar admin-accent-bar--sky" id="settings-sec-booking-policies">
+            <header class="admin-card__head">
+              <h2>Booking policies</h2>
+              <p class="admin-card__lead">Thresholds and rules for no-shows, cancellations, and restrictions.</p>
+            </header>
+            <div class="admin-card__body">
+              <div class="admin-card__grid">
+                <div class="admin-field">
+                  <label for="no-show-threshold">No-show threshold</label>
+                  <input type="number" id="no-show-threshold" min="1" max="10" step="1" placeholder="3">
+                  <small class="admin-hint">Restrict after this many no-shows</small>
+                </div>
+                <div class="admin-field">
+                  <label for="no-show-rate-threshold">No-show rate threshold (%)</label>
+                  <input type="number" id="no-show-rate-threshold" min="10" max="100" step="5" placeholder="40">
+                  <small class="admin-hint">Restrict if rate exceeds this %</small>
+                </div>
+                <div class="admin-field">
+                  <label for="no-show-rate-min-bookings">Min bookings for rate rule</label>
+                  <input type="number" id="no-show-rate-min-bookings" min="1" max="50" step="1" placeholder="5">
+                  <small class="admin-hint">Apply % rule only after this many completed bookings</small>
+                </div>
+                <div class="admin-field">
+                  <label for="no-show-restriction-days">No-show restriction (days)</label>
+                  <input type="number" id="no-show-restriction-days" min="1" max="365" step="1" placeholder="14">
+                </div>
+                <div class="admin-field">
+                  <label for="cancellation-threshold">Cancellation threshold</label>
+                  <input type="number" id="cancellation-threshold" min="1" max="20" step="1" placeholder="5">
+                </div>
+                <div class="admin-field">
+                  <label for="cancellation-window-hours">Cancellation window (hours)</label>
+                  <input type="number" id="cancellation-window-hours" min="0" max="24" step="0.5" placeholder="1">
+                </div>
+                <div class="admin-field">
+                  <label for="cancellation-restriction-hours">Excessive-cancel restriction (hours)</label>
+                  <input type="number" id="cancellation-restriction-hours" min="1" max="720" step="1" placeholder="24">
+                  <small class="admin-hint">Max 720 = 30 days</small>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" id="save-booking-policies">Save booking policies</button>
+            </div>
+          </section>
+
+          <section class="admin-card admin-accent-bar admin-accent-bar--sky" id="settings-sec-pro-news">
+            <header class="admin-card__head">
+              <h2>Professional news ticker · شريط أخبار المحترفين</h2>
+              <p class="admin-card__lead">Each line is one news item. Shown only to professionals on the app dashboard. Hidden automatically when empty.</p>
+            </header>
+            <div class="admin-card__body">
+              <div class="admin-field">
+                <label for="settings-pro-news">News items (one per line)</label>
+                <textarea id="settings-pro-news" rows="5" maxlength="6000" placeholder="Example:\nImportant: booking policy updated.\nNew feature: multi-slot booking now available."></textarea>
+                <small class="admin-hint">Max 30 lines. Each line trimmed to 160 characters.</small>
+              </div>
+              <button type="button" class="btn btn-primary" id="save-pro-news">Save news ticker</button>
+            </div>
+          </section>
+          </div>
+
+          <div class="settings-cards" id="settings-sec-country-lists">
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <span class="settings-card-icon">👤</span>
+                <div>
+                  <h2 class="settings-card-title">Professional allowed</h2>
+                  <p class="settings-card-desc">Countries where users can become professionals and see Discover.</p>
+                </div>
+              </div>
+              <div id="settings-professional-chips" class="settings-chips"></div>
+              <div class="settings-add-row">
+                <input type="text" id="settings-professional-input" class="settings-code-input" placeholder="e.g. EG" maxlength="2" autocomplete="off">
+                <button type="button" class="btn btn-secondary settings-add-btn" data-target="professional">Add</button>
+              </div>
+            </div>
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <span class="settings-card-icon">📍</span>
+                <div>
+                  <h2 class="settings-card-title">Countries with locations</h2>
+                  <p class="settings-card-desc">Area picker (governorate + city). Add governorates/cities in Locations first.</p>
+                </div>
+              </div>
+              <div id="settings-locations-chips" class="settings-chips"></div>
+              <div class="settings-add-row">
+                <input type="text" id="settings-locations-input" class="settings-code-input" placeholder="e.g. AT" maxlength="2" autocomplete="off">
+                <button type="button" class="btn btn-secondary settings-add-btn" data-target="locations">Add</button>
+              </div>
+            </div>
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <span class="settings-card-icon">🇩🇪</span>
+                <div>
+                  <h2 class="settings-card-title">German-speaking (Deutsch option)</h2>
+                  <p class="settings-card-desc">Countries where the Deutsch language option is shown in the app.</p>
+                </div>
+              </div>
+              <div id="settings-german-chips" class="settings-chips"></div>
+              <div class="settings-add-row">
+                <input type="text" id="settings-german-input" class="settings-code-input" placeholder="e.g. DE" maxlength="2" autocomplete="off">
+                <button type="button" class="btn btn-secondary settings-add-btn" data-target="german">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Locations (Countries, Governorates & Cities) -->
+        <div id="locations-view" class="panel hidden">
+          <h1>Locations Management</h1>
+          <p style="color:var(--text-mid);font-size:0.9rem;margin-bottom:24px">Manage countries, governorates and cities. Used for professional area selection and platform fees.</p>
+          
+          <!-- Countries Section -->
+          <section class="locations-section" style="margin-bottom:32px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <h2 style="font-size:1.1rem;font-weight:600">Countries</h2>
+              <button id="country-add" class="btn btn-primary">+ Add Country</button>
+            </div>
+            <div id="countries-list"></div>
+          </section>
+
+          <hr style="border:none;border-top:1px solid var(--border);margin:32px 0">
+
+          <!-- Governorates & Cities Section -->
+          <div style="margin-bottom:16px">
+            <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:12px">Governorates &amp; cities</h2>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <span style="font-weight:600;color:var(--text-dark)">Filter by Country:</span>
+              <select id="loc-country-select" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);min-width:180px">
+                <option value="EG">🇪🇬 Egypt (EG)</option>
+              </select>
+              <span id="loc-country-badge" style="font-size:0.9rem;color:var(--text-mid)">Showing governorates and cities for Egypt</span>
+            </div>
+          </div>
+          <div class="toolbar" style="margin-bottom:20px">
+            <button id="gov-add" class="btn btn-primary">+ Add Governorate</button>
+            <select id="loc-gov-filter" style="margin-left:12px;padding:8px 12px;border-radius:8px;border:1px solid var(--border)">
+              <option value="">All governorates</option>
+            </select>
+            <button id="city-add" class="btn btn-secondary" style="margin-left:12px" disabled>+ Add City</button>
+          </div>
+          <div class="locations-sections">
+            <section class="locations-section locations-section--table-block">
+              <h2 style="font-size:1rem;margin-bottom:12px">Governorates</h2>
+              <div id="governorates-list" class="locations-list-scroll"></div>
+            </section>
+            <section class="locations-section locations-section--table-block">
+              <h2 style="font-size:1rem;margin-bottom:12px">Cities</h2>
+              <div id="cities-list" class="locations-list-scroll"></div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Applications -->
+        <div id="applications-view" class="panel hidden">
+          <div class="page-header" style="margin-bottom:16px">
+            <div>
+              <h1>Applications</h1>
+              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Pending professional sign-ups, area changes, and account deletion requests.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <input type="search" id="app-search" placeholder="Search by name, username or category...">
+          </div>
+          <div id="applications-list"></div>
+          <div class="pagination" id="applications-pagination"></div>
+        </div>
+
+        <!-- Platform Fees -->
+        <div id="platform-fees-view" class="panel hidden">
+          <div class="page-header">
+            <div>
+              <h1>Platform fees</h1>
+              <p>Track and confirm monthly payments from professionals</p>
+            </div>
+            <div class="toolbar" style="margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <label class="toolbar-time-label" style="margin:0">Invoices</label>
+              <select id="fees-invoices-year" aria-label="Invoice year"></select>
+              <select id="fees-invoices-month" aria-label="Invoice month"></select>
+              <button type="button" class="btn" id="fees-invoices-export-pdf">Export invoices PDF</button>
+              <button type="button" class="btn btn-secondary" id="fees-invoices-export-csv" title="Spreadsheet / accounting tools">CSV</button>
+            </div>
+            <button type="button" class="btn btn-danger" id="platform-fees-reset-open">Clear recorded fees…</button>
+            <button class="btn btn-secondary" onclick="loadPlatformFees()">Refresh</button>
+          </div>
+          
+          <div class="fees-summary-cards" id="fees-summary">
+            <div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
+          </div>
+          
+      <div class="fees-toolbar">
+        <input type="search" id="fees-search" placeholder="Search by name, username, or email...">
+        <select id="fees-filter-status">
+          <option value="all">All Status</option>
+          <option value="due">With Amount Due</option>
+          <option value="suspended">Suspended</option>
+          <option value="active">Active (No Dues)</option>
+        </select>
+        <select id="fees-filter-country">
+          <option value="all">All Countries</option>
+        </select>
+        <select id="fees-filter-governorate">
+          <option value="all">All Governorates</option>
+        </select>
+        <select id="fees-filter-city">
+          <option value="all">All Cities</option>
+        </select>
+        <button class="btn" onclick="clearFeesFilters()">Clear Filters</button>
+      </div>
+          
+          <div class="fees-table-wrap">
+            <table class="fees-table" id="fees-table">
+              <thead>
+                <tr>
+                  <th>Professional</th>
+                  <th>Contact</th>
+                  <th>Recorded Bookings</th>
+                  <th>Total Recorded</th>
+                  <th>Confirmed</th>
+                  <th>Amount Due</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="fees-tbody">
+                <tr>
+                  <td colspan="8" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tickets -->
+        <div id="tickets-view" class="panel hidden">
+          <div class="page-header" style="margin-bottom:16px">
+            <div>
+              <h1>Support tickets</h1>
+              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">User conversations; names load from accounts (UID still shown for support).</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <select id="ticket-filter-status">
+              <option value="">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="open">Open</option>
+              <option value="in_progress">In Progress</option>
+              <option value="closed">Closed</option>
+            </select>
+            <button class="btn btn-secondary" onclick="loadTickets()">Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <div id="tickets-list"></div>
+          </div>
+          <div class="pagination" id="tickets-pagination"></div>
+        </div>
+
+        <!-- Users -->
+        <div id="users-view" class="panel hidden">
+          <div class="page-header" style="margin-bottom:16px">
+            <div>
+              <h1>Users</h1>
+              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Moderation, verification, bans, booking limits, and platform fee overrides for professionals.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <input type="search" id="user-search" placeholder="Search name, username, email, or UID…">
+            <select id="user-filter">
+              <option value="">All users</option>
+              <option value="true">Professionals only</option>
+              <option value="false">Non-professionals</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <div id="users-list"></div>
+          </div>
+          <div class="pagination" id="users-pagination"></div>
+        </div>
+
+
+        <!-- Push Notifications -->
+        <div id="notifications-view" class="panel hidden">
+          <div class="page-header">
+            <div>
+              <h1>Push Notifications</h1>
+              <p>Send notifications to users</p>
+            </div>
+          </div>
+
+          <div class="notif-composer">
+            <h2>Compose Notification</h2>
+            <form id="notif-form">
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Target Audience</label>
+                  <select id="notif-target">
+                    <option value="all">All Users</option>
+                    <option value="professional">Professionals Only</option>
+                    <option value="non_professional">Non-Professionals Only</option>
+                    <option value="user">Specific User (by UID)</option>
+                  </select>
+                </div>
+                <div class="form-field" id="notif-uid-wrap" style="display:none">
+                  <label>User UID</label>
+                  <input type="text" id="notif-uid" placeholder="From Users tab — Edit user or copy UID column" autocomplete="off">
+                  <small class="admin-hint" style="display:block;margin-top:6px;color:var(--text-mid)">Open <strong>Users</strong>, find the person, use <strong>Copy UID</strong> next to their ID.</small>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field full">
+                  <label>Title</label>
+                  <input type="text" id="notif-title" placeholder="Notification title" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field full">
+                  <label>Message Body</label>
+                  <textarea id="notif-body" rows="3" placeholder="Notification message body" required></textarea>
+                </div>
+              </div>
+              <div class="modal-actions" style="justify-content:flex-start; margin-top:0">
+                <button type="submit" class="btn btn-primary" id="notif-send-btn">Send Notification</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="section-title">Notification History</div>
+          <div id="notif-history">
+            <div class="empty">No notifications sent yet</div>
+          </div>
+        </div>
+
+        <!-- Admin Accounts (super_admin) -->
+        <div id="accounts-view" class="panel hidden">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <div>
+              <h1 style="margin-bottom:8px">Admin Accounts</h1>
+              <p class="accounts-intro" style="margin:0">Create staff accounts and assign one or more roles (permissions combine). Only <strong>super_admin</strong> can open this page.</p>
+            </div>
+            <button id="show-roles-guide-btn" class="btn btn-secondary" style="display:flex;align-items:center;gap:8px">
+              <span>📋</span> View Roles Guide
+            </button>
+          </div>
+
+          <div class="toolbar">
+            <button id="account-add" class="btn btn-primary">+ Add Admin</button>
+          </div>
+          
+          <div class="table-wrap">
+            <div id="accounts-list"></div>
+          </div>
+        </div>
+
+        <!-- All bookings (search, filter, detail, export) -->
+        <div id="bookings-simple-view" class="panel hidden">
+          <div class="page-header">
+            <div>
+              <h1>Bookings</h1>
+              <p>Operational list of appointments (booking-type matches). Row numbers follow the current sort (newest first). Technical IDs are only in <strong>Details</strong> for support.</p>
+            </div>
+            <button type="button" class="btn btn-secondary" id="booking-simple-refresh-top">Refresh</button>
+          </div>
+          <div class="toolbar bookings-toolbar">
+            <input type="search" id="booking-simple-search" placeholder="Search by name, username, or branch…">
+            <select id="booking-simple-filter-status" title="Filter by match / queue state">
+              <option value="">All (filter)</option>
+              <option value="pending">Match: pending</option>
+              <option value="accepted">Match: accepted (waiting)</option>
+              <option value="current">Queue: in progress</option>
+              <option value="completed">Queue: completed</option>
+              <option value="cancelled">Match: cancelled</option>
+              <option value="rejected">Match: rejected (legacy)</option>
+              <option value="expired">Queue: expired</option>
+              <option value="absent">Queue: absent (no-show)</option>
+            </select>
+            <label class="bookings-page-size-label" for="booking-simple-page-size">Rows per page</label>
+            <select id="booking-simple-page-size" title="Rows per page">
+              <option value="10">10</option>
+              <option value="25" selected>25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <button id="booking-simple-refresh" class="btn btn-secondary">Refresh</button>
+            <button type="button" id="booking-simple-export-csv" class="btn btn-secondary">Export CSV</button>
+          </div>
+          <div class="table-wrap">
+            <div id="bookings-simple-list"></div>
+          </div>
+          <div class="pagination" id="bookings-simple-pagination"></div>
+        </div>
+        
+        <!-- Booking Lifecycle Management -->
+        <div id="booking-lifecycle-view" class="panel hidden">
+          <div class="page-header">
+            <div>
+              <h1>Booking lifecycle</h1>
+              <p>Stuck queues, expired items needing review, and health stats</p>
+            </div>
+            <button class="btn btn-secondary" onclick="loadBookingLifecycle()">Refresh</button>
+          </div>
+          
+          <div class="lifecycle-stats-grid" id="lifecycle-stats">
+            <div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
+          </div>
+          
+          <div class="section-title">Expired Bookings (Needs Review)</div>
+          <div class="table-wrap">
+            <table class="fees-table">
+              <thead>
+                <tr>
+                  <th>Record</th>
+                  <th>Professional</th>
+                  <th>Customer</th>
+                  <th>Appointment Time</th>
+                  <th>Status</th>
+                  <th>Reason</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="expired-bookings-tbody">
+                <tr>
+                  <td colspan="7" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Archive Viewer -->
+        <div id="archive-view" class="panel hidden">
+          <div class="page-header">
+            <div>
+              <h1>📦 Archive</h1>
+              <p>View archived bookings and historical data</p>
+            </div>
+            <div style="display:flex;gap:10px">
+              <button class="btn btn-secondary" onclick="exportArchiveToCSV()">📥 Export CSV</button>
+              <button class="btn btn-secondary" onclick="loadArchive()">Refresh</button>
+            </div>
+          </div>
+          
+          <div class="toolbar archive-toolbar">
+            <input type="search" id="archive-search" placeholder="Search by professional or customer...">
+            <select id="archive-filter-status">
+              <option value="all">All Status</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="expired">Expired</option>
+            </select>
+            <span class="toolbar-time-label">From</span>
+            <select id="archive-from-month" title="From month"></select>
+            <select id="archive-from-year" title="From year"></select>
+            <span class="toolbar-time-label">To</span>
+            <select id="archive-to-month" title="To month"></select>
+            <select id="archive-to-year" title="To year"></select>
+          </div>
+          
+          <div class="table-wrap">
+            <table class="fees-table">
+              <thead>
+                <tr>
+                  <th>Record</th>
+                  <th>Professional</th>
+                  <th>Customer</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Archived</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="archive-tbody">
+                <tr>
+                  <td colspan="8" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="archive-pagination"></div>
+        </div>
+
+        <!-- Analytics Dashboard -->
+        <div id="analytics-view" class="panel hidden">
+          <div class="page-header">
+            <div>
+              <h1>📈 Analytics Dashboard</h1>
+              <p>Platform-wide statistics and insights</p>
+            </div>
+            <div class="analytics-toolbar">
+              <label class="analytics-period-label"><input type="checkbox" id="analytics-all-time"> All time</label>
+              <span class="toolbar-time-label">Year</span>
+              <select id="analytics-year" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border)"></select>
+              <span class="toolbar-time-label">Month</span>
+              <select id="analytics-month" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border)">
+                <option value="all">Whole year</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+              <button class="btn btn-secondary" onclick="exportAnalyticsToCSV()">📥 Export CSV</button>
+              <button class="btn btn-secondary" onclick="loadAnalytics()">Refresh</button>
+            </div>
+          </div>
+          
+          <div class="analytics-grid" id="analytics-grid">
+            <div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
+          </div>
+          
+          <div class="section-title">Revenue Trends</div>
+          <div class="chart-container">
+            <canvas id="revenue-chart" style="max-height:300px"></canvas>
+          </div>
+          
+          <div class="section-title">Top Professionals</div>
+          <div class="table-wrap">
+            <table class="fees-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Professional</th>
+                  <th>Total Bookings</th>
+                  <th>Completed</th>
+                  <th>Revenue</th>
+                  <th>Platform Fees</th>
+                </tr>
+              </thead>
+              <tbody id="top-professionals-tbody">
+                <tr>
+                  <td colspan="6" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+  <!-- Roles Guide Modal (sibling of main-view, above standard modals) -->
+  <div id="roles-guide-modal" class="modal-overlay hidden roles-guide-overlay">
+    <div class="modal roles-guide-modal-panel" style="max-width:920px;width:100%;max-height:90vh;overflow-y:auto">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
+        <h3 style="margin:0;font-size:1.05rem">📋 Admin Roles Guide</h3>
+        <button type="button" class="modal-close" id="close-roles-modal" aria-label="Close" style="background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--text-2)">&times;</button>
+      </div>
+      <p style="color:var(--text-mid);margin-bottom:20px;font-size:0.9rem">Choose the right role for each team member. You can assign multiple roles to combine access.</p>
+            <div class="roles-grid">
+              <div class="role-card" data-role="super_admin">
+                <div class="role-badge" style="background:#7C3AED">Super Admin</div>
+                <div class="role-desc">Full system access including managing admin accounts. Only one super admin exists.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Everything
+                </div>
+              </div>
+
+              <div class="role-card" data-role="admin">
+                <div class="role-badge" style="background:#8B5CF6">Admin (full)</div>
+                <div class="role-desc">Full operational access to all platform features except managing other admins.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> All sections except Admin Accounts
+                </div>
+              </div>
+
+              <div class="role-card" data-role="bookings_manager">
+                <div class="role-badge" style="background:#10B981">Bookings & Fees</div>
+                <div class="role-desc">Manage all bookings, lifecycle, archive, analytics, platform fees, and professional applications.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Dashboard, Bookings, Lifecycle, Archive, Analytics, Platform Fees, Applications
+                </div>
+                <div class="role-use-case">
+                  <strong>Best for:</strong> Operations manager handling bookings and revenue
+                </div>
+              </div>
+
+              <div class="role-card" data-role="locations_manager">
+                <div class="role-badge" style="background:#F59E0B">Locations</div>
+                <div class="role-desc">Manage countries, governorates, and cities. Perfect for expansion team.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Dashboard, Locations only
+                </div>
+                <div class="role-use-case">
+                  <strong>Best for:</strong> Geographic expansion specialist
+                </div>
+              </div>
+
+              <div class="role-card" data-role="tickets_support">
+                <div class="role-badge" style="background:#EC4899">Tickets</div>
+                <div class="role-desc">Handle support tickets, respond to users, close resolved issues.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Dashboard, Tickets only
+                </div>
+                <div class="role-use-case">
+                  <strong>Best for:</strong> Customer support agent (tickets only)
+                </div>
+              </div>
+
+              <div class="role-card" data-role="content_editor">
+                <div class="role-badge" style="background:#3B82F6">Categories & Media</div>
+                <div class="role-desc">Manage service categories, upload images, bulk operations.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Dashboard, Categories only
+                </div>
+                <div class="role-use-case">
+                  <strong>Best for:</strong> Content manager for service catalog
+                </div>
+              </div>
+
+              <div class="role-card" data-role="users_moderator">
+                <div class="role-badge" style="background:#06B6D4">Users</div>
+                <div class="role-desc">Manage user accounts, ban/unban users, view user details.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Dashboard, Users only
+                </div>
+                <div class="role-use-case">
+                  <strong>Best for:</strong> Community moderator
+                </div>
+              </div>
+
+              <div class="role-card" data-role="finance_manager">
+                <div class="role-badge" style="background:#14B8A6">Platform Fees</div>
+                <div class="role-desc">Confirm payments, release suspensions, view financial dashboard.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Dashboard, Platform Fees only
+                </div>
+                <div class="role-use-case">
+                  <strong>Best for:</strong> Finance/accounting team member
+                </div>
+              </div>
+
+              <div class="role-card" data-role="notifications_manager">
+                <div class="role-badge" style="background:#F97316">Notifications</div>
+                <div class="role-desc">Send push notifications to users, professionals, or specific individuals.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Dashboard, Push Notifications only
+                </div>
+                <div class="role-use-case">
+                  <strong>Best for:</strong> Marketing/communications specialist
+                </div>
+              </div>
+
+              <div class="role-card" data-role="support_lead">
+                <div class="role-badge" style="background:#8B5CF6">Support Lead</div>
+                <div class="role-desc">Handle tickets and manage users. Combined role for senior support staff.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Dashboard, Tickets, Users
+                </div>
+                <div class="role-use-case">
+                  <strong>Best for:</strong> Senior support lead managing both tickets and user issues
+                </div>
+              </div>
+
+              <div class="role-card" data-role="verifier">
+                <div class="role-badge" style="background:#6366F1">Verifier</div>
+                <div class="role-desc">Review and approve professional applications only.</div>
+                <div class="role-access">
+                  <strong>Access:</strong> Dashboard, Applications only
+                </div>
+                <div class="role-use-case">
+                  <strong>Best for:</strong> Application reviewer (verifying professional sign-ups)
+                </div>
+              </div>
+            </div>
+      <div class="modal-actions" style="margin-top:16px">
+        <button type="button" class="btn btn-secondary" id="close-roles-modal-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+
+    <!-- Booking Detail Modal -->
+    <div id="booking-detail-modal" class="modal hidden" style="max-width:720px;width:100%">
+      <h3 id="booking-detail-modal-title">Booking Details</h3>
+      <div id="booking-detail-modal-body"></div>
+      <div class="modal-actions">
+        <button type="button" id="booking-detail-modal-close">Close</button>
+      </div>
+    </div>
+
+    <div id="platform-fees-reset-modal" class="modal hidden" style="max-width:520px;width:100%">
+      <h3>Clear recorded platform fees</h3>
+      <p style="color:var(--text-mid);font-size:0.92rem;line-height:1.45">This resets recorded fee counters on every professional and branch, removes stored platform-fee fields on booking matches, <strong>deletes all payment confirmation rows</strong> (<code>platform_fee_payments</code>), clears monthly clearances, and releases fee suspensions. Use only for <strong>testing</strong> — you will lose admin payment history in the panel.</p>
+      <p style="margin-top:12px;font-size:0.88rem">Type the phrase below exactly to confirm:</p>
+      <p style="margin:6px 0;font-family:monospace;font-size:0.85rem;background:var(--surface-2, #f4f4f6);padding:8px 10px;border-radius:6px">RESET_ALL_RECORDED_FEES</p>
+      <label style="display:block;margin-top:12px">
+        <span style="font-size:0.85rem;color:var(--text-mid)">Confirmation</span>
+        <input type="text" id="platform-fees-reset-confirm-input" autocomplete="off" placeholder="RESET_ALL_RECORDED_FEES" style="width:100%;margin-top:6px;font-family:monospace;font-size:0.9rem">
+      </label>
+      <div class="modal-actions" style="margin-top:18px">
+        <button type="button" class="btn btn-danger" id="platform-fees-reset-submit">Clear recorded fees</button>
+        <button type="button" class="btn btn-secondary" id="platform-fees-reset-cancel">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="category-modal" class="modal hidden" style="max-width:480px;width:100%">
+      <h3>Category</h3>
+      <form id="category-form">
+        <input type="hidden" id="cat-id">
+        <label>Name (default)
+          <input type="text" id="cat-name" required placeholder="e.g. Healthcare">
+        </label>
+        <label>Parent category (optional — subcategory)
+          <select id="cat-parent-id">
+            <option value="">— Top-level (shown on home) —</option>
+          </select>
+          <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.78rem">Choose a top-level category to create a text-only specialization under it.</small>
+        </label>
+        <div id="cat-photo-label-wrap">
+        <label>Category image
+          <input type="file" id="cat-photo-file" accept="image/jpeg,image/png,image/webp" style="font-size:0.9rem">
+          <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.78rem">Upload from your PC. Stored in Firebase Storage. Recommend 256×256 px.</small>
+          <div id="cat-photo-preview" style="margin-top:8px;display:none;flex-wrap:wrap;align-items:center;gap:8px">
+            <img id="cat-photo-preview-img" src="" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--border)">
+            <span id="cat-photo-status" style="font-size:0.82rem;color:var(--purple)"></span>
+            <button type="button" id="cat-photo-clear" class="btn btn-secondary" style="font-size:0.78rem;padding:4px 10px">Remove</button>
+          </div>
+        </label>
+        </div>
+        <label>Display order
+          <input type="number" id="cat-order" min="0" placeholder="e.g. 1 = first, 2 = second (lower = appears first on home)">
+        </label>
+        <div style="border-top:1px solid var(--border);margin:12px 0 8px;padding-top:12px">
+          <p style="margin:0 0 10px;font-size:0.78rem;color:var(--text-mid);text-transform:uppercase;letter-spacing:.05em;font-weight:600">Translations (optional)</p>
+          <label>English 🇬🇧
+            <input type="text" id="cat-name-en" placeholder="e.g. Healthcare">
+          </label>
+          <label>Arabic 🇸🇦
+            <input type="text" id="cat-name-ar" placeholder="e.g. الرعاية الصحية" dir="rtl">
+          </label>
+          <label>German 🇩🇪
+            <input type="text" id="cat-name-de" placeholder="e.g. Gesundheitswesen">
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="cat-cancel">Cancel</button>
+          <button type="submit">Save</button>
         </div>
       </form>
-      <div id="login-error" class="msg-error" role="alert"></div>
     </div>
+
+    <!-- Admin Account Modal -->
+    <div id="account-modal" class="modal hidden">
+      <h3 id="account-modal-title">Add Admin</h3>
+      <form id="account-form">
+        <input type="hidden" id="acc-id">
+        <label>Username
+          <input type="text" id="acc-username" required placeholder="Admin username">
+        </label>
+        <label>Password
+          <input type="password" id="acc-password" placeholder="Leave blank to keep current" minlength="8">
+        </label>
+        <label id="acc-role-wrap" class="hidden">
+          Roles <span style="font-weight:400;color:var(--text-mid)">(one or more)</span>
+          <div id="acc-roles-checkboxes" class="acc-roles-checkboxes"></div>
+        </label>
+        <label id="acc-active-wrap" class="hidden" style="flex-direction:row; align-items:center; gap:8px; text-transform:none; letter-spacing:0">
+          <input type="checkbox" id="acc-active" checked style="width:auto; margin:0"> Active
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="acc-cancel">Cancel</button>
+          <button type="submit" id="acc-submit">Create Admin</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Confirm Payment Modal -->
+    <div id="payment-modal" class="modal hidden">
+      <h3>Confirm Payment Received</h3>
+      <form id="payment-form">
+        <input type="hidden" id="payment-professional-id">
+        <div style="background:#f0f9ff;border:1px solid #0ea5e9;border-radius:8px;padding:12px;margin-bottom:16px">
+          <p style="margin:0;font-size:0.9rem;color:#0369a1"><strong id="payment-professional-name"></strong></p>
+          <p style="margin:4px 0 0;font-size:0.85rem;color:#0c4a6e">Amount Due: <strong id="payment-amount-due"></strong></p>
+        </div>
+        <label>Payment Amount
+          <input type="number" id="payment-amount" required min="0" step="0.01" placeholder="e.g. 150.00">
+        </label>
+        <label>Period (Month)
+          <select id="payment-month">
+            <option value="">Select month</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </label>
+        <label>Period (Year)
+          <input type="number" id="payment-year" min="2024" max="2030" placeholder="e.g. 2026">
+        </label>
+        <label>Notes (optional)
+          <textarea id="payment-notes" rows="2" placeholder="e.g. Bank transfer ref: 123456"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="payment-cancel">Cancel</button>
+          <button type="submit" class="btn-primary">Confirm Payment</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- User Edit Modal -->
+    <div id="user-modal" class="modal hidden">
+      <h3>Edit User</h3>
+      <form id="user-form">
+        <input type="hidden" id="user-id">
+        <p id="user-display-name"></p>
+        <div id="user-phones-block" style="margin:12px 0;padding:12px;border-radius:10px;background:var(--gray-50);border:1px solid var(--border);font-size:0.86rem;line-height:1.55">
+          <div><strong>Mobile (account)</strong> — <span id="user-phone-personal">—</span></div>
+          <div id="user-phone-platform-wrap" class="hidden" style="margin-top:6px"><strong>Platform contact (professional)</strong> — <span id="user-phone-platform">—</span></div>
+        </div>
+        <label style="flex-direction:row; align-items:center; gap:8px; text-transform:none; letter-spacing:0">
+          <input type="checkbox" id="user-verified" style="width:auto; margin:0"> Verified
+        </label>
+        <label style="flex-direction:row; align-items:center; gap:8px; text-transform:none; letter-spacing:0">
+          <input type="checkbox" id="user-banned" style="width:auto; margin:0"> Banned
+        </label>
+        <label style="flex-direction:row; align-items:center; gap:8px; text-transform:none; letter-spacing:0">
+          <input type="checkbox" id="user-premium" style="width:auto; margin:0"> Premium
+        </label>
+        <div id="user-booking-controls" style="margin:14px 0;padding:12px;border-radius:10px;background:var(--gray-50);border:1px solid var(--border)">
+          <div style="font-weight:600;margin-bottom:8px;font-size:0.9rem">Booking reputation &amp; limits</div>
+          <div id="user-booking-summary" style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;margin-bottom:10px"></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <button type="button" class="btn btn-secondary" id="user-clear-booking-restriction" style="font-size:0.8rem">Clear booking restriction</button>
+            <button type="button" class="btn btn-secondary" id="user-reset-booking-reputation" style="font-size:0.8rem">Reset reputation counters</button>
+            <button type="button" class="btn btn-secondary hidden" id="user-release-fee-suspension" style="font-size:0.8rem">Release platform-fee suspension</button>
+          </div>
+          <small style="display:block;margin-top:8px;color:var(--gray-500);font-size:0.72rem">“Reset reputation” zeros no-shows, cancellations, and stats — use carefully. “Clear restriction” only lifts the booking block flag.</small>
+        </div>
+        <div id="user-platform-fee-wrap" class="hidden">
+          <label style="background:rgba(124,58,237,0.05);padding:12px;border-radius:8px;border:1px solid rgba(124,58,237,0.2)">
+            <span style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <span style="font-weight:600;color:var(--purple)">💰 Custom Platform Fee Percentage (%)</span>
+            </span>
+            <input type="number" id="user-platform-fee-percentage" min="0" max="100" step="0.1" placeholder="e.g. 15">
+            <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.75rem">Highest priority - overrides city, governorate, country, and global. Leave empty to use location-based fee.</small>
+          </label>
+        </div>
+        <div class="modal-actions" style="justify-content:space-between">
+          <button type="button" id="user-delete" class="btn btn-danger">Delete User</button>
+          <div style="display:flex;gap:8px">
+            <button type="button" id="user-cancel">Cancel</button>
+            <button type="submit">Save Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Ticket Detail Modal (chat, reply, close) -->
+    <div id="ticket-modal" class="modal hidden" style="max-width:600px;width:100%;max-height:90vh">
+      <h3 id="ticket-modal-title">Ticket</h3>
+      <div id="ticket-modal-meta" style="margin-bottom:12px;font-size:0.9rem;color:var(--text-mid)"></div>
+      <div id="ticket-modal-messages" style="max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;background:var(--bg)"></div>
+      <div id="ticket-modal-reply" class="hidden" style="padding:12px 0">
+        <div id="ticket-modal-pending-note" class="hidden" style="margin-bottom:12px;padding:10px;background:var(--purple-pale);border-radius:8px;border:1px solid rgba(124,58,237,0.2);font-size:0.9rem;color:var(--text-mid)">
+          User cannot send messages until you accept the ticket.
+        </div>
+        <textarea id="ticket-reply-text" rows="3" placeholder="Type your reply..." style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);resize:vertical;font-family:inherit;font-size:0.9rem;color:var(--text-dark);background:var(--bg);outline:none"></textarea>
+        <div class="modal-actions" style="margin-top:12px;flex-wrap:wrap;gap:8px">
+          <button type="button" id="ticket-accept-btn" class="btn btn-primary hidden">Accept Ticket</button>
+          <button type="button" id="ticket-mark-in-progress" class="btn btn-secondary">Mark In Progress</button>
+          <button type="button" id="ticket-close-btn" class="btn btn-danger">Close Ticket</button>
+          <button type="button" id="ticket-send-reply" class="btn btn-primary">Send Reply</button>
+        </div>
+      </div>
+      <div id="ticket-modal-closed" class="hidden" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;border:1px solid var(--border)">
+        <p style="margin:0;color:var(--text-mid)">This ticket is closed.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="ticket-modal-close">Close</button>
+      </div>
+    </div>
+
+    <!-- Country Management Modal -->
+    <div id="country-modal" class="modal hidden" style="max-width:500px;width:100%">
+      <h3 id="country-modal-title">Add Country</h3>
+      <form id="country-form">
+        <input type="hidden" id="country-id">
+        <label>Country Code (2 letters)
+          <input type="text" id="country-code" placeholder="e.g. EG, SA, AE" maxlength="2" pattern="[A-Za-z]{2}" style="text-transform:uppercase" required>
+        </label>
+        <label>Name (Default)
+          <input type="text" id="country-name" placeholder="e.g. Egypt" required>
+        </label>
+        <label>English Name
+          <input type="text" id="country-name-en" placeholder="e.g. Egypt">
+        </label>
+        <label>Arabic Name
+          <input type="text" id="country-name-ar" placeholder="e.g. مصر">
+        </label>
+        <label>German Name
+          <input type="text" id="country-name-de" placeholder="e.g. Ägypten">
+        </label>
+        <label>Flag Emoji (optional)
+          <input type="text" id="country-flag" placeholder="e.g. 🇪🇬" maxlength="4">
+        </label>
+        <label>Platform Fee Percentage (%)
+          <input type="number" id="country-fee" placeholder="e.g. 10" min="0" max="100" step="0.01">
+        </label>
+        <label>Order
+          <input type="number" id="country-order" placeholder="999" min="0">
+        </label>
+        <label style="display:flex;align-items:center;gap:8px">
+          <input type="checkbox" id="country-active" checked>
+          <span>Active</span>
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="country-cancel">Cancel</button>
+          <button type="submit" id="country-submit">Save</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Governorate Modal -->
+    <div id="governorate-modal" class="modal hidden" style="max-width:480px;width:100%">
+      <h3>Governorate</h3>
+      <form id="governorate-form">
+        <input type="hidden" id="gov-id">
+        <input type="hidden" id="gov-country">
+        <label>Name
+          <input type="text" id="gov-name" required placeholder="e.g. Cairo">
+        </label>
+        <label style="flex-direction:row;align-items:center;gap:8px;text-transform:none">
+          <input type="checkbox" id="gov-active" checked style="width:auto;margin:0"> Active
+        </label>
+        <details id="gov-more-options" style="margin-top:12px">
+          <summary style="cursor:pointer;font-size:0.85rem;color:var(--purple);font-weight:600">More options</summary>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+            <label>Key (slug)
+              <input type="text" id="gov-key" placeholder="e.g. cairo">
+            </label>
+            <label>Display order
+              <input type="number" id="gov-order" min="0" placeholder="1">
+            </label>
+            <label style="background:rgba(124,58,237,0.05);padding:12px;border-radius:8px;border:1px solid rgba(124,58,237,0.2)">
+              <span style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span style="font-weight:600;color:var(--purple)">💰 Platform Fee Percentage (%)</span>
+              </span>
+              <input type="number" id="gov-platform-fee-percentage" min="0" max="100" step="0.1" placeholder="e.g. 10">
+              <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.75rem">Overrides country and global default. Leave empty to use country/global.</small>
+            </label>
+            <p style="margin:12px 0 8px;font-size:0.78rem;color:var(--text-mid);font-weight:600">Translations</p>
+            <label>English
+              <input type="text" id="gov-name-en" placeholder="e.g. Cairo">
+            </label>
+            <label>Arabic
+              <input type="text" id="gov-name-ar" placeholder="e.g. القاهرة" dir="rtl">
+            </label>
+          </div>
+        </details>
+        <div class="modal-actions">
+          <button type="button" id="gov-cancel">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- City Modal -->
+    <div id="city-modal" class="modal hidden" style="max-width:480px;width:100%">
+      <h3>City</h3>
+      <form id="city-form">
+        <input type="hidden" id="city-id">
+        <label>Governorate
+          <select id="city-governorate" required></select>
+        </label>
+        <label>Name
+          <input type="text" id="city-name" required placeholder="e.g. Nasr City">
+        </label>
+        <label style="flex-direction:row;align-items:center;gap:8px;text-transform:none">
+          <input type="checkbox" id="city-active" checked style="width:auto;margin:0"> Active
+        </label>
+        <details id="city-more-options" style="margin-top:12px">
+          <summary style="cursor:pointer;font-size:0.85rem;color:var(--purple);font-weight:600">More options</summary>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+            <label>Key (slug)
+              <input type="text" id="city-key" placeholder="e.g. nasr_city">
+            </label>
+            <label>Display order
+              <input type="number" id="city-order" min="0" placeholder="1">
+            </label>
+            <label style="background:rgba(124,58,237,0.05);padding:12px;border-radius:8px;border:1px solid rgba(124,58,237,0.2)">
+              <span style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span style="font-weight:600;color:var(--purple)">💰 Platform Fee Percentage (%)</span>
+              </span>
+              <input type="number" id="city-platform-fee-percentage" min="0" max="100" step="0.1" placeholder="e.g. 12">
+              <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.75rem">Overrides governorate, country, and global. Leave empty to use governorate/country/global.</small>
+            </label>
+            <p style="margin:12px 0 8px;font-size:0.78rem;color:var(--text-mid);font-weight:600">Translations</p>
+            <label>English
+              <input type="text" id="city-name-en" placeholder="e.g. Nasr City">
+            </label>
+            <label>Arabic
+              <input type="text" id="city-name-ar" placeholder="e.g. مدينة نصر" dir="rtl">
+            </label>
+          </div>
+        </details>
+        <div class="modal-actions">
+          <button type="button" id="city-cancel">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Review/Reject Modal -->
+    <div id="review-modal" class="modal hidden">
+      <h3 id="review-modal-title">Reject Application</h3>
+      <form id="review-form">
+        <input type="hidden" id="review-id">
+        <input type="hidden" id="review-type">
+        <label>Note (optional)
+          <textarea id="review-note" rows="3" placeholder="Reason for rejection (will be sent to user)"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="review-cancel">Cancel</button>
+          <button type="submit">Confirm Rejection</button>
+        </div>
+      </form>
+    </div>
+
   </div>
 
-  <div id="screen-app" class="hidden">
-    <div class="admin-layout">
-      <aside class="admin-sidebar">
-        <nav id="admin-nav">
-          <button type="button" class="nav-route" data-route="dashboard" data-perm="dashboard" data-hash="#dashboard" data-i18n="nav_dashboard"></button>
-          <button type="button" class="nav-route" data-route="users" data-perm="users" data-hash="#users" data-i18n="nav_users"></button>
-          <button type="button" class="nav-route" data-route="bookings" data-perm="bookings_admin" data-hash="#bookings" data-i18n="nav_bookings"></button>
-          <button type="button" class="nav-route" data-route="bookingtools" data-perm="bookings_admin" data-hash="#bookingtools" data-i18n="nav_bookingtools"></button>
-          <button type="button" class="nav-route" data-route="matches" data-perm="matches" data-hash="#matches" data-i18n="nav_matches"></button>
-          <button type="button" class="nav-route" data-route="categories" data-perm="categories" data-hash="#categories" data-i18n="nav_categories"></button>
-          <button type="button" class="nav-route" data-route="locations" data-perm="locations" data-hash="#locations/countries" data-i18n="nav_locations"></button>
-          <button type="button" class="nav-route" data-route="appconfig" data-perm="app_config" data-hash="#appconfig" data-i18n="nav_appconfig"></button>
-          <button type="button" class="nav-route" data-route="platformfees" data-perm="platform_fees" data-hash="#platformfees" data-i18n="nav_platformfees"></button>
-          <button type="button" class="nav-route" data-route="tickets" data-perm="tickets" data-hash="#tickets" data-i18n="nav_tickets"></button>
-          <button type="button" class="nav-route" data-route="notifications" data-perm="notifications" data-hash="#notifications" data-i18n="nav_notifications"></button>
-          <button type="button" class="nav-route" data-route="professionals" data-perm="professionals" data-hash="#professionals" data-i18n="nav_professionals"></button>
-          <button type="button" class="nav-route" data-route="accounts" data-perm="accounts" data-hash="#accounts" data-i18n="nav_accounts"></button>
-        </nav>
-      </aside>
-      <main id="admin-main" class="admin-main"></main>
-    </div>
-  </div>
+  <!-- Toast container -->
+  <div id="toast-container" class="toast-container"></div>
 
-  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
-
-  <script src="js/i18n.js"></script>
-  <script src="js/platformFeesInvoiceExport.js"></script>
-  <script src="js/admin-core.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

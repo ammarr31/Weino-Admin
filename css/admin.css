@@ -394,6 +394,8 @@
    .sidebar-footer {
      padding: 12px 10px 14px;
      border-top: 1px solid var(--sidebar-border);
+     position: relative;
+     z-index: 2;
    }
    
    .admin-badge {
@@ -444,7 +446,7 @@
      justify-content: center;
      gap: 6px;
    }
-   #logout-btn::before { content: 'â†ª'; font-size: 0.875rem; }
+   #logout-btn::before { content: '\21AA'; font-size: 0.875rem; }
    #logout-btn:hover {
      background: rgba(239,68,68,0.1);
      border-color: rgba(239,68,68,0.25);

@@ -1188,6 +1188,8 @@
 
   async function loadCategories() {
     const el = document.getElementById('categories-list');
+    const pagEl = document.getElementById('categories-pagination');
+    if (!el) return;
     const search = (document.getElementById('cat-search')?.value || '').trim();
     _categoryModalParentsCache = null;
     el.innerHTML = '<div class="loading">Loading...</div>';
@@ -1201,11 +1203,16 @@
 
       if (!list.length) {
         el.innerHTML = `<div class="empty">${search ? 'No categories match your search' : 'No categories yet'}</div>`;
+        if (pagEl) {
+          pagEl.innerHTML = search
+            ? `<span style="color:var(--gray-400);font-size:0.875rem">${pag.total ?? 0} result${(pag.total ?? 0) !== 1 ? 's' : ''} found</span>`
+            : '';
+        }
       } else {
         el.innerHTML = `
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Order</th><th>Photo / Icon</th><th>Parent</th><th>Name (default)</th><th>🇬🇧 EN</th><th>🇸🇦 AR</th><th>🇩🇪 DE</th><th>Active</th><th></th></tr></thead>
+              <thead><tr><th>Order</th><th>Photo / Icon</th><th>Parent</th><th>Name (default)</th><th>EN</th><th>AR</th><th>DE</th><th>Active</th><th></th></tr></thead>
               <tbody>
                 ${list.map(c => {
                   const parentName = c.parent_id ? (list.find(p => p.id === c.parent_id)?.name || c.parent_id) : '—';
@@ -1220,8 +1227,8 @@
                     <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_de || '—')}</td>
                     <td><span class="badge badge-toggle ${c.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="category-${c.id}" title="Click to toggle">${c.is_active !== false ? 'Active' : 'Inactive'}</span></td>
                     <td style="display:flex;gap:6px;align-items:center">
-                      <button class="btn btn-secondary" data-edit="${c.id}" data-cat='${JSON.stringify(c).replace(/'/g, "&#39;")}'>Edit</button>
-                      <button class="btn btn-danger" data-delete="${c.id}">Delete</button>
+                      <button type="button" class="btn btn-secondary" data-edit="${c.id}">Edit</button>
+                      <button type="button" class="btn btn-danger" data-delete="${c.id}">Delete</button>
                     </td>
                   </tr>
                 `;}).join('')}
@@ -1234,32 +1241,40 @@
           const cat = list.find(x => x.id === id);
           if (cat) badge.addEventListener('click', () => toggleActive('category', id, cat.is_active !== false, loadCategories));
         });
-        el.querySelectorAll('[data-edit]').forEach(b =>
-          b.addEventListener('click', () =>
-            openCategoryModal(JSON.parse(b.dataset.cat)).catch((e) => toast(e.message, 'error'))
-          )
-        );
-        el.querySelectorAll('[data-delete]').forEach(b =>
-          b.addEventListener('click', () => deleteCategory(b.dataset.delete))
-        );
+        el.querySelectorAll('button[data-edit]').forEach((btn) => {
+          const id = btn.getAttribute('data-edit');
+          btn.addEventListener('click', () => {
+            const cat = list.find((x) => x.id === id);
+            if (!cat) {
+              toast('Category not found', 'error');
+              return;
+            }
+            openCategoryModal(cat).catch((e) => toast(e.message, 'error'));
+          });
+        });
+        el.querySelectorAll('button[data-delete]').forEach((btn) => {
+          const id = btn.getAttribute('data-delete');
+          btn.addEventListener('click', () => deleteCategory(id));
+        });
       }
 
-      const pagEl = document.getElementById('categories-pagination');
-      if (search) {
-        pagEl.innerHTML = `<span style="color:var(--gray-400);font-size:0.875rem">${pag.total ?? list.length} result${(pag.total ?? list.length) !== 1 ? 's' : ''} found</span>`;
-      } else {
-        pagEl.innerHTML = `
-          <button ${categoriesPage <= 1 ? 'disabled' : ''} data-page="prev">Previous</button>
+      if (pagEl && list.length) {
+        if (search) {
+          pagEl.innerHTML = `<span style="color:var(--gray-400);font-size:0.875rem">${pag.total ?? list.length} result${(pag.total ?? list.length) !== 1 ? 's' : ''} found</span>`;
+        } else {
+          pagEl.innerHTML = `
+          <button type="button" ${categoriesPage <= 1 ? 'disabled' : ''} data-page="prev">Previous</button>
           <span>Page ${categoriesPage}</span>
-          <button ${!pag.hasMore ? 'disabled' : ''} data-page="next">Next</button>
+          <button type="button" ${!pag.hasMore ? 'disabled' : ''} data-page="next">Next</button>
         `;
-        pagEl.querySelectorAll('[data-page]').forEach(btn =>
-          btn.addEventListener('click', () => {
-            if (btn.dataset.page === 'prev' && categoriesPage > 1) categoriesPage--;
-            if (btn.dataset.page === 'next' && pag.hasMore) categoriesPage++;
-            loadCategories();
-          })
-        );
+          pagEl.querySelectorAll('[data-page]').forEach((btn) =>
+            btn.addEventListener('click', () => {
+              if (btn.dataset.page === 'prev' && categoriesPage > 1) categoriesPage--;
+              if (btn.dataset.page === 'next' && pag.hasMore) categoriesPage++;
+              loadCategories();
+            }),
+          );
+        }
       }
     } catch (err) {
       el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry">Retry</button></div>`;

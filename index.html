@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -45,19 +45,19 @@
     <div id="login-view" class="view">
       <div class="login-card">
         <div class="login-logo">
-          <h1><span>Weino</span> Admin</h1>
-          <p>Sign in to manage the platform</p>
+          <h1><span data-i18n="login.titleWeino">Weino</span> <span data-i18n="login.titleAdmin">Admin</span></h1>
+          <p data-i18n="login.subtitle">Sign in to manage the platform</p>
         </div>
         <form id="login-form">
           <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="Enter your username" required autocomplete="username">
+            <label for="username" data-i18n="login.user">Username</label>
+            <input type="text" id="username" data-i18n-placeholder="login.userPh" placeholder="Enter your username" required autocomplete="username">
           </div>
           <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+            <label for="password" data-i18n="login.pass">Password</label>
+            <input type="password" id="password" data-i18n-placeholder="login.passPh" placeholder="Enter your password" required autocomplete="current-password">
           </div>
-          <button type="submit">Sign In</button>
+          <button type="submit" data-i18n="login.submit">Sign In</button>
         </form>
         <p id="login-error" class="error hidden"></p>
       </div>
@@ -67,12 +67,12 @@
     <div id="main-view" class="view hidden">
       <!-- Mobile top bar (hidden on desktop) -->
       <div class="mobile-header">
-        <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
+        <button class="hamburger" id="hamburger-btn" data-i18n-aria="mobile.menu" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
         <div class="mobile-logo">
           <div class="sidebar-header-dot">W</div>
-          <span>Weino Admin</span>
+          <span data-i18n="mobile.title">Weino Admin</span>
         </div>
       </div>
 
@@ -83,98 +83,105 @@
         <div class="sidebar-header">
           <div class="sidebar-header-dot">W</div>
           <div>
-            <h2>Weino</h2>
-            <p>Admin Panel</p>
+            <h2 data-i18n="brand.title">Weino</h2>
+            <p data-i18n="brand.subtitle">Admin Panel</p>
           </div>
         </div>
         <nav>
-          <div class="nav-section-label">Overview</div>
+          <div class="nav-section-label" data-i18n="nav.section.overview">Overview</div>
           <a href="#" data-view="dashboard" data-permission="dashboard" class="active">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-layout"/></svg></span> Dashboard
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-layout"/></svg></span><span class="nav-t" data-i18n="nav.dashboard">Dashboard</span>
           </a>
 
-          <div class="nav-section-label">Content</div>
+          <div class="nav-section-label" data-i18n="nav.section.content">Content</div>
           <a href="#" data-view="categories" data-permission="categories">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-folder"/></svg></span> Categories
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-folder"/></svg></span><span class="nav-t" data-i18n="nav.categories">Categories</span>
           </a>
           <a href="#" data-view="locations" data-permission="locations">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-pin"/></svg></span> Locations
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-pin"/></svg></span><span class="nav-t" data-i18n="nav.locations">Locations</span>
           </a>
           <a href="#" data-view="settings" data-permission="app_config">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-sliders"/></svg></span> App Settings
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-sliders"/></svg></span><span class="nav-t" data-i18n="nav.settings">App Settings</span>
           </a>
 
-          <div class="nav-section-label">Professionals</div>
+          <div class="nav-section-label" data-i18n="nav.section.professionals">Professionals</div>
           <a href="#" data-view="applications" data-permission="professionals">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-clipboard"/></svg></span> Applications
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-clipboard"/></svg></span><span class="nav-t" data-i18n="nav.applications">Applications</span>
           </a>
           <a href="#" data-view="platform-fees" data-permission="platform_fees">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-wallet"/></svg></span> Platform Fees
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-wallet"/></svg></span><span class="nav-t" data-i18n="nav.platformFees">Platform Fees</span>
           </a>
           
-          <div class="nav-section-label">Bookings</div>
+          <div class="nav-section-label" data-i18n="nav.section.bookings">Bookings</div>
           <a href="#" data-view="bookings-simple" data-permission="bookings_admin">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-calendar"/></svg></span> All bookings
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-calendar"/></svg></span><span class="nav-t" data-i18n="nav.bookingsAll">All bookings</span>
           </a>
           <a href="#" data-view="booking-lifecycle" data-permission="bookings_admin">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-refresh"/></svg></span> Lifecycle
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-refresh"/></svg></span><span class="nav-t" data-i18n="nav.lifecycle">Lifecycle</span>
           </a>
           <a href="#" data-view="archive" data-permission="bookings_admin">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-archive"/></svg></span> Archive
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-archive"/></svg></span><span class="nav-t" data-i18n="nav.archive">Archive</span>
           </a>
           <a href="#" data-view="analytics" data-permission="bookings_admin">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-chart"/></svg></span> Analytics
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-chart"/></svg></span><span class="nav-t" data-i18n="nav.analytics">Analytics</span>
           </a>
 
-          <div class="nav-section-label">Tickets</div>
+          <div class="nav-section-label" data-i18n="nav.section.tickets">Tickets</div>
           <a href="#" data-view="tickets" data-permission="tickets">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-ticket"/></svg></span> Tickets
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-ticket"/></svg></span><span class="nav-t" data-i18n="nav.tickets">Tickets</span>
           </a>
 
-          <div class="nav-section-label">Users</div>
+          <div class="nav-section-label" data-i18n="nav.section.users">Users</div>
           <a href="#" data-view="users" data-permission="users">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-users"/></svg></span> Users
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-users"/></svg></span><span class="nav-t" data-i18n="nav.users">Users</span>
           </a>
           <a href="#" data-view="notifications" data-permission="notifications">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-bell"/></svg></span> Push Notifications
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-bell"/></svg></span><span class="nav-t" data-i18n="nav.notifications">Push Notifications</span>
           </a>
 
-          <div class="nav-section-label">System</div>
+          <div class="nav-section-label" data-i18n="nav.section.system">System</div>
           <a href="#" data-view="accounts" id="nav-accounts" data-permission="accounts">
-            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-shield"/></svg></span> Admin Accounts
+            <span class="nav-ic" aria-hidden="true"><svg><use href="#ico-shield"/></svg></span><span class="nav-t" data-i18n="nav.accounts">Admin Accounts</span>
           </a>
         </nav>
         <div class="sidebar-footer">
+          <div class="admin-lang-toggle" role="group" aria-label="Language">
+            <span class="admin-lang-toggle-label" data-i18n="lang.label">Language</span>
+            <div class="admin-lang-toggle-btns">
+              <button type="button" class="admin-lang-btn" id="lang-en" data-set-lang="en" data-i18n="lang.en">EN</button>
+              <button type="button" class="admin-lang-btn" id="lang-ar" data-set-lang="ar" data-i18n="lang.ar">عربي</button>
+            </div>
+          </div>
           <div class="admin-badge">
             <div class="admin-avatar" id="admin-avatar">A</div>
             <span id="admin-info"></span>
           </div>
-          <button type="button" id="logout-btn">Sign Out</button>
+          <button type="button" id="logout-btn" data-i18n="btn.logout">Sign Out</button>
         </div>
       </aside>
 
       <main class="content">
-        <div id="admin-scope-bar" class="admin-scope-bar hidden" role="region" aria-label="Country scope">
+        <div id="admin-scope-bar" class="admin-scope-bar hidden" role="region" data-i18n-aria="scope.regionAria" aria-label="Country scope">
           <div class="admin-scope-bar-inner">
-            <span class="admin-scope-label">Country scope</span>
-            <select id="admin-scope-country" title="Filter lists by professional country (when multiple countries are active)"></select>
-            <span class="admin-scope-hint">Users, applications, bookings, archive, analytics, platform fees</span>
+            <span class="admin-scope-label" data-i18n="scope.label">Country scope</span>
+            <select id="admin-scope-country" data-i18n-title="scope.selectTitle" title="Filter lists by professional country (when multiple countries are active)"></select>
+            <span class="admin-scope-hint" data-i18n="scope.hint">Users, applications, bookings, archive, analytics, platform fees</span>
           </div>
         </div>
-        <div id="admin-breadcrumb" class="admin-breadcrumb" role="navigation" aria-label="Breadcrumb">
+        <div id="admin-breadcrumb" class="admin-breadcrumb" role="navigation" data-i18n-aria="breadcrumb.aria" aria-label="Breadcrumb">
           <span id="admin-breadcrumb-text"></span>
         </div>
         <!-- Dashboard -->
         <div id="dashboard-view" class="panel hidden">
           <div class="page-header">
             <div>
-              <h1>Dashboard</h1>
-              <p>Overview of the platform</p>
+              <h1 data-i18n="dash.title">Dashboard</h1>
+              <p data-i18n="dash.subtitle">Overview of the platform</p>
             </div>
-            <button class="btn btn-primary" onclick="loadDashboard()">Refresh</button>
+            <button type="button" class="btn btn-primary" onclick="loadDashboard()" data-i18n="dash.refresh">Refresh</button>
           </div>
           <div class="stats-grid" id="dashboard-stats"></div>
-          <div class="section-title">Quick Actions</div>
+          <div class="section-title" data-i18n="dash.quickActions">Quick Actions</div>
           <div class="quick-actions" id="dashboard-quick-actions"></div>
         </div>
 
@@ -182,13 +189,13 @@
         <div id="categories-view" class="panel hidden">
           <div class="page-header" style="margin-bottom:16px">
             <div>
-              <h1>Categories</h1>
-              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Professional types shown in the app (Discover and profiles).</p>
+              <h1 data-i18n="cat.title">Categories</h1>
+              <p data-i18n="cat.subtitle" style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Professional types shown in the app (Discover and profiles).</p>
             </div>
           </div>
           <div class="toolbar">
-            <input type="search" id="cat-search" placeholder="Search categories...">
-            <button id="cat-add" class="btn btn-primary">+ Add Category</button>
+            <input type="search" id="cat-search" data-i18n-placeholder="cat.searchPh" placeholder="Search categories...">
+            <button type="button" id="cat-add" class="btn btn-primary" data-i18n="cat.add">+ Add Category</button>
           </div>
           <div id="categories-list"></div>
           <div class="pagination" id="categories-pagination"></div>
@@ -198,18 +205,18 @@
         <div id="settings-view" class="panel hidden">
           <div class="page-header" style="margin-bottom:24px">
             <div>
-              <h1>App Settings</h1>
-              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Control which countries get Discover, professionals, and area picker. Changes apply in the app without code deploy.</p>
+              <h1 data-i18n="sett.title">App Settings</h1>
+              <p data-i18n="sett.subtitle" style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Control which countries get Discover, professionals, and area picker. Changes apply in the app without code deploy.</p>
             </div>
             <div style="display:flex;gap:10px">
-              <button type="button" id="settings-refresh" class="btn btn-secondary">Refresh</button>
-              <button type="button" id="settings-save" class="btn btn-primary">Save all</button>
+              <button type="button" id="settings-refresh" class="btn btn-secondary" data-i18n="sett.refresh">Refresh</button>
+              <button type="button" id="settings-save" class="btn btn-primary" data-i18n="sett.saveAll">Save all</button>
             </div>
           </div>
           <div id="settings-status" class="settings-status"></div>
 
-          <nav class="admin-settings-toc" aria-label="Jump to settings section">
-            <span class="admin-settings-toc-label">Jump to</span>
+          <nav class="admin-settings-toc" data-i18n-aria="sett.tocAria" aria-label="Jump to settings section">
+            <span class="admin-settings-toc-label" data-i18n="sett.tocJump">Jump to</span>
             <a href="#settings-sec-version">App version · الإصدار</a>
             <a href="#settings-sec-fees-global">Platform fees · العمولات</a>
             <a href="#settings-sec-booking-policies">Booking policies · سياسات الحجز</a>
@@ -406,14 +413,14 @@
 
         <!-- Locations (Countries, Governorates & Cities) -->
         <div id="locations-view" class="panel hidden">
-          <h1>Locations Management</h1>
-          <p style="color:var(--text-mid);font-size:0.9rem;margin-bottom:24px">Manage countries, governorates and cities. Used for professional area selection and platform fees.</p>
+          <h1 data-i18n="loc.title">Locations Management</h1>
+          <p data-i18n="loc.subtitle" style="color:var(--text-mid);font-size:0.9rem;margin-bottom:24px">Manage countries, governorates and cities. Used for professional area selection and platform fees.</p>
           
           <!-- Countries Section -->
           <section class="locations-section" style="margin-bottom:32px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-              <h2 style="font-size:1.1rem;font-weight:600">Countries</h2>
-              <button id="country-add" class="btn btn-primary">+ Add Country</button>
+              <h2 data-i18n="loc.countries" style="font-size:1.1rem;font-weight:600">Countries</h2>
+              <button type="button" id="country-add" class="btn btn-primary" data-i18n="loc.addCountry">+ Add Country</button>
             </div>
             <div id="countries-list"></div>
           </section>
@@ -422,9 +429,9 @@
 
           <!-- Governorates & Cities Section -->
           <div style="margin-bottom:16px">
-            <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:12px">Governorates &amp; cities</h2>
+            <h2 data-i18n="loc.sectionGov" style="font-size:1.1rem;font-weight:600;margin-bottom:12px">Governorates &amp; cities</h2>
             <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-              <span style="font-weight:600;color:var(--text-dark)">Filter by Country:</span>
+              <span data-i18n="loc.filterCountry" style="font-weight:600;color:var(--text-dark)">Filter by Country:</span>
               <select id="loc-country-select" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);min-width:180px">
                 <option value="EG">🇪🇬 Egypt (EG)</option>
               </select>
@@ -432,19 +439,19 @@
             </div>
           </div>
           <div class="toolbar" style="margin-bottom:20px">
-            <button id="gov-add" class="btn btn-primary">+ Add Governorate</button>
+            <button type="button" id="gov-add" class="btn btn-primary" data-i18n="loc.govAdd">+ Add Governorate</button>
             <select id="loc-gov-filter" style="margin-left:12px;padding:8px 12px;border-radius:8px;border:1px solid var(--border)">
               <option value="">All governorates</option>
             </select>
-            <button id="city-add" class="btn btn-secondary" style="margin-left:12px" disabled>+ Add City</button>
+            <button type="button" id="city-add" class="btn btn-secondary" style="margin-left:12px" disabled data-i18n="loc.cityAdd">+ Add City</button>
           </div>
           <div class="locations-sections">
             <section class="locations-section locations-section--table-block">
-              <h2 style="font-size:1rem;margin-bottom:12px">Governorates</h2>
+              <h2 data-i18n="loc.colGovernorates" style="font-size:1rem;margin-bottom:12px">Governorates</h2>
               <div id="governorates-list" class="locations-list-scroll"></div>
             </section>
             <section class="locations-section locations-section--table-block">
-              <h2 style="font-size:1rem;margin-bottom:12px">Cities</h2>
+              <h2 data-i18n="loc.colCities" style="font-size:1rem;margin-bottom:12px">Cities</h2>
               <div id="cities-list" class="locations-list-scroll"></div>
             </section>
           </div>
@@ -1348,9 +1355,19 @@
         return p + '/';
       }
       var base = window.__ADMIN_ASSET_ROOT || adminAssetRoot();
-      var s = document.createElement('script');
-      s.src = base + 'js/app.js';
-      document.body.appendChild(s);
+      var s1 = document.createElement('script');
+      s1.src = base + 'js/i18n.js';
+      s1.onload = function () {
+        var s2 = document.createElement('script');
+        s2.src = base + 'js/app.js';
+        document.body.appendChild(s2);
+      };
+      s1.onerror = function () {
+        var s2 = document.createElement('script');
+        s2.src = base + 'js/app.js';
+        document.body.appendChild(s2);
+      };
+      document.body.appendChild(s1);
     })();
   </script>
 </body>

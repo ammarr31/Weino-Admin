@@ -3,6 +3,16 @@
   const TOKEN_KEY = 'admin_token';
   const ADMIN_KEY = 'admin_info';
 
+  function __(key, fallback) {
+    if (typeof globalThis.AdminI18n !== 'undefined' && globalThis.AdminI18n.t) {
+      return globalThis.AdminI18n.t(key, fallback);
+    }
+    return fallback != null ? fallback : key;
+  }
+  if (typeof globalThis.AdminI18n !== 'undefined' && globalThis.AdminI18n.init) {
+    globalThis.AdminI18n.init();
+  }
+
   // --- Auth helpers ---
   function getToken() { return localStorage.getItem(TOKEN_KEY); }
   function setAuth(token, admin) {
@@ -35,7 +45,11 @@
     support_lead: 'Tickets + users',
     verifier: 'Applications',
   };
-  
+
+  function roleLabel(r) {
+    return __('role.' + r, ROLE_LABELS[r] || String(r).replace(/_/g, ' '));
+  }
+
   // ✅ Cache for countries loaded from backend
   let cachedCountriesMap = null;
   function derivePermissionsFromRoles(roles) {
@@ -83,22 +97,22 @@
   }
   const VIEW_ORDER = ['dashboard', 'categories', 'locations', 'settings', 'applications', 'platform-fees', 'bookings-simple', 'booking-lifecycle', 'archive', 'analytics', 'tickets', 'users', 'notifications', 'accounts'];
 
-  /** Section / page labels for breadcrumb (matches sidebar groups). */
+  /** Breadcrumb i18n keys (matches sidebar groups). */
   const VIEW_BREADCRUMB = {
-    dashboard: { section: 'Overview', page: 'Dashboard' },
-    categories: { section: 'Content', page: 'Categories' },
-    locations: { section: 'Content', page: 'Locations' },
-    settings: { section: 'Content', page: 'App Settings' },
-    applications: { section: 'Professionals', page: 'Applications' },
-    'platform-fees': { section: 'Professionals', page: 'Platform fees' },
-    'bookings-simple': { section: 'Bookings', page: 'All bookings' },
-    'booking-lifecycle': { section: 'Bookings', page: 'Lifecycle' },
-    archive: { section: 'Bookings', page: 'Archive' },
-    analytics: { section: 'Bookings', page: 'Analytics' },
-    tickets: { section: 'Tickets', page: 'Tickets' },
-    users: { section: 'Users & comms', page: 'Users' },
-    notifications: { section: 'Users & comms', page: 'Push notifications' },
-    accounts: { section: 'System', page: 'Admin accounts' },
+    dashboard: { sectionKey: 'bc.section.overview', pageKey: 'bc.page.dashboard' },
+    categories: { sectionKey: 'bc.section.content', pageKey: 'bc.page.categories' },
+    locations: { sectionKey: 'bc.section.content', pageKey: 'bc.page.locations' },
+    settings: { sectionKey: 'bc.section.content', pageKey: 'bc.page.settings' },
+    applications: { sectionKey: 'bc.section.professionals', pageKey: 'bc.page.applications' },
+    'platform-fees': { sectionKey: 'bc.section.professionals', pageKey: 'bc.page.platformFees' },
+    'bookings-simple': { sectionKey: 'bc.section.bookings', pageKey: 'bc.page.bookingsSimple' },
+    'booking-lifecycle': { sectionKey: 'bc.section.bookings', pageKey: 'bc.page.lifecycle' },
+    archive: { sectionKey: 'bc.section.bookings', pageKey: 'bc.page.archive' },
+    analytics: { sectionKey: 'bc.section.bookings', pageKey: 'bc.page.analytics' },
+    tickets: { sectionKey: 'bc.section.tickets', pageKey: 'bc.page.tickets' },
+    users: { sectionKey: 'bc.section.usersComms', pageKey: 'bc.page.users' },
+    notifications: { sectionKey: 'bc.section.usersComms', pageKey: 'bc.page.notifications' },
+    accounts: { sectionKey: 'bc.section.system', pageKey: 'bc.page.accounts' },
   };
 
   const ADMIN_COUNTRY_SCOPE_KEY = 'admin_country_scope';
@@ -155,7 +169,7 @@
       }
       show(bar);
       const current = getAdminCountryScope();
-      const parts = ['<option value="">All countries</option>'];
+      const parts = [`<option value="">${escapeHtml(__('scope.allCountries'))}</option>`];
       countries.forEach((c) => {
         const code = String(c.code || '').toUpperCase();
         const label = c.name_en || c.name || code;
@@ -317,7 +331,7 @@
     if (!container) return;
     container.innerHTML = '';
     if (mode === 'edit' && account && account.role === 'super_admin') {
-      container.innerHTML = `<p style="margin:0;font-size:0.85rem;color:var(--text-mid)">${ROLE_LABELS.super_admin} — role cannot be changed here.</p>`;
+      container.innerHTML = `<p style="margin:0;font-size:0.85rem;color:var(--text-mid)">${escapeHtml(__('acc.superAdminFixed'))}</p>`;
       return;
     }
     const selected = new Set(
@@ -331,7 +345,7 @@
       const id = `acc-role-cb-${r}`;
       const lab = document.createElement('label');
       lab.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:6px;font-weight:500;text-transform:none;letter-spacing:0;font-size:0.8125rem';
-      lab.innerHTML = `<input type="checkbox" id="${id}" value="${r}" ${selected.has(r) ? 'checked' : ''} style="width:auto;margin:0;accent-color:var(--purple)"> <span>${ROLE_LABELS[r] || r}</span>`;
+      lab.innerHTML = `<input type="checkbox" id="${id}" value="${r}" ${selected.has(r) ? 'checked' : ''} style="width:auto;margin:0;accent-color:var(--purple)"> <span>${escapeHtml(roleLabel(r))}</span>`;
       container.appendChild(lab);
     });
   }
@@ -346,7 +360,7 @@
       const view = a.dataset.view;
       if (!view) return;
       if (!canAccessView(view)) {
-        toast('You do not have access to this section.', 'error');
+        toast(__('toast.navNoAccess'), 'error');
         return;
       }
       showView(view);
@@ -373,17 +387,17 @@
     const wasActive = currentValue;
     if (badge) {
       badge.classList.add('badge-loading');
-      badge.textContent = newVal ? 'Active' : 'Inactive';
+      badge.textContent = newVal ? __('state.active') : __('state.inactive');
       badge.className = 'badge badge-toggle badge-loading ' + (newVal ? 'badge-green' : 'badge-gray');
     }
     try {
       await api(path, { method: 'PUT', body: JSON.stringify({ is_active: newVal }) });
-      toast(newVal ? 'Active' : 'Inactive', 'success');
+      toast(newVal ? __('state.active') : __('state.inactive'), 'success');
       if (onSuccess) onSuccess();
     } catch (err) {
       toast(err.message || 'Failed to update', 'error');
       if (badge) {
-        badge.textContent = wasActive ? 'Active' : 'Inactive';
+        badge.textContent = wasActive ? __('state.active') : __('state.inactive');
         badge.className = 'badge badge-toggle ' + (wasActive ? 'badge-green' : 'badge-gray');
       }
     }
@@ -803,7 +817,7 @@
         .sort((a, b) => a[1].localeCompare(b[1]))
         .map(([key, name]) => `<option value="${escapeHtml(key)}">${escapeHtml(name)}</option>`)
         .join('');
-      countrySelect.innerHTML = '<option value="all">All Countries</option>' + countryOptions;
+      countrySelect.innerHTML = `<option value="all">${escapeHtml(__('fees.allCountries'))}</option>` + countryOptions;
       syncFeesFilterFromScope();
     }
 
@@ -812,7 +826,7 @@
         .sort((a, b) => a[1].localeCompare(b[1]))
         .map(([key, name]) => `<option value="${escapeHtml(key)}">${escapeHtml(name)}</option>`)
         .join('');
-      govSelect.innerHTML = '<option value="all">All Governorates</option>' + govOptions;
+      govSelect.innerHTML = `<option value="all">${escapeHtml(__('fees.allGovernorates'))}</option>` + govOptions;
     }
 
     if (citySelect) {
@@ -820,7 +834,7 @@
         .sort((a, b) => a[1].localeCompare(b[1]))
         .map(([key, name]) => `<option value="${escapeHtml(key)}">${escapeHtml(name)}</option>`)
         .join('');
-      citySelect.innerHTML = '<option value="all">All Cities</option>' + cityOptions;
+      citySelect.innerHTML = `<option value="all">${escapeHtml(__('fees.allCities'))}</option>` + cityOptions;
     }
   }
 
@@ -923,7 +937,7 @@
   function showView(name, depth = 0) {
     if (!canAccessView(name)) {
       if (depth > 5) return;
-      toast('You do not have access to this section.', 'error');
+      toast(__('toast.noSectionAccess'), 'error');
       const admin = ensureAdminPermissionsPersisted() || getAdmin();
       const fb = dispatchViewByRole(admin);
       if (fb !== name) return showView(fb, depth + 1);
@@ -969,7 +983,7 @@
       textEl.innerHTML = '';
       return;
     }
-    textEl.innerHTML = `<span class="crumb-section">${escapeHtml(b.section)}</span><span class="crumb-sep" aria-hidden="true">/</span><span class="crumb-current">${escapeHtml(b.page)}</span>`;
+    textEl.innerHTML = `<span class="crumb-section">${escapeHtml(__(b.sectionKey))}</span><span class="crumb-sep" aria-hidden="true">/</span><span class="crumb-current">${escapeHtml(__(b.pageKey))}</span>`;
   }
 
   // --- Login ---
@@ -981,7 +995,7 @@
     const btn = e.target.querySelector('button[type="submit"]');
     errEl.textContent = '';
     hide(errEl);
-    btn.textContent = 'Signing in...';
+    btn.textContent = __('login.signingIn');
     btn.disabled = true;
 
     try {
@@ -1011,7 +1025,7 @@
       show(errEl);
       toast(msg, 'error');
     } finally {
-      btn.textContent = 'Sign In';
+      btn.textContent = __('login.submit');
       btn.disabled = false;
     }
   });
@@ -1037,8 +1051,8 @@
     const adminAvatar = document.getElementById('admin-avatar');
     if (admin) {
       const rlist = Array.isArray(admin.roles) && admin.roles.length ? admin.roles : [admin.role].filter(Boolean);
-      const roleLabel = rlist.map((r) => ROLE_LABELS[r] || String(r).replace(/_/g, ' ')).join(' · ');
-      adminInfo.textContent = `${admin.username} · ${roleLabel}`;
+      const roleLine = rlist.map((r) => roleLabel(r)).join(' · ');
+      adminInfo.textContent = `${admin.username} · ${roleLine}`;
       if (adminAvatar) adminAvatar.textContent = admin.username[0].toUpperCase();
     }
 
@@ -1058,7 +1072,7 @@
   // --- Dashboard ---
   window.loadDashboard = async function () {
     const el = document.getElementById('dashboard-stats');
-    el.innerHTML = '<div class="loading">Loading dashboard...</div>';
+    el.innerHTML = `<div class="loading">${escapeHtml(__('dash.loading'))}</div>`;
 
     try {
       const statsRes = await api('/stats');
@@ -1081,49 +1095,49 @@
         <div class="stat-card">
           <div class="stat-icon-wrap stat-icon-wrap--indigo">${svg('M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z')}</div>
           <div class="value">${userTotal}</div>
-          <div class="label">Total users</div>
+          <div class="label">${escapeHtml(__('dash.stat.users'))}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon-wrap stat-icon-wrap--indigo">${svg('M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z')}</div>
           <div class="value">${profCount}</div>
-          <div class="label">Professionals</div>
+          <div class="label">${escapeHtml(__('dash.stat.professionals'))}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon-wrap stat-icon-wrap--zinc">${svg('M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z')}</div>
           <div class="value">${nonProfCount}</div>
-          <div class="label">Non-professionals</div>
+          <div class="label">${escapeHtml(__('dash.stat.nonProf'))}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon-wrap stat-icon-wrap--green">${svg('M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z')}</div>
           <div class="value">${appCount}</div>
-          <div class="label">Pending applications</div>
+          <div class="label">${escapeHtml(__('dash.stat.pendingApps'))}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon-wrap stat-icon-wrap--blue">${svg('M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z')}</div>
           <div class="value">${catCount}</div>
-          <div class="label">Categories</div>
+          <div class="label">${escapeHtml(__('dash.stat.categories'))}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon-wrap stat-icon-wrap--pink">${svg('M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z')}</div>
           <div class="value">${pendingTickets}</div>
-          <div class="label">Pending tickets</div>
+          <div class="label">${escapeHtml(__('dash.stat.pendingTickets'))}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon-wrap stat-icon-wrap--indigo">${svg('M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z')}</div>
           <div class="value">${openTickets}</div>
-          <div class="label">Open tickets</div>
+          <div class="label">${escapeHtml(__('dash.stat.openTickets'))}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon-wrap stat-icon-wrap--blue">${svg('M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z')}</div>
           <div class="value">${bookingsCount}</div>
-          <div class="label">Bookings</div>
-          <div class="stat-card-hint">Appointments &amp; queue (type = booking)</div>
+          <div class="label">${escapeHtml(__('dash.stat.bookings'))}</div>
+          <div class="stat-card-hint">${escapeHtml(__('dash.stat.bookingsHint'))}</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon-wrap stat-icon-wrap--indigo">${svg('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z')}</div>
           <div class="value">${otherMatchesCount}</div>
-          <div class="label">Other matches</div>
-          <div class="stat-card-hint">Social &amp; non-booking match rows</div>
+          <div class="label">${escapeHtml(__('dash.stat.otherMatches'))}</div>
+          <div class="stat-card-hint">${escapeHtml(__('dash.stat.otherMatchesHint'))}</div>
         </div>
       `;
 
@@ -1143,40 +1157,40 @@
           cards.push(`
           <button type="button" class="quick-action-card" onclick="showViewGlobal('applications')">
             ${qaSvg('M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z')}
-            <div class="qa-label">Review applications</div>
-            <div class="qa-desc">${appCount} pending</div>
+            <div class="qa-label">${escapeHtml(__('dash.qa.apps'))}</div>
+            <div class="qa-desc">${escapeHtml(__('dash.qa.appsDesc').replace('{n}', String(appCount)))}</div>
           </button>`);
         }
         if (perms.includes('notifications')) {
           cards.push(`
           <button type="button" class="quick-action-card" onclick="showViewGlobal('notifications')">
             ${qaSvg('M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z')}
-            <div class="qa-label">Send notification</div>
-            <div class="qa-desc">Broadcast to users</div>
+            <div class="qa-label">${escapeHtml(__('dash.qa.notify'))}</div>
+            <div class="qa-desc">${escapeHtml(__('dash.qa.notifyDesc'))}</div>
           </button>`);
         }
         if (perms.includes('users')) {
           cards.push(`
           <button type="button" class="quick-action-card" onclick="showViewGlobal('users')">
             ${qaSvg('M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z')}
-            <div class="qa-label">Manage users</div>
-            <div class="qa-desc">Ban, edit, reputation</div>
+            <div class="qa-label">${escapeHtml(__('dash.qa.users'))}</div>
+            <div class="qa-desc">${escapeHtml(__('dash.qa.usersDesc'))}</div>
           </button>`);
         }
         if (perms.includes('tickets')) {
           cards.push(`
           <button type="button" class="quick-action-card" onclick="showViewGlobal('tickets')">
             ${qaSvg('M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z')}
-            <div class="qa-label">Tickets</div>
-            <div class="qa-desc">${pendingTickets} pending · ${openTickets} open</div>
+            <div class="qa-label">${escapeHtml(__('dash.qa.tickets'))}</div>
+            <div class="qa-desc">${escapeHtml(__('dash.qa.ticketsDesc').replace('{pending}', String(pendingTickets)).replace('{open}', String(openTickets)))}</div>
           </button>`);
         }
         qa.innerHTML = cards.length
           ? cards.join('')
-          : '<div class="empty" style="grid-column:1/-1">No quick actions for your role.</div>';
+          : `<div class="empty" style="grid-column:1/-1">${escapeHtml(__('dash.qaEmpty'))}</div>`;
       }
     } catch (err) {
-      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry" onclick="loadDashboard()">Retry</button></div>`;
+      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry" onclick="loadDashboard()">${escapeHtml(__('common.retry'))}</button></div>`;
       toast(err.message, 'error');
     }
   };
@@ -1192,7 +1206,7 @@
     if (!el) return;
     const search = (document.getElementById('cat-search')?.value || '').trim();
     _categoryModalParentsCache = null;
-    el.innerHTML = '<div class="loading">Loading...</div>';
+    el.innerHTML = `<div class="loading">${escapeHtml(__('common.loading'))}</div>`;
 
     try {
       const q = new URLSearchParams({ page: categoriesPage, limit: 20, active: 'false' });
@@ -1202,17 +1216,18 @@
       const pag = res.pagination || {};
 
       if (!list.length) {
-        el.innerHTML = `<div class="empty">${search ? 'No categories match your search' : 'No categories yet'}</div>`;
+        el.innerHTML = `<div class="empty">${search ? escapeHtml(__('cat.emptySearch')) : escapeHtml(__('cat.empty'))}</div>`;
         if (pagEl) {
+          const n = pag.total ?? 0;
           pagEl.innerHTML = search
-            ? `<span style="color:var(--gray-400);font-size:0.875rem">${pag.total ?? 0} result${(pag.total ?? 0) !== 1 ? 's' : ''} found</span>`
+            ? `<span style="color:var(--gray-400);font-size:0.875rem">${escapeHtml(__('cat.resultsLine').replace('{n}', String(n)))}</span>`
             : '';
         }
       } else {
         el.innerHTML = `
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Order</th><th>Photo / Icon</th><th>Parent</th><th>Name (default)</th><th>EN</th><th>AR</th><th>DE</th><th>Active</th><th></th></tr></thead>
+              <thead><tr><th>${escapeHtml(__('cat.table.order'))}</th><th>${escapeHtml(__('cat.table.photo'))}</th><th>${escapeHtml(__('cat.table.parent'))}</th><th>${escapeHtml(__('cat.table.name'))}</th><th>${escapeHtml(__('cat.table.en'))}</th><th>${escapeHtml(__('cat.table.ar'))}</th><th>${escapeHtml(__('cat.table.de'))}</th><th>${escapeHtml(__('cat.table.active'))}</th><th></th></tr></thead>
               <tbody>
                 ${list.map(c => {
                   const parentName = c.parent_id ? (list.find(p => p.id === c.parent_id)?.name || c.parent_id) : '—';
@@ -1225,10 +1240,10 @@
                     <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_en || '—')}</td>
                     <td style="color:var(--gray-500);font-size:0.82rem;direction:rtl">${escapeHtml(c.name_ar || '—')}</td>
                     <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_de || '—')}</td>
-                    <td><span class="badge badge-toggle ${c.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="category-${c.id}" title="Click to toggle">${c.is_active !== false ? 'Active' : 'Inactive'}</span></td>
+                    <td><span class="badge badge-toggle ${c.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="category-${c.id}" title="${escapeHtml(__('loc.toggleTitle'))}">${c.is_active !== false ? escapeHtml(__('state.active')) : escapeHtml(__('state.inactive'))}</span></td>
                     <td style="display:flex;gap:6px;align-items:center">
-                      <button type="button" class="btn btn-secondary" data-edit="${c.id}">Edit</button>
-                      <button type="button" class="btn btn-danger" data-delete="${c.id}">Delete</button>
+                      <button type="button" class="btn btn-secondary" data-edit="${c.id}">${escapeHtml(__('cat.btn.edit'))}</button>
+                      <button type="button" class="btn btn-danger" data-delete="${c.id}">${escapeHtml(__('cat.btn.delete'))}</button>
                     </td>
                   </tr>
                 `;}).join('')}
@@ -1246,7 +1261,7 @@
           btn.addEventListener('click', () => {
             const cat = list.find((x) => x.id === id);
             if (!cat) {
-              toast('Category not found', 'error');
+              toast(__('cat.notFound'), 'error');
               return;
             }
             openCategoryModal(cat).catch((e) => toast(e.message, 'error'));
@@ -1260,12 +1275,13 @@
 
       if (pagEl && list.length) {
         if (search) {
-          pagEl.innerHTML = `<span style="color:var(--gray-400);font-size:0.875rem">${pag.total ?? list.length} result${(pag.total ?? list.length) !== 1 ? 's' : ''} found</span>`;
+          const rn = pag.total ?? list.length;
+          pagEl.innerHTML = `<span style="color:var(--gray-400);font-size:0.875rem">${escapeHtml(__('cat.resultsLine').replace('{n}', String(rn)))}</span>`;
         } else {
           pagEl.innerHTML = `
-          <button type="button" ${categoriesPage <= 1 ? 'disabled' : ''} data-page="prev">Previous</button>
-          <span>Page ${categoriesPage}</span>
-          <button type="button" ${!pag.hasMore ? 'disabled' : ''} data-page="next">Next</button>
+          <button type="button" ${categoriesPage <= 1 ? 'disabled' : ''} data-page="prev">${escapeHtml(__('cat.pagination.prev'))}</button>
+          <span>${escapeHtml(__('cat.pagination.page'))} ${categoriesPage}</span>
+          <button type="button" ${!pag.hasMore ? 'disabled' : ''} data-page="next">${escapeHtml(__('cat.pagination.next'))}</button>
         `;
           pagEl.querySelectorAll('[data-page]').forEach((btn) =>
             btn.addEventListener('click', () => {
@@ -1277,7 +1293,7 @@
         }
       }
     } catch (err) {
-      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry">Retry</button></div>`;
+      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry">${escapeHtml(__('common.retry'))}</button></div>`;
       el.querySelector('.btn-retry')?.addEventListener('click', loadCategories);
       toast(err.message, 'error');
     }
@@ -1318,7 +1334,7 @@
       // Update badge
       const selectedCountry = cachedCountries.find(c => (c.code || c.key) === selectedLocationsCountry);
       const badge = document.getElementById('loc-country-badge');
-      if (badge) badge.textContent = `Showing governorates and cities for ${selectedCountry?.name || selectedLocationsCountry}`;
+      if (badge) badge.textContent = `${__('loc.govBadge')} ${selectedCountry?.name || selectedLocationsCountry}`;
       
       // Reload only governorates and cities, NOT countries
       await loadGovernorates();
@@ -1327,7 +1343,7 @@
       // Update governorate filter
       const govFilter = document.getElementById('loc-gov-filter');
       if (govFilter) {
-        govFilter.innerHTML = '<option value="">All governorates</option>' +
+        govFilter.innerHTML = `<option value="">${escapeHtml(__('loc.filterGovAll'))}</option>` +
           (window._governoratesList || []).map(g => `<option value="${escapeHtml(g.id)}">${escapeHtml(g.name || g.key)}</option>`).join('');
         govFilter.value = '';
       }
@@ -1759,7 +1775,7 @@
         
         const selectedCountry = list.find(c => (c.code || c.key || '').toUpperCase() === selectedLocationsCountry);
         const locBadge = document.getElementById('loc-country-badge');
-        if (locBadge) locBadge.textContent = `Showing governorates and cities for ${selectedCountry?.name || selectedLocationsCountry}`;
+        if (locBadge) locBadge.textContent = `${__('loc.govBadge')} ${selectedCountry?.name || selectedLocationsCountry}`;
       }
       refreshAdminCountryScopeBar();
     } catch (err) {
@@ -1874,7 +1890,7 @@
       });
     }
     if (govFilter) {
-      govFilter.innerHTML = '<option value="">All governorates</option>' +
+      govFilter.innerHTML = `<option value="">${escapeHtml(__('loc.filterGovAll'))}</option>` +
         (window._governoratesList || []).map(g => `<option value="${escapeHtml(g.id)}">${escapeHtml(g.name || g.key)}</option>`).join('');
       govFilter.value = selectedGovernorateId || '';
     }
@@ -1888,18 +1904,18 @@
   async function loadGovernorates() {
     const el = document.getElementById('governorates-list');
     if (!el) return;
-    el.innerHTML = '<div class="loading">Loading...</div>';
+    el.innerHTML = `<div class="loading">${escapeHtml(__('common.loading'))}</div>`;
     try {
       const res = await api(`/governorates?active=false&country=${selectedLocationsCountry || 'EG'}`);
       const list = res.data || [];
       window._governoratesList = list;
       if (!list.length) {
-        el.innerHTML = '<div class="empty">No governorates yet. Add one to get started.</div>';
+        el.innerHTML = `<div class="empty">${escapeHtml(__('loc.govEmpty'))}</div>`;
       } else {
         el.innerHTML = `
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Order</th><th>Key</th><th>Name</th><th>EN</th><th>AR</th><th>Active</th><th></th></tr></thead>
+              <thead><tr><th>${escapeHtml(__('cat.table.order'))}</th><th>${escapeHtml(__('loc.table.key'))}</th><th>${escapeHtml(__('loc.table.name'))}</th><th>${escapeHtml(__('cat.table.en'))}</th><th>${escapeHtml(__('cat.table.ar'))}</th><th>${escapeHtml(__('cat.table.active'))}</th><th></th></tr></thead>
               <tbody>
                 ${list.map(g => `
                   <tr>
@@ -1908,10 +1924,10 @@
                     <td><strong>${escapeHtml(g.name || '—')}</strong></td>
                     <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(g.name_en || '—')}</td>
                     <td style="color:var(--gray-500);font-size:0.82rem;direction:rtl">${escapeHtml(g.name_ar || '—')}</td>
-                    <td><span class="badge badge-toggle ${g.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="governorate-${g.id}" title="Click to toggle">${g.is_active !== false ? 'Active' : 'Inactive'}</span></td>
+                    <td><span class="badge badge-toggle ${g.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="governorate-${g.id}" title="${escapeHtml(__('loc.toggleTitle'))}">${g.is_active !== false ? escapeHtml(__('state.active')) : escapeHtml(__('state.inactive'))}</span></td>
                     <td style="display:flex;gap:6px">
-                      <button class="btn btn-secondary" data-edit='${JSON.stringify(g).replace(/'/g, "&#39;")}'>Edit</button>
-                      <button class="btn btn-danger" data-delete="${g.id}" data-name="${escapeHtml(g.name || '')}">Delete</button>
+                      <button class="btn btn-secondary" data-edit='${JSON.stringify(g).replace(/'/g, "&#39;")}'>${escapeHtml(__('cat.btn.edit'))}</button>
+                      <button class="btn btn-danger" data-delete="${g.id}" data-name="${escapeHtml(g.name || '')}">${escapeHtml(__('cat.btn.delete'))}</button>
                     </td>
                   </tr>
                 `).join('')}
@@ -1932,7 +1948,7 @@
         });
       }
     } catch (err) {
-      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry" onclick="loadGovernorates()">Retry</button></div>`;
+      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry" onclick="loadGovernorates()">${escapeHtml(__('common.retry'))}</button></div>`;
       toast(err.message, 'error');
     }
   }
@@ -1940,7 +1956,7 @@
   async function loadCities() {
     const el = document.getElementById('cities-list');
     if (!el) return;
-    el.innerHTML = '<div class="loading">Loading...</div>';
+    el.innerHTML = `<div class="loading">${escapeHtml(__('common.loading'))}</div>`;
     try {
       const q = new URLSearchParams({ active: 'false' });
       if (selectedGovernorateId) {
@@ -1954,12 +1970,12 @@
 
       (window._governoratesList || []).forEach(g => { govMap[g.id] = g; });
       if (!list.length) {
-        el.innerHTML = '<div class="empty">' + (selectedGovernorateId ? 'No cities in this governorate.' : 'Select a governorate or add cities.') + '</div>';
+        el.innerHTML = `<div class="empty">${escapeHtml(selectedGovernorateId ? __('loc.cityEmptyGov') : __('loc.cityEmptyHint'))}</div>`;
       } else {
         el.innerHTML = `
           <div class="table-wrap cities-table-wrap">
             <table class="cities-table">
-              <thead><tr><th>Order</th><th>Key</th><th>Name</th><th>Governorate</th><th>Price</th><th>EN</th><th>AR</th><th>Active</th><th></th></tr></thead>
+              <thead><tr><th>${escapeHtml(__('cat.table.order'))}</th><th>${escapeHtml(__('loc.table.key'))}</th><th>${escapeHtml(__('loc.table.name'))}</th><th>${escapeHtml(__('loc.table.governorate'))}</th><th>${escapeHtml(__('loc.table.price'))}</th><th>${escapeHtml(__('cat.table.en'))}</th><th>${escapeHtml(__('cat.table.ar'))}</th><th>${escapeHtml(__('cat.table.active'))}</th><th></th></tr></thead>
               <tbody>
                 ${list.map(c => `
                   <tr>
@@ -1970,10 +1986,10 @@
                     <td style="font-size:0.82rem">${c.subscription_price != null ? (c.subscription_price + ' EGP') : '—'}</td>
                     <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_en || '—')}</td>
                     <td style="color:var(--gray-500);font-size:0.82rem;direction:rtl">${escapeHtml(c.name_ar || '—')}</td>
-                    <td><span class="badge badge-toggle ${c.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="city-${c.id}" title="Click to toggle">${c.is_active !== false ? 'Active' : 'Inactive'}</span></td>
+                    <td><span class="badge badge-toggle ${c.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="city-${c.id}" title="${escapeHtml(__('loc.toggleTitle'))}">${c.is_active !== false ? escapeHtml(__('state.active')) : escapeHtml(__('state.inactive'))}</span></td>
                     <td style="display:flex;gap:6px">
-                      <button class="btn btn-secondary" data-edit='${JSON.stringify(c).replace(/'/g, "&#39;")}'>Edit</button>
-                      <button class="btn btn-danger" data-delete="${c.id}" data-name="${escapeHtml(c.name || '')}">Delete</button>
+                      <button class="btn btn-secondary" data-edit='${JSON.stringify(c).replace(/'/g, "&#39;")}'>${escapeHtml(__('cat.btn.edit'))}</button>
+                      <button class="btn btn-danger" data-delete="${c.id}" data-name="${escapeHtml(c.name || '')}">${escapeHtml(__('cat.btn.delete'))}</button>
                     </td>
                   </tr>
                 `).join('')}
@@ -1994,7 +2010,7 @@
         });
       }
     } catch (err) {
-      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry" onclick="loadCities()">Retry</button></div>`;
+      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry" onclick="loadCities()">${escapeHtml(__('common.retry'))}</button></div>`;
       toast(err.message, 'error');
     }
   }
@@ -3080,7 +3096,7 @@
             ${list.map(a => `
               <tr>
                 <td><strong>${escapeHtml(a.username)}</strong></td>
-                <td><div style="display:flex;flex-wrap:wrap;gap:4px">${(Array.isArray(a.roles) && a.roles.length ? a.roles : [a.role]).map((r) => `<span class="badge badge-purple">${escapeHtml(ROLE_LABELS[r] || r)}</span>`).join('')}</div></td>
+                <td><div style="display:flex;flex-wrap:wrap;gap:4px">${(Array.isArray(a.roles) && a.roles.length ? a.roles : [a.role]).map((r) => `<span class="badge badge-purple">${escapeHtml(roleLabel(r))}</span>`).join('')}</div></td>
                 <td><span class="badge ${a.is_active ? 'badge-green' : 'badge-gray'}">${a.is_active ? 'Active' : 'Inactive'}</span></td>
                 <td style="color:var(--gray-500);font-size:0.8rem">${formatDateShort(a.last_login_at)}</td>
                 <td>
@@ -4359,6 +4375,47 @@
       }
     });
   })();
+
+  document.addEventListener('admin-lang-change', () => {
+    try {
+      const adm = getAdmin();
+      if (adm) {
+        const adminInfo = document.getElementById('admin-info');
+        if (adminInfo) {
+          const rlist = Array.isArray(adm.roles) && adm.roles.length ? adm.roles : [adm.role].filter(Boolean);
+          const roleLine = rlist.map((r) => roleLabel(r)).join(' · ');
+          adminInfo.textContent = `${adm.username} · ${roleLine}`;
+        }
+      }
+      const scopeSel = document.getElementById('admin-scope-country');
+      if (scopeSel && scopeSel.options.length && scopeSel.options[0].value === '') {
+        scopeSel.options[0].textContent = __('scope.allCountries');
+      }
+      if (typeof updateAdminBreadcrumb === 'function' && window.__adminCurrentView) {
+        updateAdminBreadcrumb(window.__adminCurrentView);
+      }
+      if (typeof globalThis.AdminI18n !== 'undefined' && globalThis.AdminI18n.applyDom) {
+        globalThis.AdminI18n.applyDom();
+      }
+      const cur = window.__adminCurrentView;
+      if (cur === 'categories' && typeof loadCategories === 'function') loadCategories();
+      if (cur === 'dashboard' && typeof window.loadDashboard === 'function') window.loadDashboard();
+      if (cur === 'locations') {
+        const badge = document.getElementById('loc-country-badge');
+        const selectedCountry = (cachedCountries || []).find((c) => (c.code || c.key) === selectedLocationsCountry);
+        if (badge) badge.textContent = `${__('loc.govBadge')} ${selectedCountry?.name || selectedLocationsCountry}`;
+        const govFilter = document.getElementById('loc-gov-filter');
+        if (govFilter && govFilter.options[0]) govFilter.options[0].textContent = __('loc.filterGovAll');
+        void loadGovernorates();
+        void loadCities();
+      }
+      if (cur === 'platform-fees' && typeof window.loadPlatformFees === 'function') {
+        window.loadPlatformFees();
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+  });
 
   // --- Init ---
   if (getToken()) { showMain(); } else { showLogin(); }

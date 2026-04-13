@@ -2334,3 +2334,94 @@
    .admin-settings-toc a:hover {
      text-decoration: underline;
    }
+
+   /* Language toggle (sidebar) */
+   .nav-t {
+     flex: 1;
+     min-width: 0;
+     overflow: hidden;
+     text-overflow: ellipsis;
+   }
+   .admin-lang-toggle {
+     margin-bottom: 10px;
+     padding: 8px 10px;
+     background: rgba(255, 255, 255, 0.03);
+     border: 1px solid rgba(255, 255, 255, 0.06);
+     border-radius: 8px;
+   }
+   .admin-lang-toggle-label {
+     display: block;
+     font-size: 0.65rem;
+     font-weight: 700;
+     color: var(--sidebar-label);
+     text-transform: uppercase;
+     letter-spacing: 0.1em;
+     margin-bottom: 6px;
+   }
+   .admin-lang-toggle-btns {
+     display: flex;
+     gap: 6px;
+   }
+   .admin-lang-btn {
+     flex: 1;
+     padding: 6px 8px;
+     font-size: 0.75rem;
+     font-weight: 600;
+     font-family: inherit;
+     border-radius: 6px;
+     border: 1px solid rgba(255, 255, 255, 0.12);
+     background: rgba(0, 0, 0, 0.2);
+     color: var(--sidebar-text);
+     cursor: pointer;
+     transition: background 0.15s, border-color 0.15s, color 0.15s;
+   }
+   .admin-lang-btn:hover {
+     background: rgba(255, 255, 255, 0.06);
+     color: #f4f4f5;
+   }
+   .admin-lang-btn.is-active {
+     background: rgba(99, 102, 241, 0.35);
+     border-color: rgba(129, 140, 248, 0.45);
+     color: #eef2ff;
+   }
+
+   /* RTL layout */
+   html[dir="rtl"] .sidebar {
+     left: auto;
+     right: 0;
+     border-right: none;
+     border-left: 1px solid var(--sidebar-border);
+   }
+   html[dir="rtl"] .content {
+     margin-left: 0;
+     margin-right: var(--sidebar-w);
+     max-width: calc(100vw - var(--sidebar-w));
+   }
+   html[dir="rtl"] .page-header {
+     flex-direction: row-reverse;
+   }
+   html[dir="rtl"] .page-header > div:first-child {
+     text-align: right;
+   }
+   html[dir="rtl"] .admin-scope-bar-inner {
+     flex-direction: row-reverse;
+   }
+   html[dir="rtl"] .admin-breadcrumb {
+     text-align: right;
+   }
+   html[dir="rtl"] .admin-settings-toc-label {
+     margin-right: 0;
+     margin-left: 4px;
+   }
+   @media (max-width: 768px) {
+     html[dir="rtl"] .sidebar {
+       left: auto;
+       right: 0;
+       transform: translateX(100%);
+       padding-left: 0;
+       padding-right: env(safe-area-inset-right, 0px);
+     }
+     html[dir="rtl"] .sidebar.sidebar-open {
+       transform: translateX(0);
+     }
+   }

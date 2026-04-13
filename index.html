@@ -469,12 +469,12 @@
         <div id="applications-view" class="panel hidden">
           <div class="page-header" style="margin-bottom:16px">
             <div>
-              <h1>Applications</h1>
-              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Pending professional sign-ups, area changes, and account deletion requests.</p>
+              <h1 data-i18n="apps.title">Applications</h1>
+              <p data-i18n="apps.subtitle" style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Pending professional sign-ups, area changes, and account deletion requests.</p>
             </div>
           </div>
           <div class="toolbar">
-            <input type="search" id="app-search" placeholder="Search by name, username or category...">
+            <input type="search" id="app-search" data-i18n-placeholder="apps.searchPh" placeholder="Search by name, username or category...">
           </div>
           <div id="applications-list"></div>
           <div class="pagination" id="applications-pagination"></div>
@@ -484,31 +484,31 @@
         <div id="platform-fees-view" class="panel hidden">
           <div class="page-header">
             <div>
-              <h1>Platform fees</h1>
-              <p>Operational billing: each professional’s <strong>recorded</strong> vs <strong>confirmed</strong> totals, <strong>amount due</strong>, suspensions, and monthly <strong>invoice export</strong>. This is the place to collect and reconcile payments—not the same screen as booking analytics charts.</p>
+              <h1 data-i18n="fees.title">Platform fees</h1>
+              <p data-i18n-html="fees.subtitleHtml">Operational billing: each professional’s <strong>recorded</strong> vs <strong>confirmed</strong> totals, <strong>amount due</strong>, suspensions, and monthly <strong>invoice export</strong>. This is the place to collect and reconcile payments—not the same screen as booking analytics charts.</p>
             </div>
             <div class="toolbar" style="margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <label class="toolbar-time-label" style="margin:0">Invoices</label>
-              <select id="fees-invoices-year" aria-label="Invoice year"></select>
-              <select id="fees-invoices-month" aria-label="Invoice month"></select>
-              <button type="button" class="btn" id="fees-invoices-export-pdf">Export invoices PDF</button>
-              <button type="button" class="btn btn-secondary" id="fees-invoices-export-csv" title="Spreadsheet / accounting tools">CSV</button>
+              <label class="toolbar-time-label" style="margin:0" data-i18n="fees.invoicesLabel">Invoices</label>
+              <select id="fees-invoices-year" data-i18n-aria="fees.invoiceYearAria" aria-label="Invoice year"></select>
+              <select id="fees-invoices-month" data-i18n-aria="fees.invoiceMonthAria" aria-label="Invoice month"></select>
+              <button type="button" class="btn" id="fees-invoices-export-pdf" data-i18n="fees.exportPdf">Export invoices PDF</button>
+              <button type="button" class="btn btn-secondary" id="fees-invoices-export-csv" data-i18n-title="fees.exportCsvHint" title="Spreadsheet / accounting tools" data-i18n="fees.csv">CSV</button>
             </div>
-            <button type="button" class="btn btn-danger" id="platform-fees-reset-open">Clear recorded fees…</button>
-            <button class="btn btn-secondary" onclick="loadPlatformFees()">Refresh</button>
+            <button type="button" class="btn btn-danger" id="platform-fees-reset-open" data-i18n="fees.resetOpen">Clear recorded fees…</button>
+            <button type="button" class="btn btn-secondary" onclick="loadPlatformFees()" data-i18n="common.refresh">Refresh</button>
           </div>
           
           <div class="fees-summary-cards" id="fees-summary">
-            <div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
+            <div data-i18n="common.loading" style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
           </div>
           
       <div class="fees-toolbar">
-        <input type="search" id="fees-search" placeholder="Search by name, username, or email...">
+        <input type="search" id="fees-search" data-i18n-placeholder="fees.searchPh" placeholder="Search by name, username, or email...">
         <select id="fees-filter-status">
-          <option value="all">All Status</option>
-          <option value="due">With Amount Due</option>
-          <option value="suspended">Suspended</option>
-          <option value="active">Active (No Dues)</option>
+          <option value="all" data-i18n="fees.optStatusAll">All Status</option>
+          <option value="due" data-i18n="fees.optDue">With Amount Due</option>
+          <option value="suspended" data-i18n="fees.optSuspended">Suspended</option>
+          <option value="active" data-i18n="fees.optActive">Active (No Dues)</option>
         </select>
         <select id="fees-filter-country">
           <option value="all">All Countries</option>
@@ -519,26 +519,26 @@
         <select id="fees-filter-city">
           <option value="all">All Cities</option>
         </select>
-        <button class="btn" onclick="clearFeesFilters()">Clear Filters</button>
+        <button type="button" class="btn" onclick="clearFeesFilters()" data-i18n="fees.clearFilters">Clear Filters</button>
       </div>
           
           <div class="fees-table-wrap">
             <table class="fees-table" id="fees-table">
               <thead>
                 <tr>
-                  <th>Professional</th>
-                  <th>Contact</th>
-                  <th>Recorded Bookings</th>
-                  <th>Total Recorded</th>
-                  <th>Confirmed</th>
-                  <th>Amount Due</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th data-i18n="fees.thProfessional">Professional</th>
+                  <th data-i18n="fees.thContact">Contact</th>
+                  <th data-i18n="fees.thRecorded">Recorded Bookings</th>
+                  <th data-i18n="fees.thTotalRecorded">Total Recorded</th>
+                  <th data-i18n="fees.thConfirmed">Confirmed</th>
+                  <th data-i18n="fees.thDue">Amount Due</th>
+                  <th data-i18n="fees.thStatus">Status</th>
+                  <th data-i18n="fees.thActions">Actions</th>
                 </tr>
               </thead>
               <tbody id="fees-tbody">
                 <tr>
-                  <td colspan="8" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
+                  <td colspan="8" data-i18n="common.loading" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
                 </tr>
               </tbody>
             </table>
@@ -549,19 +549,19 @@
         <div id="tickets-view" class="panel hidden">
           <div class="page-header" style="margin-bottom:16px">
             <div>
-              <h1>Support tickets</h1>
-              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">User conversations; names load from accounts (UID still shown for support).</p>
+              <h1 data-i18n="tickets.title">Support tickets</h1>
+              <p data-i18n="tickets.subtitle" style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">User conversations; names load from accounts (UID still shown for support).</p>
             </div>
           </div>
           <div class="toolbar">
             <select id="ticket-filter-status">
-              <option value="">All statuses</option>
-              <option value="pending">Pending</option>
-              <option value="open">Open</option>
-              <option value="in_progress">In Progress</option>
-              <option value="closed">Closed</option>
+              <option value="" data-i18n="tickets.optAll">All statuses</option>
+              <option value="pending" data-i18n="tickets.stPending">Pending</option>
+              <option value="open" data-i18n="tickets.stOpen">Open</option>
+              <option value="in_progress" data-i18n="tickets.stInProgress">In Progress</option>
+              <option value="closed" data-i18n="tickets.stClosed">Closed</option>
             </select>
-            <button class="btn btn-secondary" onclick="loadTickets()">Refresh</button>
+            <button type="button" class="btn btn-secondary" onclick="loadTickets()" data-i18n="common.refresh">Refresh</button>
           </div>
           <div class="table-wrap">
             <div id="tickets-list"></div>
@@ -573,16 +573,16 @@
         <div id="users-view" class="panel hidden">
           <div class="page-header" style="margin-bottom:16px">
             <div>
-              <h1>Users</h1>
-              <p style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Moderation, verification, bans, booking limits, and platform fee overrides for professionals.</p>
+              <h1 data-i18n="users.title">Users</h1>
+              <p data-i18n="users.subtitle" style="color:var(--text-mid);font-size:0.9rem;margin-top:4px">Moderation, verification, bans, booking limits, and platform fee overrides for professionals.</p>
             </div>
           </div>
           <div class="toolbar">
-            <input type="search" id="user-search" placeholder="Search name, username, email, or UID…">
+            <input type="search" id="user-search" data-i18n-placeholder="users.searchPh" placeholder="Search name, username, email, or UID…">
             <select id="user-filter">
-              <option value="">All users</option>
-              <option value="true">Professionals only</option>
-              <option value="false">Non-professionals</option>
+              <option value="" data-i18n="users.filterAll">All users</option>
+              <option value="true" data-i18n="users.filterPro">Professionals only</option>
+              <option value="false" data-i18n="users.filterNonPro">Non-professionals</option>
             </select>
           </div>
           <div class="table-wrap">
@@ -596,51 +596,51 @@
         <div id="notifications-view" class="panel hidden">
           <div class="page-header">
             <div>
-              <h1>Push Notifications</h1>
-              <p>Send notifications to users</p>
+              <h1 data-i18n="notif.title">Push Notifications</h1>
+              <p data-i18n="notif.subtitle">Send notifications to users</p>
             </div>
           </div>
 
           <div class="notif-composer">
-            <h2>Compose Notification</h2>
+            <h2 data-i18n="notif.composeTitle">Compose Notification</h2>
             <form id="notif-form">
               <div class="form-row">
                 <div class="form-field">
-                  <label>Target Audience</label>
+                  <label data-i18n="notif.targetAudience">Target Audience</label>
                   <select id="notif-target">
-                    <option value="all">All Users</option>
-                    <option value="professional">Professionals Only</option>
-                    <option value="non_professional">Non-Professionals Only</option>
-                    <option value="user">Specific User (by UID)</option>
+                    <option value="all" data-i18n="notif.targAll">All Users</option>
+                    <option value="professional" data-i18n="notif.targPro">Professionals Only</option>
+                    <option value="non_professional" data-i18n="notif.targNonPro">Non-Professionals Only</option>
+                    <option value="user" data-i18n="notif.targUser">Specific User (by UID)</option>
                   </select>
                 </div>
                 <div class="form-field" id="notif-uid-wrap" style="display:none">
-                  <label>User UID</label>
-                  <input type="text" id="notif-uid" placeholder="From Users tab — Edit user or copy UID column" autocomplete="off">
-                  <small class="admin-hint" style="display:block;margin-top:6px;color:var(--text-mid)">Open <strong>Users</strong>, find the person, use <strong>Copy UID</strong> next to their ID.</small>
+                  <label data-i18n="notif.uidLabel">User UID</label>
+                  <input type="text" id="notif-uid" data-i18n-placeholder="notif.uidPh" placeholder="From Users tab — Edit user or copy UID column" autocomplete="off">
+                  <small class="admin-hint" data-i18n-html="notif.uidHintHtml" style="display:block;margin-top:6px;color:var(--text-mid)">Open <strong>Users</strong>, find the person, use <strong>Copy UID</strong> next to their ID.</small>
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-field full">
-                  <label>Title</label>
-                  <input type="text" id="notif-title" placeholder="Notification title" required>
+                  <label data-i18n="notif.titleLabel">Title</label>
+                  <input type="text" id="notif-title" data-i18n-placeholder="notif.titlePh" placeholder="Notification title" required>
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-field full">
-                  <label>Message Body</label>
-                  <textarea id="notif-body" rows="3" placeholder="Notification message body" required></textarea>
+                  <label data-i18n="notif.bodyLabel">Message Body</label>
+                  <textarea id="notif-body" rows="3" data-i18n-placeholder="notif.bodyPh" placeholder="Notification message body" required></textarea>
                 </div>
               </div>
               <div class="modal-actions" style="justify-content:flex-start; margin-top:0">
-                <button type="submit" class="btn btn-primary" id="notif-send-btn">Send Notification</button>
+                <button type="submit" class="btn btn-primary" id="notif-send-btn" data-i18n="notif.sendBtn">Send Notification</button>
               </div>
             </form>
           </div>
 
-          <div class="section-title">Notification History</div>
+          <div class="section-title" data-i18n="notif.historyTitle">Notification History</div>
           <div id="notif-history">
-            <div class="empty">No notifications sent yet</div>
+            <div class="empty" data-i18n="notif.historyEmpty">No notifications sent yet</div>
           </div>
         </div>
 
@@ -648,16 +648,16 @@
         <div id="accounts-view" class="panel hidden">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
             <div>
-              <h1 style="margin-bottom:8px">Admin Accounts</h1>
-              <p class="accounts-intro" style="margin:0">Create staff accounts and assign one or more roles (permissions combine). Only <strong>super_admin</strong> can open this page.</p>
+              <h1 data-i18n="accPage.title" style="margin-bottom:8px">Admin Accounts</h1>
+              <p class="accounts-intro" data-i18n-html="accPage.subtitleHtml" style="margin:0">Create staff accounts and assign one or more roles (permissions combine). Only <strong>super_admin</strong> can open this page.</p>
             </div>
-            <button id="show-roles-guide-btn" class="btn btn-secondary" style="display:flex;align-items:center;gap:8px">
-              <span>📋</span> View Roles Guide
+            <button type="button" id="show-roles-guide-btn" class="btn btn-secondary" style="display:flex;align-items:center;gap:8px">
+              <span>📋</span> <span data-i18n="accPage.rolesGuide">View Roles Guide</span>
             </button>
           </div>
 
           <div class="toolbar">
-            <button id="account-add" class="btn btn-primary">+ Add Admin</button>
+            <button type="button" id="account-add" class="btn btn-primary" data-i18n="accPage.add">+ Add Admin</button>
           </div>
           
           <div class="table-wrap">
@@ -669,33 +669,33 @@
         <div id="bookings-simple-view" class="panel hidden">
           <div class="page-header">
             <div>
-              <h1>Bookings</h1>
-              <p>Operational list of appointments (booking-type matches). Row numbers follow the current sort (newest first). Technical IDs are only in <strong>Details</strong> for support.</p>
+              <h1 data-i18n="bk.title">Bookings</h1>
+              <p data-i18n-html="bk.subtitleHtml">Operational list of appointments (booking-type matches). Row numbers follow the current sort (newest first). Technical IDs are only in <strong>Details</strong> for support.</p>
             </div>
-            <button type="button" class="btn btn-secondary" id="booking-simple-refresh-top">Refresh</button>
+            <button type="button" class="btn btn-secondary" id="booking-simple-refresh-top" data-i18n="common.refresh">Refresh</button>
           </div>
           <div class="toolbar bookings-toolbar">
-            <input type="search" id="booking-simple-search" placeholder="Search by name, username, or branch…">
-            <select id="booking-simple-filter-status" title="Filter by match / queue state">
-              <option value="">All (filter)</option>
-              <option value="pending">Match: pending</option>
-              <option value="accepted">Match: accepted (waiting)</option>
-              <option value="current">Queue: in progress</option>
-              <option value="completed">Queue: completed</option>
-              <option value="cancelled">Match: cancelled</option>
-              <option value="rejected">Match: rejected (legacy)</option>
-              <option value="expired">Queue: expired</option>
-              <option value="absent">Queue: absent (no-show)</option>
+            <input type="search" id="booking-simple-search" data-i18n-placeholder="bk.searchPh" placeholder="Search by name, username, or branch…">
+            <select id="booking-simple-filter-status" data-i18n-title="bk.filterTitle" title="Filter by match / queue state">
+              <option value="" data-i18n="bk.filterAll">All (filter)</option>
+              <option value="pending" data-i18n="bk.fPending">Match: pending</option>
+              <option value="accepted" data-i18n="bk.fAccepted">Match: accepted (waiting)</option>
+              <option value="current" data-i18n="bk.fCurrent">Queue: in progress</option>
+              <option value="completed" data-i18n="bk.fCompleted">Queue: completed</option>
+              <option value="cancelled" data-i18n="bk.fCancelled">Match: cancelled</option>
+              <option value="rejected" data-i18n="bk.fRejected">Match: rejected (legacy)</option>
+              <option value="expired" data-i18n="bk.fExpired">Queue: expired</option>
+              <option value="absent" data-i18n="bk.fAbsent">Queue: absent (no-show)</option>
             </select>
-            <label class="bookings-page-size-label" for="booking-simple-page-size">Rows per page</label>
-            <select id="booking-simple-page-size" title="Rows per page">
+            <label class="bookings-page-size-label" for="booking-simple-page-size" data-i18n="bk.rowsPerPage">Rows per page</label>
+            <select id="booking-simple-page-size" data-i18n-title="bk.rowsPerPage" title="Rows per page">
               <option value="10">10</option>
               <option value="25" selected>25</option>
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
-            <button id="booking-simple-refresh" class="btn btn-secondary">Refresh</button>
-            <button type="button" id="booking-simple-export-csv" class="btn btn-secondary">Export CSV</button>
+            <button type="button" id="booking-simple-refresh" class="btn btn-secondary" data-i18n="common.refresh">Refresh</button>
+            <button type="button" id="booking-simple-export-csv" class="btn btn-secondary" data-i18n="common.exportCsv">Export CSV</button>
           </div>
           <div class="table-wrap">
             <div id="bookings-simple-list"></div>
@@ -707,33 +707,33 @@
         <div id="booking-lifecycle-view" class="panel hidden">
           <div class="page-header">
             <div>
-              <h1>Booking lifecycle</h1>
-              <p>Stuck queues, expired items needing review, and health stats</p>
+              <h1 data-i18n="life.title">Booking lifecycle</h1>
+              <p data-i18n="life.subtitle">Stuck queues, expired items needing review, and health stats</p>
             </div>
-            <button class="btn btn-secondary" onclick="loadBookingLifecycle()">Refresh</button>
+            <button type="button" class="btn btn-secondary" onclick="loadBookingLifecycle()" data-i18n="common.refresh">Refresh</button>
           </div>
           
           <div class="lifecycle-stats-grid" id="lifecycle-stats">
-            <div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
+            <div data-i18n="common.loading" style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
           </div>
           
-          <div class="section-title">Expired Bookings (Needs Review)</div>
+          <div class="section-title" data-i18n="life.expiredTitle">Expired Bookings (Needs Review)</div>
           <div class="table-wrap">
             <table class="fees-table">
               <thead>
                 <tr>
-                  <th>Record</th>
-                  <th>Professional</th>
-                  <th>Customer</th>
-                  <th>Appointment Time</th>
-                  <th>Status</th>
-                  <th>Reason</th>
-                  <th>Actions</th>
+                  <th data-i18n="life.thRecord">Record</th>
+                  <th data-i18n="life.thPro">Professional</th>
+                  <th data-i18n="life.thCustomer">Customer</th>
+                  <th data-i18n="life.thAppt">Appointment Time</th>
+                  <th data-i18n="life.thStatus">Status</th>
+                  <th data-i18n="life.thReason">Reason</th>
+                  <th data-i18n="life.thActions">Actions</th>
                 </tr>
               </thead>
               <tbody id="expired-bookings-tbody">
                 <tr>
-                  <td colspan="7" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
+                  <td colspan="7" data-i18n="common.loading" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
                 </tr>
               </tbody>
             </table>
@@ -744,48 +744,48 @@
         <div id="archive-view" class="panel hidden">
           <div class="page-header">
             <div>
-              <h1>📦 Archive</h1>
-              <p>View archived bookings and historical data</p>
+              <h1 data-i18n="arch.title">📦 Archive</h1>
+              <p data-i18n="arch.subtitle">View archived bookings and historical data</p>
             </div>
             <div style="display:flex;gap:10px">
-              <button class="btn btn-secondary" onclick="exportArchiveToCSV()">📥 Export CSV</button>
-              <button class="btn btn-secondary" onclick="loadArchive()">Refresh</button>
+              <button type="button" class="btn btn-secondary" onclick="exportArchiveToCSV()" data-i18n="common.exportCsv">📥 Export CSV</button>
+              <button type="button" class="btn btn-secondary" onclick="loadArchive()" data-i18n="common.refresh">Refresh</button>
             </div>
           </div>
           
           <div class="toolbar archive-toolbar">
-            <input type="search" id="archive-search" placeholder="Search by professional or customer...">
+            <input type="search" id="archive-search" data-i18n-placeholder="arch.searchPh" placeholder="Search by professional or customer...">
             <select id="archive-filter-status">
-              <option value="all">All Status</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-              <option value="expired">Expired</option>
+              <option value="all" data-i18n="arch.optAll">All Status</option>
+              <option value="completed" data-i18n="arch.optCompleted">Completed</option>
+              <option value="cancelled" data-i18n="arch.optCancelled">Cancelled</option>
+              <option value="expired" data-i18n="arch.optExpired">Expired</option>
             </select>
-            <span class="toolbar-time-label">From</span>
-            <select id="archive-from-month" title="From month"></select>
-            <select id="archive-from-year" title="From year"></select>
-            <span class="toolbar-time-label">To</span>
-            <select id="archive-to-month" title="To month"></select>
-            <select id="archive-to-year" title="To year"></select>
+            <span class="toolbar-time-label" data-i18n="common.from">From</span>
+            <select id="archive-from-month" data-i18n-title="arch.fromMonth" title="From month"></select>
+            <select id="archive-from-year" data-i18n-title="arch.fromYear" title="From year"></select>
+            <span class="toolbar-time-label" data-i18n="common.to">To</span>
+            <select id="archive-to-month" data-i18n-title="arch.toMonth" title="To month"></select>
+            <select id="archive-to-year" data-i18n-title="arch.toYear" title="To year"></select>
           </div>
           
           <div class="table-wrap">
             <table class="fees-table">
               <thead>
                 <tr>
-                  <th>Record</th>
-                  <th>Professional</th>
-                  <th>Customer</th>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Archived</th>
-                  <th>Actions</th>
+                  <th data-i18n="arch.thRecord">Record</th>
+                  <th data-i18n="arch.thPro">Professional</th>
+                  <th data-i18n="arch.thCustomer">Customer</th>
+                  <th data-i18n="arch.thDate">Date</th>
+                  <th data-i18n="arch.thAmount">Amount</th>
+                  <th data-i18n="arch.thStatus">Status</th>
+                  <th data-i18n="arch.thArchived">Archived</th>
+                  <th data-i18n="arch.thActions">Actions</th>
                 </tr>
               </thead>
               <tbody id="archive-tbody">
                 <tr>
-                  <td colspan="8" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
+                  <td colspan="8" data-i18n="common.loading" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
                 </tr>
               </tbody>
             </table>
@@ -797,62 +797,62 @@
         <div id="analytics-view" class="panel hidden">
           <div class="page-header">
             <div>
-              <h1>📈 Booking analytics</h1>
-              <p>How many bookings completed, cancelled, or expired in the period you pick, plus <strong>revenue and fee totals as derived from bookings</strong> (reports &amp; trends). For <strong>who owes what</strong>, payment confirmation, and PDF/CSV invoices, use <strong>Platform fees</strong>.</p>
+              <h1 data-i18n="anl.title">📈 Booking analytics</h1>
+              <p data-i18n-html="anl.subtitleHtml">How many bookings completed, cancelled, or expired in the period you pick, plus <strong>revenue and fee totals as derived from bookings</strong> (reports &amp; trends). For <strong>who owes what</strong>, payment confirmation, and PDF/CSV invoices, use <strong>Platform fees</strong>.</p>
             </div>
             <div class="analytics-toolbar">
-              <label class="analytics-period-label"><input type="checkbox" id="analytics-all-time"> All time</label>
-              <span class="toolbar-time-label">Year</span>
+              <label class="analytics-period-label"><input type="checkbox" id="analytics-all-time"> <span data-i18n="anl.allTime">All time</span></label>
+              <span class="toolbar-time-label" data-i18n="anl.year">Year</span>
               <select id="analytics-year" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border)"></select>
-              <span class="toolbar-time-label">Month</span>
+              <span class="toolbar-time-label" data-i18n="anl.month">Month</span>
               <select id="analytics-month" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border)">
-                <option value="all">Whole year</option>
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
+                <option value="all" data-i18n="anl.wholeYear">Whole year</option>
+                <option value="1" data-i18n="month.1">January</option>
+                <option value="2" data-i18n="month.2">February</option>
+                <option value="3" data-i18n="month.3">March</option>
+                <option value="4" data-i18n="month.4">April</option>
+                <option value="5" data-i18n="month.5">May</option>
+                <option value="6" data-i18n="month.6">June</option>
+                <option value="7" data-i18n="month.7">July</option>
+                <option value="8" data-i18n="month.8">August</option>
+                <option value="9" data-i18n="month.9">September</option>
+                <option value="10" data-i18n="month.10">October</option>
+                <option value="11" data-i18n="month.11">November</option>
+                <option value="12" data-i18n="month.12">December</option>
               </select>
-              <button class="btn btn-secondary" onclick="exportAnalyticsToCSV()">📥 Export CSV</button>
-              <button class="btn btn-secondary" onclick="loadAnalytics()">Refresh</button>
+              <button type="button" class="btn btn-secondary" onclick="exportAnalyticsToCSV()" data-i18n="common.exportCsv">📥 Export CSV</button>
+              <button type="button" class="btn btn-secondary" onclick="loadAnalytics()" data-i18n="common.refresh">Refresh</button>
             </div>
           </div>
           
           <div class="analytics-grid" id="analytics-grid">
-            <div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
+            <div data-i18n="common.loading" style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>
           </div>
-          <p class="analytics-vs-fees-hint" style="margin:-8px 0 20px;font-size:0.8125rem;line-height:1.5;color:var(--text-mid);max-width:70ch">
+          <p class="analytics-vs-fees-hint" data-i18n-html="anl.hintHtml" style="margin:-8px 0 20px;font-size:0.8125rem;line-height:1.5;color:var(--text-mid);max-width:70ch">
             <strong>Why two screens?</strong> Numbers here follow <strong>booking activity</strong> for the selected period (good for trends and comparisons). <strong>Platform fees</strong> follows each professional’s <strong>ledger</strong> (recorded bookings, what they’ve paid, suspensions)—use it for day‑to‑day collections.
           </p>
           
-          <div class="section-title">Revenue &amp; fees (trends from bookings)</div>
+          <div class="section-title" data-i18n="anl.chartTitle">Revenue &amp; fees (trends from bookings)</div>
           <div class="chart-container">
             <canvas id="revenue-chart" style="max-height:300px"></canvas>
           </div>
           
-          <div class="section-title">Top professionals (by activity in period)</div>
+          <div class="section-title" data-i18n="anl.topTitle">Top professionals (by activity in period)</div>
           <div class="table-wrap">
             <table class="fees-table">
               <thead>
                 <tr>
-                  <th>Rank</th>
-                  <th>Professional</th>
-                  <th>Total Bookings</th>
-                  <th>Completed</th>
-                  <th>Booking revenue</th>
-                  <th>Fees (from bookings)</th>
+                  <th data-i18n="anl.thRank">Rank</th>
+                  <th data-i18n="anl.thPro">Professional</th>
+                  <th data-i18n="anl.thTotalBk">Total Bookings</th>
+                  <th data-i18n="anl.thCompleted">Completed</th>
+                  <th data-i18n="anl.thBkRev">Booking revenue</th>
+                  <th data-i18n="anl.thFeesBk">Fees (from bookings)</th>
                 </tr>
               </thead>
               <tbody id="top-professionals-tbody">
                 <tr>
-                  <td colspan="6" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
+                  <td colspan="6" data-i18n="common.loading" style="text-align:center;padding:40px;color:var(--text-mid)">Loading...</td>
                 </tr>
               </tbody>
             </table>

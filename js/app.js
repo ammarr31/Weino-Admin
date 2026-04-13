@@ -209,6 +209,19 @@
     return { from, to };
   }
 
+  function relocalizeArchiveMonthSelects() {
+    ['archive-from-month', 'archive-to-month'].forEach((id) => {
+      const s = document.getElementById(id);
+      if (!s) return;
+      const cur = s.value;
+      [...s.querySelectorAll('option')].forEach((o) => {
+        const m = parseInt(o.value, 10);
+        if (m >= 1 && m <= 12) o.textContent = __(`month.${m}`);
+      });
+      if (cur) s.value = cur;
+    });
+  }
+
   function initAdminTimeFilterSelects() {
     if (adminTimeFiltersInitialized) return;
     adminTimeFiltersInitialized = true;
@@ -222,7 +235,7 @@
       for (let m = 1; m <= 12; m++) {
         const o = document.createElement('option');
         o.value = String(m);
-        o.textContent = monthNames[m - 1];
+        o.textContent = __(`month.${m}`, monthNames[m - 1]);
         s.appendChild(o);
       }
     });
@@ -4397,6 +4410,7 @@
       if (typeof globalThis.AdminI18n !== 'undefined' && globalThis.AdminI18n.applyDom) {
         globalThis.AdminI18n.applyDom();
       }
+      if (typeof relocalizeArchiveMonthSelects === 'function') relocalizeArchiveMonthSelects();
       const cur = window.__adminCurrentView;
       if (cur === 'categories' && typeof loadCategories === 'function') loadCategories();
       if (cur === 'dashboard' && typeof window.loadDashboard === 'function') window.loadDashboard();

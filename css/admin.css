@@ -2335,43 +2335,11 @@
      text-decoration: underline;
    }
 
-   /* Language — fixed strip (visible on login; main sidebar is hidden until auth) */
-   .admin-lang-float {
-     position: fixed;
-     top: max(12px, env(safe-area-inset-top, 0px));
-     right: max(12px, env(safe-area-inset-right, 0px));
-     z-index: 200;
-     display: flex;
-     flex-direction: column;
-     align-items: stretch;
-     gap: 6px;
-     padding: 8px 10px;
-     background: rgba(24, 24, 27, 0.94);
-     border: 1px solid rgba(255, 255, 255, 0.12);
-     border-radius: 12px;
-     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
-     backdrop-filter: blur(10px);
-   }
-   .admin-lang-float-label {
-     font-size: 0.65rem;
-     font-weight: 700;
-     color: #a1a1aa;
-     text-transform: uppercase;
-     letter-spacing: 0.1em;
-     text-align: center;
-   }
-   .admin-lang-float-btns {
-     display: flex;
-     gap: 6px;
-   }
-   .admin-lang-float .admin-lang-btn {
-     min-width: 2.75rem;
-     padding: 6px 10px;
-     font-size: 0.78rem;
-   }
-   html[dir="rtl"] .admin-lang-float {
-     right: auto;
-     left: max(12px, env(safe-area-inset-left, 0px));
+   /* Language toggle on login card */
+   .admin-lang-toggle--login {
+     margin-top: 22px;
+     padding-top: 18px;
+     border-top: 1px solid rgba(255, 255, 255, 0.08);
    }
 
    /* Language toggle (sidebar) */

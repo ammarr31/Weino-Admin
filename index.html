@@ -21,14 +21,6 @@
   </script>
 </head>
 <body>
-  <!-- Always visible: language works on login screen too (sidebar is inside hidden main-view until login). -->
-  <div id="admin-lang-float" class="admin-lang-float" role="toolbar" data-i18n-aria="lang.toolbarAria" aria-label="Language">
-    <span class="admin-lang-float-label" data-i18n="lang.label">Language</span>
-    <div class="admin-lang-float-btns">
-      <button type="button" class="admin-lang-btn" data-set-lang="en" data-i18n="lang.en">EN</button>
-      <button type="button" class="admin-lang-btn" data-set-lang="ar" data-i18n="lang.ar">عربي</button>
-    </div>
-  </div>
   <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <symbol id="ico-layout" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="11" width="7" height="10" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/></symbol>
@@ -68,6 +60,13 @@
           <button type="submit" data-i18n="login.submit">Sign In</button>
         </form>
         <p id="login-error" class="error hidden"></p>
+        <div class="admin-lang-toggle admin-lang-toggle--login" role="group" data-i18n-aria="lang.toolbarAria" aria-label="Language">
+          <span class="admin-lang-toggle-label" data-i18n="lang.label">Language</span>
+          <div class="admin-lang-toggle-btns">
+            <button type="button" class="admin-lang-btn" data-set-lang="en" data-i18n="lang.en">EN</button>
+            <button type="button" class="admin-lang-btn" data-set-lang="ar" data-i18n="lang.ar">عربي</button>
+          </div>
+        </div>
       </div>
     </div>
 

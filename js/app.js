@@ -9,7 +9,7 @@
     }
     return fallback != null ? fallback : key;
   }
-  // Admin UI language: i18n.js auto-boots on DOMContentLoaded (see admin-lang-float + sidebar toggles).
+  // Admin UI language: i18n.js auto-boots on DOMContentLoaded (sidebar + login card toggles).
 
   // --- Auth helpers ---
   function getToken() { return localStorage.getItem(TOKEN_KEY); }
@@ -571,8 +571,8 @@
       return;
     }
     
-    summaryEl.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">Loading...</div>';
-    el.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px">Loading...</td></tr>';
+    summaryEl.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">${escapeHtml(__('common.loading'))}</div>`;
+    el.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px">${escapeHtml(__('common.loading'))}</td></tr>`;
     
     try {
       const res = await api('/platform-fees');
@@ -583,24 +583,24 @@
       const currency = 'EGP'; // Default currency
       summaryEl.innerHTML = `
         <div class="fees-summary-card highlight">
-          <div class="label">Total Amount Due</div>
+          <div class="label">${escapeHtml(__('fees.sumDue'))}</div>
           <div class="value">${currency} ${summary.total_due_all_time.toFixed(2)}</div>
-          <div class="subtitle">${summary.professionals_count} professionals</div>
+          <div class="subtitle">${escapeHtml(__('fees.sumProCount').replace('{n}', String(summary.professionals_count)))}</div>
         </div>
         <div class="fees-summary-card">
-          <div class="label">Fee Rate</div>
-          <div class="value">${summary.fee_rate_percentage != null && summary.fee_rate_percentage > 0 ? `${summary.fee_rate_percentage}%` : 'Not Set'}</div>
-          <div class="subtitle">Per completed booking${summary.fees_enabled ? '' : ' (Disabled)'}</div>
+          <div class="label">${escapeHtml(__('fees.sumRate'))}</div>
+          <div class="value">${summary.fee_rate_percentage != null && summary.fee_rate_percentage > 0 ? `${summary.fee_rate_percentage}%` : escapeHtml(__('fees.sumRateNotSet'))}</div>
+          <div class="subtitle">${escapeHtml(summary.fees_enabled ? __('fees.sumRateSub') : __('fees.sumRateSubOff'))}</div>
         </div>
         <div class="fees-summary-card">
-          <div class="label">Total Confirmed</div>
+          <div class="label">${escapeHtml(__('fees.sumConfirmed'))}</div>
           <div class="value">${currency} ${summary.total_confirmed_all_time.toFixed(2)}</div>
-          <div class="subtitle">All time payments</div>
+          <div class="subtitle">${escapeHtml(__('fees.sumConfirmedSub'))}</div>
         </div>
         <div class="fees-summary-card">
-          <div class="label">Suspended</div>
+          <div class="label">${escapeHtml(__('fees.sumSuspended'))}</div>
           <div class="value">${summary.suspended_count}</div>
-          <div class="subtitle">Accounts suspended</div>
+          <div class="subtitle">${escapeHtml(__('fees.sumSuspendedSub'))}</div>
         </div>
       `;
       
@@ -642,7 +642,7 @@
     } catch (err) {
       console.error('Error loading platform fees:', err);
       summaryEl.innerHTML = `<div style="padding:40px;text-align:center;color:var(--red);grid-column:1/-1">${escapeHtml(err.message)}</div>`;
-      el.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--red)">Failed to load</td></tr>';
+      el.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--red)">${escapeHtml(__('fees.failedLoad'))}</td></tr>`;
       toast(err.message, 'error');
     }
   };
@@ -710,7 +710,7 @@
     if (!el) return;
     
     if (!professionals || professionals.length === 0) {
-      el.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-mid)">No professionals with recorded fees yet</td></tr>';
+      el.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-mid)">${escapeHtml(__('fees.emptyTable'))}</td></tr>`;
       return;
     }
     
@@ -731,7 +731,7 @@
             <div style="font-size:0.75rem;color:var(--text-light);margin-top:2px">📍 ${escapeHtml(location)}</div>
             ${p.uid ? `<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap">
               <code style="font-size:0.65rem;background:var(--gray-50);padding:2px 6px;border-radius:4px;color:var(--gray-500);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(p.uid)}">${escapeHtml(p.uid)}</code>
-              <button type="button" class="btn-copy-fee-uid" data-uid="${escapeHtml(p.uid)}" title="Copy UID" style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:12px;padding:2px">&#10697;</button>
+              <button type="button" class="btn-copy-fee-uid" data-uid="${escapeHtml(p.uid)}" title="${escapeHtml(__('fees.copyUidTitle'))}" style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:12px;padding:2px">&#10697;</button>
             </div>` : ''}
           </td>
           <td class="contact-cell">
@@ -744,15 +744,15 @@
           <td class="amount-cell ${amountClass}">${amountDue.toFixed(2)}</td>
           <td>
             <span class="status-badge ${p.is_suspended ? 'suspended' : 'active'}">
-              ${p.is_suspended ? 'Suspended' : 'Active'}
+              ${escapeHtml(p.is_suspended ? __('fees.statusSuspended') : __('fees.statusActive'))}
             </span>
           </td>
           <td class="actions-cell">
             ${!p.is_suspended && amountDue > 0 ? `
-              <button class="btn-small btn-confirm" data-confirm-payment="${p.uid}">Confirm</button>
+              <button class="btn-small btn-confirm" data-confirm-payment="${p.uid}">${escapeHtml(__('fees.btnConfirm'))}</button>
             ` : ''}
             ${p.is_suspended ? `
-              <button class="btn-small btn-release" data-release="${p.uid}">Release</button>
+              <button class="btn-small btn-release" data-release="${p.uid}">${escapeHtml(__('fees.btnRelease'))}</button>
             ` : ''}
           </td>
         </tr>
@@ -778,7 +778,7 @@
         navigator.clipboard.writeText(uid).then(() => {
           b.textContent = '✓';
           setTimeout(() => { b.innerHTML = '&#10697;'; }, 1200);
-          toast('UID copied', 'success');
+          toast(__('toast.uidCopied'), 'success');
         });
       });
     });
@@ -925,13 +925,13 @@
   }
   
   async function releaseSuspension(uid) {
-    if (!confirm('Release suspension for this professional?')) return;
+    if (!confirm(__('fees.releaseConfirm'))) return;
     try {
       await api('/platform-fees/release-suspension', { 
         method: 'POST', 
         body: JSON.stringify({ professional_id: uid }) 
       });
-      toast('Suspension released', 'success');
+      toast(__('fees.releasedToast'), 'success');
       window.loadPlatformFees();
     } catch (err) {
       toast(err.message, 'error');
@@ -1722,7 +1722,7 @@
   async function loadCountries() {
     const el = document.getElementById('countries-list');
     if (!el) return;
-    el.innerHTML = '<div class="loading">Loading...</div>';
+    el.innerHTML = `<div class="loading">${escapeHtml(__('common.loading'))}</div>`;
     try {
       const res = await api('/countries');
       const list = res.data || [];
@@ -2340,7 +2340,7 @@
   async function loadApplications() {
     const el = document.getElementById('applications-list');
     const search = (document.getElementById('app-search')?.value || '').trim();
-    el.innerHTML = '<div class="loading">Loading...</div>';
+    el.innerHTML = `<div class="loading">${escapeHtml(__('common.loading'))}</div>`;
     try {
       const q = new URLSearchParams({ page: applicationsPage, limit: 20 });
       if (search) q.set('search', search);
@@ -2350,44 +2350,50 @@
       const pag = res.pagination || {};
 
       if (!list.length) {
-        el.innerHTML = `<div class="empty">${search ? 'No applications match your search' : 'No pending applications'}</div>`;
+        el.innerHTML = `<div class="empty">${escapeHtml(search ? __('apps.emptySearch') : __('apps.empty'))}</div>`;
       } else {
         el.innerHTML = list.map(a => {
           const isAreaChange = a.type === 'area_change';
           const isAccountDeletion = a.type === 'account_deletion';
           const areaDisplay = a.professional_area_display || [a.professional_governorate, a.professional_city].filter(Boolean).join(', ') || '—';
           const oldAreaDisplay = a.old_area_display || [a.old_governorate, a.old_city].filter(Boolean).join(', ') || '—';
-          const field = (label, value, isLink) =>
+          const field = (labelKey, value, isLink) =>
             isLink && value
-              ? `<div class="app-field"><span class="app-field-label">${escapeHtml(label)}:</span> <a href="${escapeHtml(value)}" target="_blank" rel="noopener">${escapeHtml(value)}</a></div>`
-              : `<div class="app-field"><span class="app-field-label">${escapeHtml(label)}:</span> ${escapeHtml(value || '—')}</div>`;
+              ? `<div class="app-field"><span class="app-field-label">${escapeHtml(__(labelKey))}:</span> <a href="${escapeHtml(value)}" target="_blank" rel="noopener">${escapeHtml(value)}</a></div>`
+              : `<div class="app-field"><span class="app-field-label">${escapeHtml(__(labelKey))}:</span> ${escapeHtml(value || '—')}</div>`;
           const parts = [];
           if (isAccountDeletion) {
             parts.push(`<div style="padding:12px 14px;background:rgba(239,68,68,0.1);border-radius:10px;border:1px solid rgba(239,68,68,0.3);font-size:0.9rem;margin-bottom:14px">
-              <div class="app-field"><span class="app-field-label">Professional:</span> ${escapeHtml(a.professional_name || a.user?.username || '—')}</div>
-              <div class="app-field" style="margin-top:6px"><span class="app-field-label">Category:</span> ${escapeHtml(a.professional_category || '—')}</div>
+              <div class="app-field"><span class="app-field-label">${escapeHtml(__('apps.lblProfessional'))}:</span> ${escapeHtml(a.professional_name || a.user?.username || '—')}</div>
+              <div class="app-field" style="margin-top:6px"><span class="app-field-label">${escapeHtml(__('apps.lblCategory'))}:</span> ${escapeHtml(a.professional_category || '—')}</div>
             </div>`);
           } else if (isAreaChange) {
             parts.push(`<div style="padding:12px 14px;background:var(--purple-pale);border-radius:10px;border:1px solid rgba(139,92,246,0.25);font-size:0.9rem;margin-bottom:14px">
-              <div class="app-field"><span class="app-field-label">Current area:</span> ${escapeHtml(oldAreaDisplay)}</div>
-              <div class="app-field" style="margin-top:6px"><span class="app-field-label">Requested area:</span> ${escapeHtml(areaDisplay)}</div>
+              <div class="app-field"><span class="app-field-label">${escapeHtml(__('apps.lblCurrentArea'))}:</span> ${escapeHtml(oldAreaDisplay)}</div>
+              <div class="app-field" style="margin-top:6px"><span class="app-field-label">${escapeHtml(__('apps.lblRequestedArea'))}:</span> ${escapeHtml(areaDisplay)}</div>
             </div>`);
           } else {
-            parts.push(field('Display Name', a.professional_name));
-            parts.push(field('Category', a.professional_category));
-            if (a.professional_subcategory) parts.push(field('Subcategory', a.professional_subcategory));
-            parts.push(field('Area', areaDisplay));
-            parts.push(field('Location / Address', a.professional_location));
-            if (a.professional_location_link) parts.push(field('Location Link', a.professional_location_link, true));
-            if (a.professional_booking_note) parts.push(field('Booking Note', a.professional_booking_note));
+            parts.push(field('apps.lblDisplayName', a.professional_name));
+            parts.push(field('apps.lblCategory', a.professional_category));
+            if (a.professional_subcategory) parts.push(field('apps.lblSubcategory', a.professional_subcategory));
+            parts.push(field('apps.lblArea', areaDisplay));
+            parts.push(field('apps.lblLocation', a.professional_location));
+            if (a.professional_location_link) parts.push(field('apps.lblLocationLink', a.professional_location_link, true));
+            if (a.professional_booking_note) parts.push(field('apps.lblBookingNote', a.professional_booking_note));
           }
           if (a.id_photo_url || a.commercial_register_url) {
             parts.push(`<div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
-              ${a.id_photo_url ? `<a href="${escapeHtml(a.id_photo_url)}" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:0.8rem;padding:6px 14px">View ID</a>` : ''}
-              ${a.commercial_register_url ? `<a href="${escapeHtml(a.commercial_register_url)}" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:0.8rem;padding:6px 14px">View Commercial Register</a>` : ''}
+              ${a.id_photo_url ? `<a href="${escapeHtml(a.id_photo_url)}" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:0.8rem;padding:6px 14px">${escapeHtml(__('apps.viewId'))}</a>` : ''}
+              ${a.commercial_register_url ? `<a href="${escapeHtml(a.commercial_register_url)}" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:0.8rem;padding:6px 14px">${escapeHtml(__('apps.viewCommercial'))}</a>` : ''}
             </div>`);
           }
           const bodyHtml = parts.join('');
+          const badgeHtml = isAccountDeletion
+            ? `<span class="badge" style="background:rgba(239,68,68,0.2);color:#ef4444">${escapeHtml(__('apps.badgeDelete'))}</span>`
+            : isAreaChange
+              ? `<span class="badge badge-blue">${escapeHtml(__('apps.badgeArea'))}</span>`
+              : `<span class="badge badge-purple">${escapeHtml(__('apps.badgeNew'))}</span>`;
+          const approveLabel = isAccountDeletion ? __('apps.approveDelete') : isAreaChange ? __('apps.approveArea') : __('apps.approve');
           return `
           <div class="card app-card">
             <div class="card-row" style="align-items:flex-start;gap:16px">
@@ -2395,19 +2401,19 @@
               <div class="card-info" style="flex:1;min-width:0">
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
                   <strong style="font-size:1.05rem">${escapeHtml(a.professional_name || a.user?.username || '—')}</strong>
-                  ${isAccountDeletion ? '<span class="badge" style="background:rgba(239,68,68,0.2);color:#ef4444">Account Deletion</span>' : isAreaChange ? '<span class="badge badge-blue">Area Change</span>' : '<span class="badge badge-purple">New Professional</span>'}
+                  ${badgeHtml}
                 </div>
                 <div style="color:var(--text-mid);font-size:0.9rem;margin-bottom:14px">@${escapeHtml(a.user?.username || a.user?.email || '—')} · ${formatDateShort(a.created_at)}</div>
                 <div style="font-size:0.82rem;color:var(--text-2);margin-bottom:14px;line-height:1.5">
-                  <strong>Mobile</strong> ${escapeHtml((a.user?.phone_number && String(a.user.phone_number).trim()) || '—')}
-                  ${(a.user?.platform_contact_phone && String(a.user.platform_contact_phone).trim()) ? ` · <strong>Platform contact</strong> ${escapeHtml(String(a.user.platform_contact_phone).trim())}` : ''}
+                  <strong>${escapeHtml(__('apps.mobile'))}</strong> ${escapeHtml((a.user?.phone_number && String(a.user.phone_number).trim()) || '—')}
+                  ${(a.user?.platform_contact_phone && String(a.user.platform_contact_phone).trim()) ? ` · <strong>${escapeHtml(__('apps.platformContact'))}</strong> ${escapeHtml(String(a.user.platform_contact_phone).trim())}` : ''}
                 </div>
                 <div style="font-size:0.9rem;line-height:1.6" class="app-fields">${bodyHtml}</div>
               </div>
             </div>
             <div class="card-actions" style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
-              <button class="btn btn-approve" data-id="${a.id}" data-action="approve">${isAccountDeletion ? 'Approve & delete account' : isAreaChange ? 'Approve area change' : 'Approve'}</button>
-              <button class="btn btn-reject" data-id="${a.id}" data-action="reject">Reject</button>
+              <button class="btn btn-approve" data-id="${a.id}" data-action="approve">${escapeHtml(approveLabel)}</button>
+              <button class="btn btn-reject" data-id="${a.id}" data-action="reject">${escapeHtml(__('apps.reject'))}</button>
             </div>
           </div>
         `;
@@ -2422,12 +2428,13 @@
 
       const pagEl = document.getElementById('applications-pagination');
       if (search) {
-        pagEl.innerHTML = `<span style="color:var(--gray-400);font-size:0.875rem">${list.length} result${list.length !== 1 ? 's' : ''} found</span>`;
+        const rtxt = list.length === 1 ? __('apps.resultsOne') : __('apps.resultsMany').replace('{n}', String(list.length));
+        pagEl.innerHTML = `<span style="color:var(--gray-400);font-size:0.875rem">${escapeHtml(rtxt)}</span>`;
       } else {
         pagEl.innerHTML = `
-          <button ${applicationsPage <= 1 ? 'disabled' : ''} data-page="prev">Previous</button>
-          <span>Page ${applicationsPage}</span>
-          <button ${!pag.hasMore ? 'disabled' : ''} data-page="next">Next</button>
+          <button ${applicationsPage <= 1 ? 'disabled' : ''} data-page="prev">${escapeHtml(__('common.prev'))}</button>
+          <span>${escapeHtml(__('common.page').replace('{n}', String(applicationsPage)))}</span>
+          <button ${!pag.hasMore ? 'disabled' : ''} data-page="next">${escapeHtml(__('common.next'))}</button>
         `;
         pagEl.querySelectorAll('[data-page]').forEach(btn =>
           btn.addEventListener('click', () => {
@@ -2438,7 +2445,7 @@
         );
       }
     } catch (err) {
-      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry">Retry</button></div>`;
+      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry">${escapeHtml(__('common.retry'))}</button></div>`;
       el.querySelector('.btn-retry')?.addEventListener('click', loadApplications);
       toast(err.message, 'error');
     }
@@ -2454,7 +2461,7 @@
       hide(document.getElementById('modal-overlay'));
       hide(document.getElementById('review-modal'));
       loadApplications();
-      toast(`Application ${action === 'approve' ? 'approved' : 'rejected'}`, 'success');
+      toast(action === 'approve' ? __('apps.toastApproved') : __('apps.toastRejected'), 'success');
     } catch (err) { toast(err.message, 'error'); }
   }
 
@@ -2465,7 +2472,7 @@
     const search = document.getElementById('user-search')?.value?.trim() || '';
     const isProfessional = document.getElementById('user-filter')?.value || '';
     const el = document.getElementById('users-list');
-    el.innerHTML = '<div class="loading">Loading...</div>';
+    el.innerHTML = `<div class="loading">${escapeHtml(__('common.loading'))}</div>`;
 
     try {
       const q = new URLSearchParams({ page: usersPage, limit: 20 });
@@ -2477,11 +2484,11 @@
       const pag = res.pagination || {};
 
       if (!list.length) {
-        el.innerHTML = '<div class="empty">No users found</div>';
+        el.innerHTML = `<div class="empty">${escapeHtml(__('usr.empty'))}</div>`;
       } else {
         el.innerHTML = `
           <table>
-            <thead><tr><th>Display name</th><th>Username</th><th>Email</th><th>Phone</th><th>User ID</th><th>Type</th><th>Flags</th><th>Verified</th><th>Joined</th><th></th></tr></thead>
+            <thead><tr><th>${escapeHtml(__('usr.thDisplay'))}</th><th>${escapeHtml(__('usr.thUsername'))}</th><th>${escapeHtml(__('usr.thEmail'))}</th><th>${escapeHtml(__('usr.thPhone'))}</th><th>${escapeHtml(__('usr.thUid'))}</th><th>${escapeHtml(__('usr.thType'))}</th><th>${escapeHtml(__('usr.thFlags'))}</th><th>${escapeHtml(__('usr.thVerified'))}</th><th>${escapeHtml(__('usr.thJoined'))}</th><th></th></tr></thead>
             <tbody>
               ${list.map(u => `
                 <tr>
@@ -2490,24 +2497,24 @@
                   <td style="color:var(--gray-500);font-size:0.8rem">${escapeHtml(u.email || '—')}</td>
                   <td style="font-size:0.78rem;max-width:140px">
                     <div>${escapeHtml((u.phone_number && String(u.phone_number).trim()) || '—')}</div>
-                    ${u.is_professional ? `<div style="color:var(--gray-500);font-size:0.72rem;margin-top:2px" title="Platform contact">Plt: ${escapeHtml((u.platform_contact_phone && String(u.platform_contact_phone).trim()) || '—')}</div>` : ''}
+                    ${u.is_professional ? `<div style="color:var(--gray-500);font-size:0.72rem;margin-top:2px" title="${escapeHtml(__('usr.pltContactTitle'))}">${escapeHtml(__('usr.pltShort'))} ${escapeHtml((u.platform_contact_phone && String(u.platform_contact_phone).trim()) || '—')}</div>` : ''}
                   </td>
                   <td>
                     <div style="display:flex;align-items:center;gap:6px">
                       <code style="font-size:0.72rem;background:var(--gray-100);padding:2px 6px;border-radius:4px;color:var(--gray-600);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block" title="${escapeHtml(u.uid || '')}">${escapeHtml(u.uid || '—')}</code>
-                      <button type="button" class="btn-copy-uid" data-uid="${escapeHtml(u.uid || '')}" title="Copy UID" style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:13px;padding:2px 4px;border-radius:4px;flex-shrink:0">&#10697;</button>
+                      <button type="button" class="btn-copy-uid" data-uid="${escapeHtml(u.uid || '')}" title="${escapeHtml(__('fees.copyUidTitle'))}" style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:13px;padding:2px 4px;border-radius:4px;flex-shrink:0">&#10697;</button>
                     </div>
                   </td>
-                  <td><span class="badge ${u.is_professional ? 'badge-purple' : 'badge-gray'}">${u.is_professional ? 'Professional' : 'User'}</span></td>
+                  <td><span class="badge ${u.is_professional ? 'badge-purple' : 'badge-gray'}">${escapeHtml(u.is_professional ? __('usr.typePro') : __('usr.typeUser'))}</span></td>
                   <td style="font-size:0.75rem;white-space:nowrap">
-                    ${u.booking_restricted ? '<span class="badge badge-amber" title="Booking restricted">🔒 Book</span> ' : ''}
-                    ${u.is_banned ? '<span class="badge badge-red" title="Banned">⛔ Ban</span> ' : ''}
-                    ${u.platform_fee_suspended ? '<span class="badge badge-gray" title="Platform fee suspended">💳 Fee</span>' : ''}
+                    ${u.booking_restricted ? `<span class="badge badge-amber" title="${escapeHtml(__('usr.flagBook'))}">🔒 ${escapeHtml(__('usr.flagBook'))}</span> ` : ''}
+                    ${u.is_banned ? `<span class="badge badge-red" title="${escapeHtml(__('usr.flagBan'))}">⛔ ${escapeHtml(__('usr.flagBan'))}</span> ` : ''}
+                    ${u.platform_fee_suspended ? `<span class="badge badge-gray" title="${escapeHtml(__('usr.flagFee'))}">💳 ${escapeHtml(__('usr.flagFee'))}</span>` : ''}
                     ${!u.booking_restricted && !u.is_banned && !u.platform_fee_suspended ? '—' : ''}
                   </td>
-                  <td>${u.is_verified ? '<span style="color:var(--purple);font-size:1.1rem" title="Verified">✓</span>' : '—'}</td>
+                  <td>${u.is_verified ? `<span style="color:var(--purple);font-size:1.1rem" title="${escapeHtml(__('usr.thVerified'))}">✓</span>` : '—'}</td>
                   <td style="color:var(--gray-500);font-size:0.8rem">${formatDateShort(u.created_at)}</td>
-                  <td><button type="button" class="btn btn-secondary" data-uid="${u.uid}">Edit</button></td>
+                  <td><button type="button" class="btn btn-secondary" data-uid="${u.uid}">${escapeHtml(__('usr.edit'))}</button></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2522,7 +2529,7 @@
             navigator.clipboard.writeText(b.dataset.uid).then(() => {
               b.textContent = '✓';
               setTimeout(() => { b.innerHTML = '&#10697;'; }, 1500);
-              toast('User ID copied to clipboard', 'success');
+              toast(__('toast.userIdCopied'), 'success');
             });
           })
         );
@@ -2531,7 +2538,8 @@
       const pagEl = document.getElementById('users-pagination');
       if (search) {
         // No pagination when searching — results are global
-        pagEl.innerHTML = `<span style="color:var(--gray-400);font-size:0.875rem">${list.length} result${list.length !== 1 ? 's' : ''} found</span>`;
+        const utxt = list.length === 1 ? __('usr.resultsOne') : __('usr.resultsMany').replace('{n}', String(list.length));
+        pagEl.innerHTML = `<span style="color:var(--gray-400);font-size:0.875rem">${escapeHtml(utxt)}</span>`;
       } else {
         const page = usersPage;
         const hasMore = !!pag.hasMore;
@@ -2543,10 +2551,10 @@
           `<button class="pagination-page ${p === page ? 'active' : ''}" data-page="${p}">${p}</button>`
         ).join('');
         pagEl.innerHTML = `
-          <button ${page <= 1 ? 'disabled' : ''} data-page="prev">Previous</button>
+          <button ${page <= 1 ? 'disabled' : ''} data-page="prev">${escapeHtml(__('common.prev'))}</button>
           ${pageBtns}
           ${hasMore ? '<span class="pagination-ellipsis">…</span>' : ''}
-          <button ${!hasMore ? 'disabled' : ''} data-page="next">Next</button>
+          <button ${!hasMore ? 'disabled' : ''} data-page="next">${escapeHtml(__('common.next'))}</button>
         `;
         pagEl.querySelectorAll('[data-page]').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -2743,7 +2751,7 @@
   window.loadTickets = async function () {
     const el = document.getElementById('tickets-list');
     const statusFilter = document.getElementById('ticket-filter-status')?.value || '';
-    el.innerHTML = '<div class="loading">Loading tickets...</div>';
+    el.innerHTML = `<div class="loading">${escapeHtml(__('tk.loading'))}</div>`;
 
     try {
       const q = new URLSearchParams({ page: ticketsPage, limit: 20 });
@@ -2753,12 +2761,12 @@
       const pag = res.pagination || {};
 
       if (!list.length) {
-        el.innerHTML = '<div class="empty">No tickets found</div>';
+        el.innerHTML = `<div class="empty">${escapeHtml(__('tk.empty'))}</div>`;
       } else {
         const statusBadge = { pending: 'badge-pink', open: 'badge-amber', in_progress: 'badge-blue', closed: 'badge-gray' };
         el.innerHTML = `
           <table>
-            <thead><tr><th>Subject</th><th>Status</th><th>User</th><th>Created</th><th>Updated</th><th></th></tr></thead>
+            <thead><tr><th>${escapeHtml(__('tk.thSubject'))}</th><th>${escapeHtml(__('tk.thStatus'))}</th><th>${escapeHtml(__('tk.thUser'))}</th><th>${escapeHtml(__('tk.thCreated'))}</th><th>${escapeHtml(__('tk.thUpdated'))}</th><th></th></tr></thead>
             <tbody>
               ${list.map(t => `
                 <tr>
@@ -2770,12 +2778,12 @@
                     ${t.user_email ? `<div style="color:var(--gray-500);font-size:0.72rem;margin-top:2px">${escapeHtml(t.user_email)}</div>` : ''}
                     ${t.user_id ? `<div style="display:flex;align-items:center;gap:6px;margin-top:4px">
                       <code style="font-size:0.68rem;background:var(--gray-100);padding:2px 6px;border-radius:4px;color:var(--gray-600);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block" title="${escapeHtml(t.user_id)}">${escapeHtml(t.user_id)}</code>
-                      <button type="button" class="btn-copy-uid" data-uid="${escapeHtml(t.user_id)}" title="Copy UID" style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:13px;padding:2px 4px;border-radius:4px;flex-shrink:0">&#10697;</button>
+                      <button type="button" class="btn-copy-uid" data-uid="${escapeHtml(t.user_id)}" title="${escapeHtml(__('fees.copyUidTitle'))}" style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:13px;padding:2px 4px;border-radius:4px;flex-shrink:0">&#10697;</button>
                     </div>` : ''}
                   </td>
                   <td style="font-size:0.82rem;color:var(--gray-500)">${formatDate(t.created_at)}</td>
                   <td style="font-size:0.82rem;color:var(--gray-500)">${formatDate(t.updated_at)}</td>
-                  <td><button class="btn btn-secondary" data-ticket-id="${escapeHtml(t.id)}">View & Reply</button></td>
+                  <td><button class="btn btn-secondary" data-ticket-id="${escapeHtml(t.id)}">${escapeHtml(__('tk.viewReply'))}</button></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2790,7 +2798,7 @@
             navigator.clipboard.writeText(b.dataset.uid).then(() => {
               b.textContent = '✓';
               setTimeout(() => { b.innerHTML = '&#10697;'; }, 1500);
-              toast('User ID copied to clipboard', 'success');
+              toast(__('toast.userIdCopied'), 'success');
             });
           })
         );
@@ -2798,9 +2806,9 @@
 
       const pagEl = document.getElementById('tickets-pagination');
       pagEl.innerHTML = `
-        <button ${ticketsPage <= 1 ? 'disabled' : ''} data-page="prev">Previous</button>
-        <span>Page ${ticketsPage}</span>
-        <button ${!pag.hasMore ? 'disabled' : ''} data-page="next">Next</button>
+        <button ${ticketsPage <= 1 ? 'disabled' : ''} data-page="prev">${escapeHtml(__('common.prev'))}</button>
+        <span>${escapeHtml(__('common.page').replace('{n}', String(ticketsPage)))}</span>
+        <button ${!pag.hasMore ? 'disabled' : ''} data-page="next">${escapeHtml(__('common.next'))}</button>
       `;
       pagEl.querySelectorAll('[data-page]').forEach(btn =>
         btn.addEventListener('click', () => {
@@ -2810,7 +2818,7 @@
         })
       );
     } catch (err) {
-      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry" onclick="loadTickets()">Retry</button></div>`;
+      el.innerHTML = `<div class="empty error-msg">${escapeHtml(err.message)} <button class="btn-retry" onclick="loadTickets()">${escapeHtml(__('common.retry'))}</button></div>`;
       toast(err.message, 'error');
     }
   };
@@ -3093,7 +3101,7 @@
   // --- Admin Accounts ---
   async function loadAccounts() {
     const el = document.getElementById('accounts-list');
-    el.innerHTML = '<div class="loading">Loading...</div>';
+    el.innerHTML = `<div class="loading">${escapeHtml(__('common.loading'))}</div>`;
     try {
       const res = await api('/accounts');
       const list = res.data || [];
@@ -3303,15 +3311,22 @@
 
     let summary = '';
     if (rowsLength === 0 && page === 1) {
-      summary = 'No bookings match this filter.';
+      summary = escapeHtml(__('bk.emptyFilter'));
     } else if (rowsLength === 0) {
-      summary = 'No rows on this page.';
+      summary = escapeHtml(__('bk.pagEmptyPage'));
     } else if (scanTruncated && totalFiltered != null) {
-      summary = `Showing <strong>${start}–${end}</strong> · loaded at least <strong>${totalFiltered.toLocaleString()}</strong> matches (scan cap — narrow filters for full totals).`;
+      summary = __('bk.pagScanHtml')
+        .replace('{start}', String(start))
+        .replace('{end}', String(end))
+        .replace('{total}', totalFiltered.toLocaleString());
     } else if (totalFiltered != null && totalPages != null) {
-      summary = `Showing <strong>${start}–${end}</strong> of <strong>${totalFiltered.toLocaleString()}</strong> booking${totalFiltered === 1 ? '' : 's'}`;
+      const tpl = totalFiltered === 1 ? __('bk.pagOfOneHtml') : __('bk.pagOfManyHtml');
+      summary = tpl
+        .replace('{start}', String(start))
+        .replace('{end}', String(end))
+        .replace('{total}', totalFiltered.toLocaleString());
     } else {
-      summary = `Showing <strong>${start}–${end}</strong>`;
+      summary = __('bk.pagRangeHtml').replace('{start}', String(start)).replace('{end}', String(end));
     }
 
     const canFirst = page > 1;
@@ -3341,7 +3356,7 @@
         pageButtons += `<button type="button" class="btn btn-secondary btn-tiny" onclick="loadBookingsSimple(${totalPages})">${totalPages}</button>`;
       }
     } else if (totalPages == null && (scanTruncated || hasMore || page > 1)) {
-      pageButtons = `<span class="pagination-meta">Page <strong>${page}</strong></span>`;
+      pageButtons = `<span class="pagination-meta">${__('bk.pagPageMeta').replace('{n}', String(page))}</span>`;
     }
 
     const lastBtnAttrs =
@@ -3353,11 +3368,11 @@
       <div class="bookings-pagination">
         <div class="bookings-pagination-summary">${summary}</div>
         <div class="bookings-pagination-controls">
-          <button type="button" class="btn btn-secondary btn-small" ${!canFirst ? 'disabled' : ''} onclick="loadBookingsSimple(1)">First</button>
-          <button type="button" class="btn btn-secondary btn-small" ${!canPrev ? 'disabled' : ''} onclick="loadBookingsSimple(${page - 1})">Previous</button>
+          <button type="button" class="btn btn-secondary btn-small" ${!canFirst ? 'disabled' : ''} onclick="loadBookingsSimple(1)">${escapeHtml(__('common.first'))}</button>
+          <button type="button" class="btn btn-secondary btn-small" ${!canPrev ? 'disabled' : ''} onclick="loadBookingsSimple(${page - 1})">${escapeHtml(__('common.prev'))}</button>
           <div class="bookings-pagination-pages">${pageButtons}</div>
-          <button type="button" class="btn btn-secondary btn-small" ${!canNext ? 'disabled' : ''} onclick="loadBookingsSimple(${page + 1})">Next</button>
-          <button type="button" class="btn btn-secondary btn-small" ${lastBtnAttrs}>Last</button>
+          <button type="button" class="btn btn-secondary btn-small" ${!canNext ? 'disabled' : ''} onclick="loadBookingsSimple(${page + 1})">${escapeHtml(__('common.next'))}</button>
+          <button type="button" class="btn btn-secondary btn-small" ${lastBtnAttrs}>${escapeHtml(__('common.last'))}</button>
         </div>
       </div>`;
   }
@@ -3556,7 +3571,7 @@
     const listEl = document.getElementById('bookings-simple-list');
     const pagEl = document.getElementById('bookings-simple-pagination');
     if (!listEl) return;
-    listEl.innerHTML = '<p style="padding:24px;text-align:center;color:var(--text-mid)">Loading...</p>';
+    listEl.innerHTML = `<p style="padding:24px;text-align:center;color:var(--text-mid)">${escapeHtml(__('common.loading'))}</p>`;
     if (pagEl) pagEl.innerHTML = '';
     try {
       const search = document.getElementById('booking-simple-search')?.value?.trim() || '';
@@ -3577,13 +3592,13 @@
       window._bookingsSimpleLastRows = rows;
       const rowOffset = (page - 1) * limit;
       if (rows.length === 0) {
-        listEl.innerHTML = '<p style="padding:40px;text-align:center;color:var(--text-mid)">No bookings match this filter.</p>';
+        listEl.innerHTML = `<p style="padding:40px;text-align:center;color:var(--text-mid)">${escapeHtml(__('bk.emptyFilter'))}</p>`;
       } else {
         listEl.innerHTML = `
         <table class="fees-table bookings-table">
           <thead><tr>
-            <th class="col-booking-num">#</th><th>Professional</th><th>Customer</th><th>Slot</th><th>Branch</th>
-            <th>Match</th><th>Queue</th><th>Amount</th><th>Created</th><th></th>
+            <th class="col-booking-num">${escapeHtml(__('bk.thNum'))}</th><th>${escapeHtml(__('bk.thPro'))}</th><th>${escapeHtml(__('bk.thCustomer'))}</th><th>${escapeHtml(__('bk.thSlot'))}</th><th>${escapeHtml(__('bk.thBranch'))}</th>
+            <th>${escapeHtml(__('bk.thMatch'))}</th><th>${escapeHtml(__('bk.thQueue'))}</th><th>${escapeHtml(__('bk.thAmount'))}</th><th>${escapeHtml(__('bk.thCreated'))}</th><th></th>
           </tr></thead>
           <tbody>
             ${rows.map((b, idx) => {
@@ -3596,7 +3611,7 @@
     const branchLabel = (b.branch_display_name && String(b.branch_display_name).trim())
       ? escapeHtml(String(b.branch_display_name).trim())
       : (b.branch_id
-        ? `<small class="booking-detail-muted" title="${escapeHtml(String(b.branch_id))}">Unnamed branch</small>`
+        ? `<small class="booking-detail-muted" title="${escapeHtml(String(b.branch_id))}">${escapeHtml(__('bk.unnamedBranch'))}</small>`
         : '—');
     return `
               <tr>
@@ -3609,7 +3624,7 @@
                 <td><span class="badge ${bookingQueueBadgeClass(b.booking_status)}">${escapeHtml(b.booking_status || '—')}</span></td>
                 <td>${escapeHtml(price)}</td>
                 <td><small>${escapeHtml(formatDateShort(b.created_at))}</small></td>
-                <td><button type="button" class="btn btn-secondary btn-tiny btn-booking-detail" data-booking-detail-id="${escapeHtml(rawId)}">Details</button></td>
+                <td><button type="button" class="btn btn-secondary btn-tiny btn-booking-detail" data-booking-detail-id="${escapeHtml(rawId)}">${escapeHtml(__('bk.details'))}</button></td>
               </tr>`;
   }).join('')}
           </tbody>
@@ -4425,6 +4440,12 @@
       }
       if (cur === 'platform-fees' && typeof window.loadPlatformFees === 'function') {
         window.loadPlatformFees();
+      }
+      if (cur === 'applications' && typeof loadApplications === 'function') void loadApplications();
+      if (cur === 'users' && typeof loadUsers === 'function') void loadUsers();
+      if (cur === 'tickets' && typeof loadTickets === 'function') void loadTickets();
+      if (cur === 'bookings-simple' && typeof window.loadBookingsSimple === 'function') {
+        void window.loadBookingsSimple(bookingsSimplePage || 1);
       }
     } catch (e) {
       console.warn(e);

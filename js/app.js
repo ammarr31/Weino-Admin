@@ -36,7 +36,7 @@
     verifier: 'Applications',
   };
   
-  // âœ… Cache for countries loaded from backend
+  // ✅ Cache for countries loaded from backend
   let cachedCountriesMap = null;
   function derivePermissionsFromRoles(roles) {
     if (!roles || !roles.length) return derivePermissionsFromRole('admin');
@@ -317,7 +317,7 @@
     if (!container) return;
     container.innerHTML = '';
     if (mode === 'edit' && account && account.role === 'super_admin') {
-      container.innerHTML = `<p style="margin:0;font-size:0.85rem;color:var(--text-mid)">${ROLE_LABELS.super_admin} â€” role cannot be changed here.</p>`;
+      container.innerHTML = `<p style="margin:0;font-size:0.85rem;color:var(--text-mid)">${ROLE_LABELS.super_admin} — role cannot be changed here.</p>`;
       return;
     }
     const selected = new Set(
@@ -364,7 +364,7 @@
     return found;
   }
 
-  /** Quick toggle Active status â€“ one click, no modal. Entity: 'governorate' | 'city' | 'category' | 'country' */
+  /** Quick toggle Active status – one click, no modal. Entity: 'governorate' | 'city' | 'category' | 'country' */
   async function toggleActive(entity, id, currentValue, onSuccess) {
     const newVal = !currentValue;
     const plural = { governorate: 'governorates', city: 'cities', category: 'categories', country: 'countries' }[entity] || entity + 's';
@@ -455,19 +455,35 @@
     return d.innerHTML;
   }
 
+  /** ISO 3166-1 alpha-2 → Unicode regional indicators (flag emoji). */
+  function regionalIndicatorFlagFromAlpha2(code) {
+    const up = String(code || '').replace(/[^A-Za-z]/g, '').toUpperCase();
+    if (up.length !== 2) return '';
+    const base = 0x1f1e6;
+    const o = (ch) => ch.charCodeAt(0) - 65;
+    const a = o(up[0]);
+    const b = o(up[1]);
+    if (a < 0 || a > 25 || b < 0 || b > 25) return '';
+    return String.fromCodePoint(base + a, base + b);
+  }
+
+  function countryFlagForDisplay(c) {
+    return regionalIndicatorFlagFromAlpha2(String(c.code || c.key || '')) || '';
+  }
+
   /** Booking overlap_slots use day_of_week + HH:mm strings (not Unix ms). */
   function formatBookingSlotLabel(b) {
     const slot = b.overlap_slots && b.overlap_slots[0];
-    if (!slot) return 'â€”';
+    if (!slot) return '—';
     const dayRaw = (slot.day_of_week || '').toString().trim();
     const day = dayRaw
       ? dayRaw.charAt(0).toUpperCase() + dayRaw.slice(1).toLowerCase()
       : '';
     const st = slot.start_time || '';
     const et = slot.end_time || '';
-    if (!day && !st && !et) return 'â€”';
-    const timePart = st && et ? `${st}â€“${et}` : st || et || '';
-    return [day, timePart].filter(Boolean).join(' ').trim() || 'â€”';
+    if (!day && !st && !et) return '—';
+    const timePart = st && et ? `${st}–${et}` : st || et || '';
+    return [day, timePart].filter(Boolean).join(' ').trim() || '—';
   }
 
   function show(el) { el?.classList?.remove('hidden'); }
@@ -507,7 +523,7 @@
   // --- Platform Fees (defined early for showView) ---
   let feesData = null;
   window.loadPlatformFees = async function() {
-    // âœ… Ensure countries are loaded first
+    // ✅ Ensure countries are loaded first
     if (!cachedCountriesMap) {
       try {
         const res = await api('/countries');
@@ -565,7 +581,7 @@
       
       renderFeesProfessionals(professionals);
 
-      // Invoices export controls (month/year) â€” filled once, can be used immediately.
+      // Invoices export controls (month/year) — filled once, can be used immediately.
       initPlatformFeesInvoiceExportControls();
       
       // Populate governorate and city filters
@@ -674,28 +690,28 @@
     }
     
     el.innerHTML = professionals.map(p => {
-      const displayName = p.professional_name || p.username || 'â€”';
+      const displayName = p.professional_name || p.username || '—';
       const amountDue = p.amount_due || 0;
       const amountClass = amountDue > 100 ? 'amount-due high' : 'amount-due';
       
       const cityName = p.professional_city_name || p.professional_city || '';
       const govName = p.professional_governorate_name || p.professional_governorate || '';
-      const location = [cityName, govName].filter(Boolean).join(', ') || 'â€”';
+      const location = [cityName, govName].filter(Boolean).join(', ') || '—';
       
       return `
         <tr class="${p.is_suspended ? 'suspended' : ''}">
           <td class="professional-cell">
             <div>${escapeHtml(displayName)}</div>
-            <div class="username">@${escapeHtml(p.username || 'â€”')}</div>
-            <div style="font-size:0.75rem;color:var(--text-light);margin-top:2px">ðŸ“ ${escapeHtml(location)}</div>
+            <div class="username">@${escapeHtml(p.username || '—')}</div>
+            <div style="font-size:0.75rem;color:var(--text-light);margin-top:2px">📍 ${escapeHtml(location)}</div>
             ${p.uid ? `<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap">
               <code style="font-size:0.65rem;background:var(--gray-50);padding:2px 6px;border-radius:4px;color:var(--gray-500);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(p.uid)}">${escapeHtml(p.uid)}</code>
               <button type="button" class="btn-copy-fee-uid" data-uid="${escapeHtml(p.uid)}" title="Copy UID" style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:12px;padding:2px">&#10697;</button>
             </div>` : ''}
           </td>
           <td class="contact-cell">
-            ${escapeHtml(p.email || 'â€”')}<br>
-            <span style="font-size:0.8rem;color:var(--text-light)">${escapeHtml(p.country || 'â€”')}</span>
+            ${escapeHtml(p.email || '—')}<br>
+            <span style="font-size:0.8rem;color:var(--text-light)">${escapeHtml(p.country || '—')}</span>
           </td>
           <td class="amount-cell">${p.recorded_bookings}</td>
           <td class="amount-cell">${p.recorded_total.toFixed(2)}</td>
@@ -735,7 +751,7 @@
         const uid = b.getAttribute('data-uid');
         if (!uid) return;
         navigator.clipboard.writeText(uid).then(() => {
-          b.textContent = 'âœ“';
+          b.textContent = '✓';
           setTimeout(() => { b.innerHTML = '&#10697;'; }, 1200);
           toast('UID copied', 'success');
         });
@@ -748,7 +764,7 @@
     const govMap = new Map();
     const cityMap = new Map();
 
-    // âœ… Load countries from backend if not cached
+    // ✅ Load countries from backend if not cached
     if (!cachedCountriesMap) {
       try {
         const res = await api('/countries');
@@ -869,7 +885,7 @@
   function showPaymentModal(pro) {
     document.getElementById('payment-professional-id').value = pro.uid;
     document.getElementById('payment-professional-name').textContent = 
-      pro.professional_name || pro.username || 'â€”';
+      pro.professional_name || pro.username || '—';
     document.getElementById('payment-amount-due').textContent = 
       `EGP ${pro.amount_due.toFixed(2)}`;
     document.getElementById('payment-amount').value = pro.amount_due.toFixed(2);
@@ -1021,8 +1037,8 @@
     const adminAvatar = document.getElementById('admin-avatar');
     if (admin) {
       const rlist = Array.isArray(admin.roles) && admin.roles.length ? admin.roles : [admin.role].filter(Boolean);
-      const roleLabel = rlist.map((r) => ROLE_LABELS[r] || String(r).replace(/_/g, ' ')).join(' Â· ');
-      adminInfo.textContent = `${admin.username} Â· ${roleLabel}`;
+      const roleLabel = rlist.map((r) => ROLE_LABELS[r] || String(r).replace(/_/g, ' ')).join(' · ');
+      adminInfo.textContent = `${admin.username} · ${roleLabel}`;
       if (adminAvatar) adminAvatar.textContent = admin.username[0].toUpperCase();
     }
 
@@ -1152,7 +1168,7 @@
           <button type="button" class="quick-action-card" onclick="showViewGlobal('tickets')">
             ${qaSvg('M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z')}
             <div class="qa-label">Tickets</div>
-            <div class="qa-desc">${pendingTickets} pending Â· ${openTickets} open</div>
+            <div class="qa-desc">${pendingTickets} pending · ${openTickets} open</div>
           </button>`);
         }
         qa.innerHTML = cards.length
@@ -1189,19 +1205,19 @@
         el.innerHTML = `
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Order</th><th>Photo / Icon</th><th>Parent</th><th>Name (default)</th><th>ðŸ‡¬ðŸ‡§ EN</th><th>ðŸ‡¸ðŸ‡¦ AR</th><th>ðŸ‡©ðŸ‡ª DE</th><th>Active</th><th></th></tr></thead>
+              <thead><tr><th>Order</th><th>Photo / Icon</th><th>Parent</th><th>Name (default)</th><th>🇬🇧 EN</th><th>🇸🇦 AR</th><th>🇩🇪 DE</th><th>Active</th><th></th></tr></thead>
               <tbody>
                 ${list.map(c => {
-                  const parentName = c.parent_id ? (list.find(p => p.id === c.parent_id)?.name || c.parent_id) : 'â€”';
+                  const parentName = c.parent_id ? (list.find(p => p.id === c.parent_id)?.name || c.parent_id) : '—';
                   return `
                   <tr>
                     <td><strong>${c.order ?? 999}</strong></td>
-                    <td>${c.photo_url ? `<img src="${escapeHtml(c.photo_url)}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover">` : 'â€”'}</td>
+                    <td>${c.photo_url ? `<img src="${escapeHtml(c.photo_url)}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover">` : '—'}</td>
                     <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(parentName)}</td>
-                    <td><strong>${escapeHtml(c.name || 'â€”')}</strong></td>
-                    <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_en || 'â€”')}</td>
-                    <td style="color:var(--gray-500);font-size:0.82rem;direction:rtl">${escapeHtml(c.name_ar || 'â€”')}</td>
-                    <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_de || 'â€”')}</td>
+                    <td><strong>${escapeHtml(c.name || '—')}</strong></td>
+                    <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_en || '—')}</td>
+                    <td style="color:var(--gray-500);font-size:0.82rem;direction:rtl">${escapeHtml(c.name_ar || '—')}</td>
+                    <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_de || '—')}</td>
                     <td><span class="badge badge-toggle ${c.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="category-${c.id}" title="Click to toggle">${c.is_active !== false ? 'Active' : 'Inactive'}</span></td>
                     <td style="display:flex;gap:6px;align-items:center">
                       <button class="btn btn-secondary" data-edit="${c.id}" data-cat='${JSON.stringify(c).replace(/'/g, "&#39;")}'>Edit</button>
@@ -1314,7 +1330,7 @@
       const chip = document.createElement('span');
       chip.className = 'settings-chip';
       chip.dataset.code = codeUpper;
-      chip.innerHTML = `${escapeHtml(codeUpper)} <button type="button" class="chip-remove" aria-label="Remove">Ã—</button>`;
+      chip.innerHTML = `${escapeHtml(codeUpper)} <button type="button" class="chip-remove" aria-label="Remove">×</button>`;
       chip.querySelector('.chip-remove').addEventListener('click', () => chip.remove());
       el.appendChild(chip);
     });
@@ -1330,7 +1346,7 @@
 
   window.loadAppSettings = async function () {
     const statusEl = document.getElementById('settings-status');
-    if (statusEl) statusEl.textContent = 'Loadingâ€¦';
+    if (statusEl) statusEl.textContent = 'Loading…';
     try {
       const res = await api('/config/app');
       const d = res.data || res;
@@ -1360,7 +1376,7 @@
       if (transferPhoneEl) transferPhoneEl.value = transferPhone;
       if (transferNoteEl) transferNoteEl.value = transferNote;
       
-      // âœ… NEW: Load booking policies
+      // ✅ NEW: Load booking policies
       const noShowThresholdEl = document.getElementById('no-show-threshold');
       const noShowRateThresholdEl = document.getElementById('no-show-rate-threshold');
       const cancellationThresholdEl = document.getElementById('cancellation-threshold');
@@ -1386,7 +1402,7 @@
       const autoHint = document.getElementById('settings-auto-sync-hint');
       if (minV) minV.value = d.minimum_version || '';
       if (latV) latV.value = (d.latest_version_override || '').trim();
-      if (hiV) hiV.value = d.highest_seen_client_version || 'â€”';
+      if (hiV) hiV.value = d.highest_seen_client_version || '—';
       if (rel) rel.value = d.release_notes || '';
       if (autoSyncCb) autoSyncCb.checked = d.auto_sync_min_from_clients === true;
       if (autoHint) {
@@ -1394,14 +1410,14 @@
         const eff = d.auto_sync_min_effective === true;
         if (src === 'environment_on') {
           autoHint.textContent =
-            'âš ï¸ Firebase: AUTO_SYNC_MIN_FROM_CLIENTS=true â€” Ø§Ù„Ù…Ø²Ø§Ù…Ù†Ø© Ø§Ù„ØªÙ„Ù‚Ø§Ø¦ÙŠØ© Ù…ÙØ¹Ù‘Ù„Ø© Ù…Ù† Ø§Ù„Ø³ÙŠØ±ÙØ± ÙˆÙ„Ø§ ÙŠÙ…ÙƒÙ† Ø¥ÙŠÙ‚Ø§ÙÙ‡Ø§ Ù…Ù† Ù‡Ù†Ø§ Ø­ØªÙ‰ ØªÙØ²Ø§Ù„ Ù…Ù† Ù…ØªØºÙŠØ±Ø§Øª Ø§Ù„Ø¨ÙŠØ¦Ø©.';
+            '⚠️ Firebase: AUTO_SYNC_MIN_FROM_CLIENTS=true — Auto-sync minimum is enforced from the server environment and cannot be turned off here until you remove it from hosting / CI env vars.';
         } else if (src === 'environment_off') {
           autoHint.textContent =
-            'â„¹ï¸ Firebase: AUTO_SYNC_MIN_FROM_CLIENTS=false â€” Ø§Ù„Ù…Ø²Ø§Ù…Ù†Ø© Ø§Ù„ØªÙ„Ù‚Ø§Ø¦ÙŠØ© Ù…Ø¹Ø·Ù‘Ù„Ø© Ù…Ù† Ø§Ù„Ø³ÙŠØ±ÙØ± Ø­ØªÙ‰ Ù„Ùˆ ÙØ¹Ù‘Ù„Øª Ø§Ù„Ù…Ø±Ø¨Ø¹.';
+            'ℹ️ Firebase: AUTO_SYNC_MIN_FROM_CLIENTS=false — Server-side auto-sync is off until you enable the switch here.';
         } else {
           autoHint.textContent = eff
-            ? 'âœ“ Ø§Ù„Ù…Ø²Ø§Ù…Ù†Ø© Ø§Ù„ØªÙ„Ù‚Ø§Ø¦ÙŠØ© Ù…ÙØ¹Ù‘Ù„Ø© Ù…Ù† Ù„ÙˆØ­Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±Ø© (ÙŠÙ…ÙƒÙ† Ø¥ÙŠÙ‚Ø§ÙÙ‡Ø§ Ø¨Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ù…Ø±Ø¨Ø¹ ÙˆØ§Ù„Ø­ÙØ¸).'
-            : 'Ø§Ù„Ù…Ø²Ø§Ù…Ù†Ø© Ø§Ù„ØªÙ„Ù‚Ø§Ø¦ÙŠØ© Ù…Ø¹Ø·Ù‘Ù„Ø© â€” ÙØ¹Ù‘Ù„ Ø§Ù„Ù…Ø±Ø¨Ø¹ ÙÙ‚Ø· Ø¥Ø°Ø§ ÙÙ‡Ù…Øª Ø§Ù„Ù…Ø®Ø§Ø·Ø±.';
+            ? '✓ Auto-sync minimum is ON from the admin panel (disable with the switch and Save).'
+            : 'Auto-sync minimum is OFF — enable the switch only if you understand the risks.';
         }
       }
       
@@ -1444,7 +1460,7 @@
       const chip = document.createElement('span');
       chip.className = 'settings-chip';
       chip.dataset.code = raw;
-      chip.innerHTML = `${escapeHtml(raw)} <button type="button" class="chip-remove" aria-label="Remove">Ã—</button>`;
+      chip.innerHTML = `${escapeHtml(raw)} <button type="button" class="chip-remove" aria-label="Remove">×</button>`;
       chip.querySelector('.chip-remove').addEventListener('click', () => chip.remove());
       container.appendChild(chip);
       input.value = '';
@@ -1459,7 +1475,7 @@
     const countries_with_locations = getCodesFromChips('settings-locations-chips');
     const german_speaking_countries = getCodesFromChips('settings-german-chips');
     const statusEl = document.getElementById('settings-status');
-    if (statusEl) statusEl.textContent = 'Savingâ€¦';
+    if (statusEl) statusEl.textContent = 'Saving…';
     try {
       await api('/config/app', {
         method: 'PUT',
@@ -1487,7 +1503,7 @@
 
   document.getElementById('save-pro-news')?.addEventListener('click', async () => {
     const statusEl = document.getElementById('settings-status');
-    if (statusEl) statusEl.textContent = 'Savingâ€¦';
+    if (statusEl) statusEl.textContent = 'Saving…';
     try {
       const raw = (document.getElementById('settings-pro-news')?.value || '');
       const professional_news_ticker = raw
@@ -1515,10 +1531,10 @@
     const minRaw = (minEl?.value || '').trim();
     const latRaw = (latEl?.value || '').trim();
     if (!minRaw) {
-      toast('Minimum version Ù…Ø·Ù„ÙˆØ¨', 'error');
+      toast('Minimum version is required', 'error');
       return;
     }
-    if (statusEl) statusEl.textContent = 'Saving version settingsâ€¦';
+    if (statusEl) statusEl.textContent = 'Saving version settings…';
     try {
       await api('/config/app', {
         method: 'PUT',
@@ -1529,7 +1545,7 @@
           auto_sync_min_from_clients: syncEl?.checked === true,
         }),
       });
-      toast('ØªÙ… Ø­ÙØ¸ Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ø¥ØµØ¯Ø§Ø± / Version settings saved', 'success');
+      toast('Version settings saved', 'success');
       if (statusEl) statusEl.textContent = 'Saved.';
       await loadAppSettings();
     } catch (err) {
@@ -1621,12 +1637,12 @@
           toast(err.message, 'error');
         } finally {
           saveBtn.disabled = false;
-          saveBtn.textContent = 'ðŸ’¾ Save Global Settings';
+          saveBtn.textContent = '💾 Save Global Settings';
         }
       });
     }
 
-    // âœ… NEW: Save booking policies
+    // ✅ NEW: Save booking policies
     const savePoliciesBtn = document.getElementById('save-booking-policies');
     if (savePoliciesBtn) {
       savePoliciesBtn.addEventListener('click', async () => {
@@ -1652,7 +1668,7 @@
           toast(err.message, 'error');
         } finally {
           savePoliciesBtn.disabled = false;
-          savePoliciesBtn.textContent = 'ðŸ’¾ Save Booking Policies';
+          savePoliciesBtn.textContent = '💾 Save Booking Policies';
         }
       });
     }
@@ -1680,15 +1696,15 @@
                   <tr>
                     <td>${c.order || 999}</td>
                     <td><strong>${escapeHtml(c.code || c.key)}</strong></td>
-                    <td>${escapeHtml(c.flag || '')}</td>
+                    <td>${escapeHtml(countryFlagForDisplay(c) || (c.flag || ''))}</td>
                     <td>${escapeHtml(c.name || c.key)}</td>
-                    <td>${escapeHtml(c.name_en || 'â€”')}</td>
-                    <td>${escapeHtml(c.name_ar || 'â€”')}</td>
-                    <td>${c.platform_fee_percentage != null ? c.platform_fee_percentage + '%' : 'â€”'}</td>
+                    <td>${escapeHtml(c.name_en || '—')}</td>
+                    <td>${escapeHtml(c.name_ar || '—')}</td>
+                    <td>${c.platform_fee_percentage != null ? c.platform_fee_percentage + '%' : '—'}</td>
                     <td><span class="badge badge-toggle ${c.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="country-${c.id}" title="Click to toggle Active / Inactive">${c.is_active !== false ? 'Active' : 'Inactive'}</span></td>
                     <td>
-                      <button class="btn-icon" onclick="editCountry('${c.id}')">âœï¸</button>
-                      <button class="btn-icon" onclick="deleteCountryConfirm('${c.id}', '${escapeHtml(c.name || c.code)}')">ðŸ—‘ï¸</button>
+                      <button class="btn-icon" onclick="editCountry('${c.id}')">✏️</button>
+                      <button class="btn-icon" onclick="deleteCountryConfirm('${c.id}', '${escapeHtml(c.name || c.code)}')">🗑️</button>
                     </td>
                   </tr>
                 `).join('')}
@@ -1714,7 +1730,7 @@
           .slice()
           .sort((a, b) => (a.order || 999) - (b.order || 999));
         sel.innerHTML = dropdownList
-          .map(c => `<option value="${escapeHtml((c.code || c.key || '').toUpperCase())}">${escapeHtml(c.flag || '')} ${escapeHtml(c.name || c.code)} (${escapeHtml(c.code || c.key)})</option>`)
+          .map(c => `<option value="${escapeHtml((c.code || c.key || '').toUpperCase())}">${escapeHtml(countryFlagForDisplay(c) || (c.flag || ''))} ${escapeHtml(c.name || c.code)} (${escapeHtml(c.code || c.key)})</option>`)
           .join('');
         const codes = dropdownList.map(c => (c.code || c.key || '').toUpperCase());
         if (currentVal && codes.includes(currentVal)) {
@@ -1873,10 +1889,10 @@
                 ${list.map(g => `
                   <tr>
                     <td><strong>${g.order ?? 999}</strong></td>
-                    <td><code style="font-size:0.75rem">${escapeHtml(g.key || 'â€”')}</code></td>
-                    <td><strong>${escapeHtml(g.name || 'â€”')}</strong></td>
-                    <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(g.name_en || 'â€”')}</td>
-                    <td style="color:var(--gray-500);font-size:0.82rem;direction:rtl">${escapeHtml(g.name_ar || 'â€”')}</td>
+                    <td><code style="font-size:0.75rem">${escapeHtml(g.key || '—')}</code></td>
+                    <td><strong>${escapeHtml(g.name || '—')}</strong></td>
+                    <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(g.name_en || '—')}</td>
+                    <td style="color:var(--gray-500);font-size:0.82rem;direction:rtl">${escapeHtml(g.name_ar || '—')}</td>
                     <td><span class="badge badge-toggle ${g.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="governorate-${g.id}" title="Click to toggle">${g.is_active !== false ? 'Active' : 'Inactive'}</span></td>
                     <td style="display:flex;gap:6px">
                       <button class="btn btn-secondary" data-edit='${JSON.stringify(g).replace(/'/g, "&#39;")}'>Edit</button>
@@ -1933,12 +1949,12 @@
                 ${list.map(c => `
                   <tr>
                     <td><strong>${c.order ?? 999}</strong></td>
-                    <td><code style="font-size:0.75rem">${escapeHtml(c.key || 'â€”')}</code></td>
-                    <td><strong>${escapeHtml(c.name || 'â€”')}</strong></td>
-                    <td style="font-size:0.82rem">${escapeHtml((govMap[c.governorate_id] || {}).name || 'â€”')}</td>
-                    <td style="font-size:0.82rem">${c.subscription_price != null ? (c.subscription_price + ' EGP') : 'â€”'}</td>
-                    <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_en || 'â€”')}</td>
-                    <td style="color:var(--gray-500);font-size:0.82rem;direction:rtl">${escapeHtml(c.name_ar || 'â€”')}</td>
+                    <td><code style="font-size:0.75rem">${escapeHtml(c.key || '—')}</code></td>
+                    <td><strong>${escapeHtml(c.name || '—')}</strong></td>
+                    <td style="font-size:0.82rem">${escapeHtml((govMap[c.governorate_id] || {}).name || '—')}</td>
+                    <td style="font-size:0.82rem">${c.subscription_price != null ? (c.subscription_price + ' EGP') : '—'}</td>
+                    <td style="color:var(--gray-500);font-size:0.82rem">${escapeHtml(c.name_en || '—')}</td>
+                    <td style="color:var(--gray-500);font-size:0.82rem;direction:rtl">${escapeHtml(c.name_ar || '—')}</td>
                     <td><span class="badge badge-toggle ${c.is_active !== false ? 'badge-green' : 'badge-gray'}" data-toggle-active="city-${c.id}" title="Click to toggle">${c.is_active !== false ? 'Active' : 'Inactive'}</span></td>
                     <td style="display:flex;gap:6px">
                       <button class="btn btn-secondary" data-edit='${JSON.stringify(c).replace(/'/g, "&#39;")}'>Edit</button>
@@ -2131,7 +2147,7 @@
       if (sel) {
         const roots = flat.filter((p) => !p.parent_id && (!cat?.id || p.id !== cat.id));
         sel.innerHTML =
-          '<option value="">â€” Top-level (shown on home) â€”</option>' +
+          '<option value="">— Top-level (shown on home) —</option>' +
           roots
             .map(
               (p) =>
@@ -2185,7 +2201,7 @@
       input.value = '';
       return;
     }
-    status.textContent = 'Uploadingâ€¦';
+    status.textContent = 'Uploading…';
     preview.style.display = 'flex';
     previewImg.src = URL.createObjectURL(file);
     try {
@@ -2208,7 +2224,7 @@
       });
       if (res.success && res.data?.url) {
         _catPhotoUrl = res.data.url;
-        status.textContent = 'âœ“ Uploaded';
+        status.textContent = '✓ Uploaded';
         toast('Image uploaded', 'success');
       } else {
         throw new Error('Upload failed');
@@ -2297,17 +2313,17 @@
         el.innerHTML = list.map(a => {
           const isAreaChange = a.type === 'area_change';
           const isAccountDeletion = a.type === 'account_deletion';
-          const areaDisplay = a.professional_area_display || [a.professional_governorate, a.professional_city].filter(Boolean).join(', ') || 'â€”';
-          const oldAreaDisplay = a.old_area_display || [a.old_governorate, a.old_city].filter(Boolean).join(', ') || 'â€”';
+          const areaDisplay = a.professional_area_display || [a.professional_governorate, a.professional_city].filter(Boolean).join(', ') || '—';
+          const oldAreaDisplay = a.old_area_display || [a.old_governorate, a.old_city].filter(Boolean).join(', ') || '—';
           const field = (label, value, isLink) =>
             isLink && value
               ? `<div class="app-field"><span class="app-field-label">${escapeHtml(label)}:</span> <a href="${escapeHtml(value)}" target="_blank" rel="noopener">${escapeHtml(value)}</a></div>`
-              : `<div class="app-field"><span class="app-field-label">${escapeHtml(label)}:</span> ${escapeHtml(value || 'â€”')}</div>`;
+              : `<div class="app-field"><span class="app-field-label">${escapeHtml(label)}:</span> ${escapeHtml(value || '—')}</div>`;
           const parts = [];
           if (isAccountDeletion) {
             parts.push(`<div style="padding:12px 14px;background:rgba(239,68,68,0.1);border-radius:10px;border:1px solid rgba(239,68,68,0.3);font-size:0.9rem;margin-bottom:14px">
-              <div class="app-field"><span class="app-field-label">Professional:</span> ${escapeHtml(a.professional_name || a.user?.username || 'â€”')}</div>
-              <div class="app-field" style="margin-top:6px"><span class="app-field-label">Category:</span> ${escapeHtml(a.professional_category || 'â€”')}</div>
+              <div class="app-field"><span class="app-field-label">Professional:</span> ${escapeHtml(a.professional_name || a.user?.username || '—')}</div>
+              <div class="app-field" style="margin-top:6px"><span class="app-field-label">Category:</span> ${escapeHtml(a.professional_category || '—')}</div>
             </div>`);
           } else if (isAreaChange) {
             parts.push(`<div style="padding:12px 14px;background:var(--purple-pale);border-radius:10px;border:1px solid rgba(139,92,246,0.25);font-size:0.9rem;margin-bottom:14px">
@@ -2336,13 +2352,13 @@
               ${a.user?.profile_picture ? `<img src="${escapeHtml(a.user.profile_picture)}" alt="" style="width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0">` : ''}
               <div class="card-info" style="flex:1;min-width:0">
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-                  <strong style="font-size:1.05rem">${escapeHtml(a.professional_name || a.user?.username || 'â€”')}</strong>
+                  <strong style="font-size:1.05rem">${escapeHtml(a.professional_name || a.user?.username || '—')}</strong>
                   ${isAccountDeletion ? '<span class="badge" style="background:rgba(239,68,68,0.2);color:#ef4444">Account Deletion</span>' : isAreaChange ? '<span class="badge badge-blue">Area Change</span>' : '<span class="badge badge-purple">New Professional</span>'}
                 </div>
-                <div style="color:var(--text-mid);font-size:0.9rem;margin-bottom:14px">@${escapeHtml(a.user?.username || a.user?.email || 'â€”')} Â· ${formatDateShort(a.created_at)}</div>
+                <div style="color:var(--text-mid);font-size:0.9rem;margin-bottom:14px">@${escapeHtml(a.user?.username || a.user?.email || '—')} · ${formatDateShort(a.created_at)}</div>
                 <div style="font-size:0.82rem;color:var(--text-2);margin-bottom:14px;line-height:1.5">
-                  <strong>Mobile</strong> ${escapeHtml((a.user?.phone_number && String(a.user.phone_number).trim()) || 'â€”')}
-                  ${(a.user?.platform_contact_phone && String(a.user.platform_contact_phone).trim()) ? ` Â· <strong>Platform contact</strong> ${escapeHtml(String(a.user.platform_contact_phone).trim())}` : ''}
+                  <strong>Mobile</strong> ${escapeHtml((a.user?.phone_number && String(a.user.phone_number).trim()) || '—')}
+                  ${(a.user?.platform_contact_phone && String(a.user.platform_contact_phone).trim()) ? ` · <strong>Platform contact</strong> ${escapeHtml(String(a.user.platform_contact_phone).trim())}` : ''}
                 </div>
                 <div style="font-size:0.9rem;line-height:1.6" class="app-fields">${bodyHtml}</div>
               </div>
@@ -2427,27 +2443,27 @@
             <tbody>
               ${list.map(u => `
                 <tr>
-                  <td><strong>${escapeHtml((u.display_name || '').trim() || 'â€”')}</strong></td>
-                  <td><span class="booking-detail-muted">${escapeHtml(u.username || 'â€”')}</span></td>
-                  <td style="color:var(--gray-500);font-size:0.8rem">${escapeHtml(u.email || 'â€”')}</td>
+                  <td><strong>${escapeHtml((u.display_name || '').trim() || '—')}</strong></td>
+                  <td><span class="booking-detail-muted">${escapeHtml(u.username || '—')}</span></td>
+                  <td style="color:var(--gray-500);font-size:0.8rem">${escapeHtml(u.email || '—')}</td>
                   <td style="font-size:0.78rem;max-width:140px">
-                    <div>${escapeHtml((u.phone_number && String(u.phone_number).trim()) || 'â€”')}</div>
-                    ${u.is_professional ? `<div style="color:var(--gray-500);font-size:0.72rem;margin-top:2px" title="Platform contact">Plt: ${escapeHtml((u.platform_contact_phone && String(u.platform_contact_phone).trim()) || 'â€”')}</div>` : ''}
+                    <div>${escapeHtml((u.phone_number && String(u.phone_number).trim()) || '—')}</div>
+                    ${u.is_professional ? `<div style="color:var(--gray-500);font-size:0.72rem;margin-top:2px" title="Platform contact">Plt: ${escapeHtml((u.platform_contact_phone && String(u.platform_contact_phone).trim()) || '—')}</div>` : ''}
                   </td>
                   <td>
                     <div style="display:flex;align-items:center;gap:6px">
-                      <code style="font-size:0.72rem;background:var(--gray-100);padding:2px 6px;border-radius:4px;color:var(--gray-600);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block" title="${escapeHtml(u.uid || '')}">${escapeHtml(u.uid || 'â€”')}</code>
+                      <code style="font-size:0.72rem;background:var(--gray-100);padding:2px 6px;border-radius:4px;color:var(--gray-600);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block" title="${escapeHtml(u.uid || '')}">${escapeHtml(u.uid || '—')}</code>
                       <button type="button" class="btn-copy-uid" data-uid="${escapeHtml(u.uid || '')}" title="Copy UID" style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:13px;padding:2px 4px;border-radius:4px;flex-shrink:0">&#10697;</button>
                     </div>
                   </td>
                   <td><span class="badge ${u.is_professional ? 'badge-purple' : 'badge-gray'}">${u.is_professional ? 'Professional' : 'User'}</span></td>
                   <td style="font-size:0.75rem;white-space:nowrap">
-                    ${u.booking_restricted ? '<span class="badge badge-amber" title="Booking restricted">ðŸ”’ Book</span> ' : ''}
-                    ${u.is_banned ? '<span class="badge badge-red" title="Banned">â›” Ban</span> ' : ''}
-                    ${u.platform_fee_suspended ? '<span class="badge badge-gray" title="Platform fee suspended">ðŸ’³ Fee</span>' : ''}
-                    ${!u.booking_restricted && !u.is_banned && !u.platform_fee_suspended ? 'â€”' : ''}
+                    ${u.booking_restricted ? '<span class="badge badge-amber" title="Booking restricted">🔒 Book</span> ' : ''}
+                    ${u.is_banned ? '<span class="badge badge-red" title="Banned">⛔ Ban</span> ' : ''}
+                    ${u.platform_fee_suspended ? '<span class="badge badge-gray" title="Platform fee suspended">💳 Fee</span>' : ''}
+                    ${!u.booking_restricted && !u.is_banned && !u.platform_fee_suspended ? '—' : ''}
                   </td>
-                  <td>${u.is_verified ? '<span style="color:var(--purple);font-size:1.1rem" title="Verified">âœ“</span>' : 'â€”'}</td>
+                  <td>${u.is_verified ? '<span style="color:var(--purple);font-size:1.1rem" title="Verified">✓</span>' : '—'}</td>
                   <td style="color:var(--gray-500);font-size:0.8rem">${formatDateShort(u.created_at)}</td>
                   <td><button type="button" class="btn btn-secondary" data-uid="${u.uid}">Edit</button></td>
                 </tr>
@@ -2462,7 +2478,7 @@
           b.addEventListener('click', (e) => {
             e.stopPropagation();
             navigator.clipboard.writeText(b.dataset.uid).then(() => {
-              b.textContent = 'âœ“';
+              b.textContent = '✓';
               setTimeout(() => { b.innerHTML = '&#10697;'; }, 1500);
               toast('User ID copied to clipboard', 'success');
             });
@@ -2472,7 +2488,7 @@
 
       const pagEl = document.getElementById('users-pagination');
       if (search) {
-        // No pagination when searching â€” results are global
+        // No pagination when searching — results are global
         pagEl.innerHTML = `<span style="color:var(--gray-400);font-size:0.875rem">${list.length} result${list.length !== 1 ? 's' : ''} found</span>`;
       } else {
         const page = usersPage;
@@ -2487,7 +2503,7 @@
         pagEl.innerHTML = `
           <button ${page <= 1 ? 'disabled' : ''} data-page="prev">Previous</button>
           ${pageBtns}
-          ${hasMore ? '<span class="pagination-ellipsis">â€¦</span>' : ''}
+          ${hasMore ? '<span class="pagination-ellipsis">…</span>' : ''}
           <button ${!hasMore ? 'disabled' : ''} data-page="next">Next</button>
         `;
         pagEl.querySelectorAll('[data-page]').forEach(btn => {
@@ -2517,8 +2533,8 @@
   function formatBookingRepSummary(user) {
     const br = user.booking_reputation || {};
     const lines = [];
-    lines.push(`No-shows: ${br.no_shows ?? 0} Â· Rate: ${br.no_show_rate ?? 0}%`);
-    lines.push(`Cancellations: ${br.cancellations ?? 0} Â· Bookings counted: ${br.total_bookings_created ?? 0} Â· Attended: ${br.appointments_attended ?? 0}`);
+    lines.push(`No-shows: ${br.no_shows ?? 0} · Rate: ${br.no_show_rate ?? 0}%`);
+    lines.push(`Cancellations: ${br.cancellations ?? 0} · Bookings counted: ${br.total_bookings_created ?? 0} · Attended: ${br.appointments_attended ?? 0}`);
     const restrictedLabel = user.booking_restricted_active
       ? 'Yes (active)'
       : br.is_restricted
@@ -2540,14 +2556,14 @@
 
   function openUserModal(user) {
     document.getElementById('user-id').value = user.uid;
-    document.getElementById('user-display-name').textContent = `${user.username || 'â€”'} Â· ${user.email || 'â€”'}`;
+    document.getElementById('user-display-name').textContent = `${user.username || '—'} · ${user.email || '—'}`;
     const persEl = document.getElementById('user-phone-personal');
     const platSpan = document.getElementById('user-phone-platform');
     const platWrap = document.getElementById('user-phone-platform-wrap');
-    if (persEl) persEl.textContent = (user.phone_number && String(user.phone_number).trim()) || 'â€”';
+    if (persEl) persEl.textContent = (user.phone_number && String(user.phone_number).trim()) || '—';
     if (user.is_professional && platWrap && platSpan) {
       show(platWrap);
-      platSpan.textContent = (user.platform_contact_phone && String(user.platform_contact_phone).trim()) || 'â€”';
+      platSpan.textContent = (user.platform_contact_phone && String(user.platform_contact_phone).trim()) || '—';
     } else if (platWrap) {
       hide(platWrap);
     }
@@ -2704,10 +2720,10 @@
             <tbody>
               ${list.map(t => `
                 <tr>
-                  <td><strong>${escapeHtml(t.subject || 'â€”')}</strong></td>
-                  <td><span class="badge ${statusBadge[t.status] || 'badge-gray'}">${escapeHtml(t.status || 'â€”')}</span></td>
+                  <td><strong>${escapeHtml(t.subject || '—')}</strong></td>
+                  <td><span class="badge ${statusBadge[t.status] || 'badge-gray'}">${escapeHtml(t.status || '—')}</span></td>
                   <td style="font-size:0.82rem;max-width:220px">
-                    <strong>${escapeHtml((t.user_display_name || '').trim() || (t.user_username ? '@' + t.user_username : 'â€”'))}</strong>
+                    <strong>${escapeHtml((t.user_display_name || '').trim() || (t.user_username ? '@' + t.user_username : '—'))}</strong>
                     ${t.user_display_name && t.user_username ? `<div class="booking-detail-muted" style="font-size:0.78rem">@${escapeHtml(t.user_username)}</div>` : ''}
                     ${t.user_email ? `<div style="color:var(--gray-500);font-size:0.72rem;margin-top:2px">${escapeHtml(t.user_email)}</div>` : ''}
                     ${t.user_id ? `<div style="display:flex;align-items:center;gap:6px;margin-top:4px">
@@ -2730,7 +2746,7 @@
           b.addEventListener('click', (e) => {
             e.stopPropagation();
             navigator.clipboard.writeText(b.dataset.uid).then(() => {
-              b.textContent = 'âœ“';
+              b.textContent = '✓';
               setTimeout(() => { b.innerHTML = '&#10697;'; }, 1500);
               toast('User ID copied to clipboard', 'success');
             });
@@ -2796,7 +2812,7 @@
       messagesEl.innerHTML = sorted.map(m => `
         <div style="margin-bottom:10px;padding:10px;border-radius:8px;background:${m.is_admin ? 'var(--purple-pale)' : userMsgBg};border:${m.is_admin ? '1px solid rgba(139,92,246,0.2)' : userMsgBorder}">
           <div style="font-size:0.75rem;font-weight:600;color:var(--t2);margin-bottom:4px">
-            ${m.is_admin ? 'Tickets Team' : 'User'} Â· ${formatDate(m.created_at)}
+            ${m.is_admin ? 'Tickets Team' : 'User'} · ${formatDate(m.created_at)}
           </div>
           <div style="font-size:0.9rem;white-space:pre-wrap;color:var(--t1)">${escapeHtml(m.text || '')}</div>
         </div>
@@ -2852,19 +2868,19 @@
       let userLine = '';
       if (dn || un) {
         userLine = (dn ? `<strong>${escapeHtml(dn)}</strong>` : '') + (un ? `${dn ? ' ' : ''}<span class="booking-detail-muted">@${escapeHtml(un)}</span>` : '');
-        if (em) userLine += ` Â· <span style="color:var(--gray-500);font-size:0.8rem">${escapeHtml(em)}</span>`;
+        if (em) userLine += ` · <span style="color:var(--gray-500);font-size:0.8rem">${escapeHtml(em)}</span>`;
       } else if (ticket.user_id) {
         userLine = `<code style="font-size:0.78rem" title="${escapeHtml(ticket.user_id)}">${escapeHtml(ticket.user_id)}</code>`;
       } else {
-        userLine = 'â€”';
+        userLine = '—';
       }
       if ((dn || un) && ticket.user_id) {
-        userLine += ` Â· <small style="color:var(--gray-500)">UID</small> <code style="font-size:0.72rem">${escapeHtml(ticket.user_id)}</code>`;
+        userLine += ` · <small style="color:var(--gray-500)">UID</small> <code style="font-size:0.72rem">${escapeHtml(ticket.user_id)}</code>`;
       }
       metaEl.innerHTML = `
-        <span class="badge ${badgeMap[ticket.status] || 'badge-gray'}">${escapeHtml(ticket.status || 'â€”')}</span>
-        Â· User: ${userLine}
-        Â· Created ${formatDate(ticket.created_at)}
+        <span class="badge ${badgeMap[ticket.status] || 'badge-gray'}">${escapeHtml(ticket.status || '—')}</span>
+        · User: ${userLine}
+        · Created ${formatDate(ticket.created_at)}
       `;
 
       const sorted = (messages || []).sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
@@ -2873,7 +2889,7 @@
       messagesEl.innerHTML = sorted.map(m => `
         <div style="margin-bottom:10px;padding:10px;border-radius:8px;background:${m.is_admin ? 'var(--purple-pale)' : userMsgBg};border:${m.is_admin ? '1px solid rgba(139,92,246,0.2)' : userMsgBorder}">
           <div style="font-size:0.75rem;font-weight:600;color:var(--t2);margin-bottom:4px">
-            ${m.is_admin ? 'Tickets Team' : 'User'} Â· ${formatDate(m.created_at)}
+            ${m.is_admin ? 'Tickets Team' : 'User'} · ${formatDate(m.created_at)}
           </div>
           <div style="font-size:0.9rem;white-space:pre-wrap;color:var(--t1)">${escapeHtml(m.text || '')}</div>
         </div>
@@ -3020,9 +3036,9 @@
           <div class="activity-item">
             <div class="activity-dot green"></div>
             <div class="activity-text">
-              <strong>${escapeHtml(n.title)}</strong> â€” ${escapeHtml(n.body)}
+              <strong>${escapeHtml(n.title)}</strong> — ${escapeHtml(n.body)}
               <div style="font-size:0.8rem;color:var(--gray-400);margin-top:3px">
-                Target: ${escapeHtml(n.target)}${n.uid ? ` Â· UID: ${escapeHtml(n.uid)}` : ''}
+                Target: ${escapeHtml(n.target)}${n.uid ? ` · UID: ${escapeHtml(n.uid)}` : ''}
               </div>
             </div>
             <div class="activity-time">${formatDate(n.sentAt)}</div>
@@ -3055,7 +3071,7 @@
                 <td>
                   ${a.id === admin?.id ? `
                     <button class="btn btn-secondary" data-edit="${a.id}">Edit</button>
-                  ` : a.role === 'super_admin' ? '<span style="color:var(--gray-400);font-size:0.8rem">â€”</span>' : `
+                  ` : a.role === 'super_admin' ? '<span style="color:var(--gray-400);font-size:0.8rem">—</span>' : `
                     <div style="display:flex;gap:6px;flex-wrap:wrap">
                       <button class="btn btn-secondary" data-edit="${a.id}">Edit</button>
                       <button class="btn btn-secondary" data-deactivate="${a.id}">Deactivate</button>
@@ -3249,11 +3265,11 @@
     } else if (rowsLength === 0) {
       summary = 'No rows on this page.';
     } else if (scanTruncated && totalFiltered != null) {
-      summary = `Showing <strong>${start}â€“${end}</strong> Â· loaded at least <strong>${totalFiltered.toLocaleString()}</strong> matches (scan cap â€” narrow filters for full totals).`;
+      summary = `Showing <strong>${start}–${end}</strong> · loaded at least <strong>${totalFiltered.toLocaleString()}</strong> matches (scan cap — narrow filters for full totals).`;
     } else if (totalFiltered != null && totalPages != null) {
-      summary = `Showing <strong>${start}â€“${end}</strong> of <strong>${totalFiltered.toLocaleString()}</strong> booking${totalFiltered === 1 ? '' : 's'}`;
+      summary = `Showing <strong>${start}–${end}</strong> of <strong>${totalFiltered.toLocaleString()}</strong> booking${totalFiltered === 1 ? '' : 's'}`;
     } else {
-      summary = `Showing <strong>${start}â€“${end}</strong>`;
+      summary = `Showing <strong>${start}–${end}</strong>`;
     }
 
     const canFirst = page > 1;
@@ -3273,13 +3289,13 @@
       lo = Math.max(1, hi - span + 1);
       if (lo > 1) {
         pageButtons += `<button type="button" class="btn btn-secondary btn-tiny" onclick="loadBookingsSimple(1)">1</button>`;
-        if (lo > 2) pageButtons += '<span class="pagination-ellipsis">â€¦</span>';
+        if (lo > 2) pageButtons += '<span class="pagination-ellipsis">…</span>';
       }
       for (let i = lo; i <= hi; i++) {
         pageButtons += `<button type="button" class="btn ${i === page ? 'btn-primary' : 'btn-secondary'} btn-tiny" onclick="loadBookingsSimple(${i})">${i}</button>`;
       }
       if (hi < totalPages) {
-        if (hi < totalPages - 1) pageButtons += '<span class="pagination-ellipsis">â€¦</span>';
+        if (hi < totalPages - 1) pageButtons += '<span class="pagination-ellipsis">…</span>';
         pageButtons += `<button type="button" class="btn btn-secondary btn-tiny" onclick="loadBookingsSimple(${totalPages})">${totalPages}</button>`;
       }
     } else if (totalPages == null && (scanTruncated || hasMore || page > 1)) {
@@ -3348,7 +3364,7 @@
       } else if (uid) {
         main = `<code class="booking-detail-mono">${escapeHtml(String(uid))}</code>`;
       } else {
-        main = 'â€”';
+        main = '—';
       }
       const uidSmall = (dn || un) && uid
         ? `<br><small class="booking-detail-muted">UID: <code class="booking-detail-mono">${escapeHtml(String(uid))}</code></small>`
@@ -3357,7 +3373,7 @@
     }
 
     const cur = (b.booking_currency && String(b.booking_currency).trim()) || 'EGP';
-    const amt = b.booking_amount != null && b.booking_amount !== '' ? `${Number(b.booking_amount).toFixed(2)} ${cur}` : 'â€”';
+    const amt = b.booking_amount != null && b.booking_amount !== '' ? `${Number(b.booking_amount).toFixed(2)} ${cur}` : '—';
     const branchName = (b.branch_display_name && String(b.branch_display_name).trim()) || '';
     const branchId = b.branch_id ? String(b.branch_id) : '';
     const branch =
@@ -3365,7 +3381,7 @@
         ? `${escapeHtml(branchName)}${branchId ? `<br><small class="booking-detail-muted">ID: <code class="booking-detail-mono">${escapeHtml(branchId)}</code></small>` : ''}`
         : branchId
           ? `<code class="booking-detail-mono">${escapeHtml(branchId)}</code>`
-          : 'â€”';
+          : '—';
     const creatorBlock = personBlock(b.creator_display_name, b.creator_username, b.creator_id);
     const participantsBlock =
       Array.isArray(b.participants_enriched) && b.participants_enriched.length
@@ -3377,15 +3393,15 @@
             .join('')
         : Array.isArray(b.participants)
           ? b.participants.map((p) => `<code class="booking-detail-mono">${escapeHtml(String(p))}</code>`).join(', ')
-          : 'â€”';
+          : '—';
     const cancelledBlock = personBlock(b.cancelled_by_display_name, b.cancelled_by_username, b.cancelled_by);
     const cancelReason = (b.cancelled_reason && String(b.cancelled_reason).trim())
       ? escapeHtml(String(b.cancelled_reason).slice(0, 4000))
-      : 'â€”';
-    let svc = 'â€”';
+      : '—';
+    let svc = '—';
     try {
       if (b.selected_services != null) svc = escapeHtml(JSON.stringify(b.selected_services, null, 2));
-    } catch { svc = 'â€”'; }
+    } catch { svc = '—'; }
 
     const body = document.getElementById('booking-detail-modal-body');
     if (!body) return;
@@ -3394,18 +3410,18 @@
         <button type="button" class="btn btn-secondary" id="booking-detail-copy-id">Copy record ID</button>
       </div>
       <dl class="booking-detail-dl">
-        <dt>Record ID</dt><dd><code class="booking-detail-mono">${escapeHtml(String(b.id))}</code><br><small class="booking-detail-muted">Firestore document id â€” for support &amp; engineering</small></dd>
+        <dt>Record ID</dt><dd><code class="booking-detail-mono">${escapeHtml(String(b.id))}</code><br><small class="booking-detail-muted">Firestore document id — for support &amp; engineering</small></dd>
         <dt>Professional</dt><dd>${escapeHtml(b.professional_name || '')} <span class="booking-detail-muted">@${escapeHtml(b.professional_username || '')}</span></dd>
-        <dt>Professional mobile</dt><dd>${escapeHtml((b.professional_phone && String(b.professional_phone).trim()) || 'â€”')}</dd>
-        <dt>Platform contact (pro)</dt><dd>${escapeHtml((b.professional_platform_contact_phone && String(b.professional_platform_contact_phone).trim()) || 'â€”')}</dd>
+        <dt>Professional mobile</dt><dd>${escapeHtml((b.professional_phone && String(b.professional_phone).trim()) || '—')}</dd>
+        <dt>Platform contact (pro)</dt><dd>${escapeHtml((b.professional_platform_contact_phone && String(b.professional_platform_contact_phone).trim()) || '—')}</dd>
         <dt>Customer</dt><dd>${escapeHtml(b.customer_name || '')} <span class="booking-detail-muted">@${escapeHtml(b.customer_username || '')}</span></dd>
-        <dt>Customer mobile</dt><dd>${escapeHtml((b.customer_phone && String(b.customer_phone).trim()) || 'â€”')}</dd>
+        <dt>Customer mobile</dt><dd>${escapeHtml((b.customer_phone && String(b.customer_phone).trim()) || '—')}</dd>
         <dt>Creator</dt><dd>${creatorBlock}</dd>
         <dt>Participants</dt><dd>${participantsBlock}</dd>
         <dt>Slot</dt><dd>${escapeHtml(formatBookingSlotLabel(b))}</dd>
         <dt>Branch</dt><dd>${branch}</dd>
-        <dt>Match status</dt><dd><span class="badge ${matchStatusBadgeClass(b.status)}">${escapeHtml(b.status || 'â€”')}</span></dd>
-        <dt>Queue status</dt><dd><span class="badge ${bookingQueueBadgeClass(b.booking_status)}">${escapeHtml(b.booking_status || 'â€”')}</span></dd>
+        <dt>Match status</dt><dd><span class="badge ${matchStatusBadgeClass(b.status)}">${escapeHtml(b.status || '—')}</span></dd>
+        <dt>Queue status</dt><dd><span class="badge ${bookingQueueBadgeClass(b.booking_status)}">${escapeHtml(b.booking_status || '—')}</span></dd>
         <dt>Amount</dt><dd>${escapeHtml(amt)}</dd>
         <dt>Created</dt><dd>${escapeHtml(formatDate(b.created_at))}</dd>
         <dt>Updated</dt><dd>${escapeHtml(formatDate(b.updated_at))}</dd>
@@ -3532,14 +3548,14 @@
     const cur = (b.booking_currency && String(b.booking_currency).trim()) || 'EGP';
     const price = b.booking_amount != null && b.booking_amount !== ''
       ? `${Number(b.booking_amount).toFixed(0)} ${cur}`
-      : 'â€”';
+      : '—';
     const rawId = String(b.id);
     const rowNum = rowOffset + idx + 1;
     const branchLabel = (b.branch_display_name && String(b.branch_display_name).trim())
       ? escapeHtml(String(b.branch_display_name).trim())
       : (b.branch_id
         ? `<small class="booking-detail-muted" title="${escapeHtml(String(b.branch_id))}">Unnamed branch</small>`
-        : 'â€”');
+        : '—');
     return `
               <tr>
                 <td class="col-booking-num"><span class="booking-row-num">${rowNum.toLocaleString()}</span></td>
@@ -3547,8 +3563,8 @@
                 <td>${escapeHtml(b.customer_name)}<br><small class="booking-detail-muted">@${escapeHtml(b.customer_username)}</small></td>
                 <td><small>${escapeHtml(formatBookingSlotLabel(b))}</small></td>
                 <td><small>${branchLabel}</small></td>
-                <td><span class="badge ${matchStatusBadgeClass(b.status)}">${escapeHtml(b.status || 'â€”')}</span></td>
-                <td><span class="badge ${bookingQueueBadgeClass(b.booking_status)}">${escapeHtml(b.booking_status || 'â€”')}</span></td>
+                <td><span class="badge ${matchStatusBadgeClass(b.status)}">${escapeHtml(b.status || '—')}</span></td>
+                <td><span class="badge ${bookingQueueBadgeClass(b.booking_status)}">${escapeHtml(b.booking_status || '—')}</span></td>
                 <td>${escapeHtml(price)}</td>
                 <td><small>${escapeHtml(formatDateShort(b.created_at))}</small></td>
                 <td><button type="button" class="btn btn-secondary btn-tiny btn-booking-detail" data-booking-detail-id="${escapeHtml(rawId)}">Details</button></td>
@@ -3668,7 +3684,7 @@
       a.click();
       window.URL.revokeObjectURL(url);
       if (exportCapped) {
-        toast(`Exported ${rows.length} rows (reached export page cap â€” narrow filters if you need the full set).`, 'info');
+        toast(`Exported ${rows.length} rows (reached export page cap — narrow filters if you need the full set).`, 'info');
       } else {
         toast(`Exported ${rows.length} row(s)`, 'success');
       }
@@ -3733,7 +3749,7 @@
           const idJson = JSON.stringify(b.id);
           return `
             <tr>
-              <td><code title="${escapeHtml(b.id)}">${escapeHtml(b.id.substring(0, 8))}â€¦</code></td>
+              <td><code title="${escapeHtml(b.id)}">${escapeHtml(b.id.substring(0, 8))}…</code></td>
               <td>${escapeHtml(b.professional_name)}<br><small style="color:var(--text-mid)">@${escapeHtml(b.professional_username)}</small></td>
               <td>${escapeHtml(b.customer_name)}<br><small style="color:var(--text-mid)">@${escapeHtml(b.customer_username)}</small></td>
               <td>${appointmentTime}</td>
@@ -3767,7 +3783,7 @@
     if (b) {
       showBookingDetailModal(b);
       const t = document.getElementById('booking-detail-modal-title');
-      if (t) t.textContent = 'Booking (expired â€” review queue)';
+      if (t) t.textContent = 'Booking (expired — review queue)';
       return;
     }
     if (typeof window.showBookingDetailById === 'function') window.showBookingDetailById(bookingId);
@@ -3817,13 +3833,13 @@
       } else {
         tbody.innerHTML = bookings.map(b => {
           const bookingDate = formatBookingSlotLabel(b);
-          const archivedDate = b.archived_at ? new Date(b.archived_at).toLocaleDateString() : 'â€”';
+          const archivedDate = b.archived_at ? new Date(b.archived_at).toLocaleDateString() : '—';
           const statusClass = b.booking_status === 'completed' ? 'badge-green' : 
                              b.booking_status === 'cancelled' ? 'badge-red' : 'badge-gray';
           const idJson = JSON.stringify(b.id);
           return `
             <tr>
-              <td><code title="${escapeHtml(b.id)}">${escapeHtml(b.id.substring(0, 8))}â€¦</code></td>
+              <td><code title="${escapeHtml(b.id)}">${escapeHtml(b.id.substring(0, 8))}…</code></td>
               <td>${escapeHtml(b.professional_name)}<br><small style="color:var(--text-mid)">@${escapeHtml(b.professional_username)}</small></td>
               <td>${escapeHtml(b.customer_name)}<br><small style="color:var(--text-mid)">@${escapeHtml(b.customer_username)}</small></td>
               <td>${bookingDate}</td>
@@ -4312,7 +4328,7 @@
     });
   })();
 
-  // Bookings table: open detail modal (no inline onclick â€” works with strict CSP / reliable globals)
+  // Bookings table: open detail modal (no inline onclick — works with strict CSP / reliable globals)
   (function bindBookingsSimpleDetailClicks() {
     const root = document.getElementById('bookings-simple-list');
     if (!root || root.dataset.bookingDetailBound === '1') return;

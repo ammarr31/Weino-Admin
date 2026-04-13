@@ -1,5 +1,5 @@
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   Weino Admin â€” 2026 shell (clean data UI, single accent system)
+   Weino Admin — 2026 shell (clean data UI, single accent system)
    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -24,7 +24,7 @@
      --sidebar-label:     #52525b;
      --sidebar-w:         264px;
    
-     /* Brand (indigo â€” maps to legacy --purple* across the app) */
+     /* Brand (indigo — maps to legacy --purple* across the app) */
      --purple:        #6366f1;
      --purple-light:  #818cf8;
      --purple-dark:   #4f46e5;
@@ -1690,7 +1690,7 @@
      -webkit-overflow-scrolling: touch;
    }
    
-   /* App settings â€” structured cards (replaces loud gradients) */
+   /* App settings — structured cards (replaces loud gradients) */
    .admin-settings-stack {
      display: flex;
      flex-direction: column;
@@ -1864,7 +1864,7 @@
    }
    
    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-      MOBILE HEADER (hamburger bar â€” hidden on desktop)
+      MOBILE HEADER (hamburger bar — hidden on desktop)
       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
    .mobile-header {
      display: none;
@@ -1885,7 +1885,7 @@
    .sidebar-overlay.active { display: block; }
    
    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-      RESPONSIVE â€” â‰¤ 768 px (tablet + mobile)
+      RESPONSIVE — ≤ 768 px (tablet + mobile)
       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
    @media (max-width: 768px) {
    
@@ -1919,7 +1919,7 @@
        font-size: 0.6875rem;
      }
    
-     /* Hamburger button â€” 44px touch target (iOS HIG) */
+     /* Hamburger button — 44px touch target (iOS HIG) */
      .hamburger {
        display: flex;
        flex-direction: column;
@@ -1944,7 +1944,7 @@
      }
      .hamburger:hover span,
      .hamburger:active span { background: #fff; }
-     /* Animate to Ã— when open */
+     /* Animate to × when open */
      .hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
      .hamburger.is-open span:nth-child(2) { opacity: 0; }
      .hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -2027,7 +2027,7 @@
    }
    
    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-      RESPONSIVE â€” â‰¤ 480 px (small phones)
+      RESPONSIVE — ≤ 480 px (small phones)
       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
    @media (max-width: 480px) {
      .stats-grid {
@@ -2305,7 +2305,7 @@
      font-weight: 700;
    }
    
-   /* App Settings â€” table of contents */
+   /* App Settings — table of contents */
    .admin-settings-toc {
      display: flex;
      flex-wrap: wrap;

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weino — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+  <header class="admin-topbar">
+    <h1 data-i18n="brand">Admin</h1>
+    <div class="lang-switch">
+      <span class="lang-label" data-i18n="lang_pick">Language</span>
+      <button type="button" id="btn-lang-en" class="active" aria-pressed="true">English</button>
+      <button type="button" id="btn-lang-ar" aria-pressed="false">العربية</button>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <nav>
+        <button type="button" class="nav-item active" data-view="home" data-i18n="nav_home">Home</button>
+        <button type="button" class="nav-item" data-view="export" data-i18n="nav_export">Fee invoices export</button>
+        <button type="button" class="nav-item" data-view="settings" data-i18n="nav_settings">More tools (soon)</button>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <section id="view-home" class="view active">
+        <div class="card">
+          <h2 data-i18n="home_welcome_title">Welcome</h2>
+          <p class="intro" data-i18n="home_welcome_p"></p>
+        </div>
+      </section>
+
+      <section id="view-export" class="view">
+        <div class="card">
+          <h2 data-i18n="pf_card_title">Platform fee invoices</h2>
+          <p class="intro" data-i18n="pf_card_intro" data-i18n-mode="html"></p>
+
+          <div class="form-row">
+            <label for="pf-year" data-i18n="pf_year">Year</label>
+            <input id="pf-year" type="number" min="2000" max="2100" />
+          </div>
+          <div class="form-row">
+            <label for="pf-month" data-i18n="pf_month">Month</label>
+            <select id="pf-month"></select>
+          </div>
+          <div class="form-row">
+            <label for="pf-country" data-i18n="pf_country">Country</label>
+            <input id="pf-country" type="text" maxlength="2" data-i18n-placeholder="pf_country_ph" autocomplete="off" />
+          </div>
+          <div class="form-row">
+            <label for="pf-token" data-i18n="pf_token">Token</label>
+            <input id="pf-token" type="password" autocomplete="off" />
+            <p class="hint" data-i18n="pf_token_hint"></p>
+          </div>
+          <div class="form-row">
+            <label class="checkbox">
+              <input id="pf-remember" type="checkbox" />
+              <span data-i18n="pf_remember">Remember token</span>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="primary" id="btn-pdf" data-i18n="btn_pdf">Download PDF</button>
+            <button type="button" class="secondary" id="btn-csv" data-i18n="btn_csv">Download CSV</button>
+          </div>
+
+          <p id="export-status" class="msg-ok"></p>
+          <div id="export-error" class="msg-error" role="alert"></div>
+        </div>
+      </section>
+
+      <section id="view-settings" class="view">
+        <div class="card">
+          <h2 data-i18n="settings_placeholder_title">Coming soon</h2>
+          <p class="intro" data-i18n="settings_placeholder_p"></p>
+        </div>
+      </section>
+
+      <p class="footer-note" data-i18n="footer_note"></p>
+    </main>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/platformFeesInvoiceExport.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

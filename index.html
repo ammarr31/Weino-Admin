@@ -629,6 +629,16 @@
                   <input type="text" id="notif-uid" data-i18n-placeholder="notif.uidPh" placeholder="From Users tab — Edit user or copy UID column" autocomplete="off">
                   <small class="admin-hint" data-i18n-html="notif.uidHintHtml" style="display:block;margin-top:6px;color:var(--text-mid)">Open <strong>Users</strong>, find the person, use <strong>Copy UID</strong> next to their ID.</small>
                 </div>
+                <div class="form-field">
+                  <label data-i18n="notif.platformLabel">Client platform</label>
+                  <select id="notif-platform">
+                    <option value="all" data-i18n="notif.platformAll">All (Android, iOS, Web)</option>
+                    <option value="android" data-i18n="notif.platformAndroid">Android only</option>
+                    <option value="ios" data-i18n="notif.platformIos">iOS only</option>
+                    <option value="web" data-i18n="notif.platformWeb">Web only</option>
+                  </select>
+                  <small class="admin-hint" data-i18n="notif.platformHint" style="display:block;margin-top:6px;color:var(--text-mid)">Uses the last platform recorded when the user opened the app (Firestore field platform).</small>
+                </div>
               </div>
               <div class="form-row">
                 <div class="form-field full">

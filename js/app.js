@@ -3094,6 +3094,7 @@
     e.preventDefault();
     const target = document.getElementById('notif-target').value;
     const uid = document.getElementById('notif-uid')?.value?.trim();
+    const clientPlatform = document.getElementById('notif-platform')?.value || 'all';
     const title = document.getElementById('notif-title').value.trim();
     const body = document.getElementById('notif-body').value.trim();
     const btn = document.getElementById('notif-send-btn');
@@ -3105,13 +3106,20 @@
     btn.textContent = 'Sending...';
 
     try {
-      const payload = { title, body, target };
+      const payload = { title, body, target, client_platform: clientPlatform };
       if (target === 'user' && uid) payload.uid = uid;
 
       await api('/notifications/send', { method: 'POST', body: JSON.stringify(payload) });
 
       // Track in local history
-      notifHistory.unshift({ title, body, target, uid: uid || null, sentAt: Date.now() });
+      notifHistory.unshift({
+        title,
+        body,
+        target,
+        uid: uid || null,
+        client_platform: clientPlatform,
+        sentAt: Date.now(),
+      });
       renderNotifHistory();
 
       document.getElementById('notif-form').reset();
@@ -3140,7 +3148,7 @@
             <div class="activity-text">
               <strong>${escapeHtml(n.title)}</strong> — ${escapeHtml(n.body)}
               <div style="font-size:0.8rem;color:var(--gray-400);margin-top:3px">
-                Target: ${escapeHtml(n.target)}${n.uid ? ` · UID: ${escapeHtml(n.uid)}` : ''}
+                Target: ${escapeHtml(n.target)}${n.uid ? ` · UID: ${escapeHtml(n.uid)}` : ''}${n.client_platform && n.client_platform !== 'all' ? ` · Platform: ${escapeHtml(n.client_platform)}` : ''}
               </div>
             </div>
             <div class="activity-time">${formatDate(n.sentAt)}</div>

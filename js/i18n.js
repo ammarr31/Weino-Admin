@@ -417,6 +417,13 @@
       'notif.sendBtn': 'Send Notification',
       'notif.historyTitle': 'Notification History',
       'notif.historyEmpty': 'No notifications sent yet',
+      'notif.platformLabel': 'Client platform',
+      'notif.platformAll': 'All (Android, iOS, Web)',
+      'notif.platformAndroid': 'Android only',
+      'notif.platformIos': 'iOS only',
+      'notif.platformWeb': 'Web only',
+      'notif.platformHint':
+        'Uses the last platform recorded when the user opened the app (Firestore field platform). Users without a value are skipped when a platform is selected.',
 
       'accPage.title': 'Admin Accounts',
       'accPage.subtitleHtml':
@@ -1022,6 +1029,13 @@
       'notif.sendBtn': 'إرسال الإشعار',
       'notif.historyTitle': 'سجل الإشعارات',
       'notif.historyEmpty': 'لم يُرسل أي إشعار بعد',
+      'notif.platformLabel': 'منصة العميل',
+      'notif.platformAll': 'الكل (أندرويد، iOS، ويب)',
+      'notif.platformAndroid': 'أندرويد فقط',
+      'notif.platformIos': 'iOS فقط',
+      'notif.platformWeb': 'الويب فقط',
+      'notif.platformHint':
+        'يعتمد على آخر منصة سجّلها التطبيق في Firestore (حقل platform). عند اختيار منصة محددة يُستثنى من لا يملك قيمة.',
 
       'accPage.title': 'حسابات المشرفين',
       'accPage.subtitleHtml':

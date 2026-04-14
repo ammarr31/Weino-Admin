@@ -3401,7 +3401,7 @@
     const s = String(status || '').toLowerCase();
     if (s === 'accepted') return 'badge-green';
     if (s === 'pending') return 'badge-amber';
-    if (s === 'cancelled' || s === 'rejected') return 'badge-red';
+    if (s === 'cancelled') return 'badge-red';
     return 'badge-gray';
   }
 
@@ -3410,7 +3410,6 @@
     if (s === 'completed') return 'badge-green';
     if (s === 'current') return 'badge-blue';
     if (s === 'absent') return 'badge-red';
-    if (s === 'expired') return 'badge-gray';
     return 'badge-purple';
   }
 
@@ -3514,18 +3513,18 @@
           <div>
             <label style="display:block;font-size:0.75rem;font-weight:600;color:var(--text-mid);margin-bottom:4px">Match status</label>
             <select id="booking-admin-match-status" style="padding:8px 10px;border-radius:8px;border:1px solid var(--border);min-width:11rem">
-              ${['pending', 'accepted', 'cancelled', 'rejected'].map((v) => `<option value="${v}"${String(b.status || '').toLowerCase() === v ? ' selected' : ''}>${v}</option>`).join('')}
+              ${['pending', 'accepted', 'cancelled'].map((v) => `<option value="${v}"${String(b.status || '').toLowerCase() === v ? ' selected' : ''}>${v}</option>`).join('')}
             </select>
           </div>
           <div>
             <label style="display:block;font-size:0.75rem;font-weight:600;color:var(--text-mid);margin-bottom:4px">Queue status</label>
             <select id="booking-admin-queue-status" style="padding:8px 10px;border-radius:8px;border:1px solid var(--border);min-width:11rem">
-              ${['waiting', 'current', 'completed', 'absent', 'expired'].map((v) => `<option value="${v}"${String(b.booking_status || 'waiting').toLowerCase() === v ? ' selected' : ''}>${v}</option>`).join('')}
+              ${['waiting', 'current', 'completed', 'absent'].map((v) => `<option value="${v}"${String(b.booking_status || 'waiting').toLowerCase() === v ? ' selected' : ''}>${v}</option>`).join('')}
             </select>
           </div>
           <div style="flex:1;min-width:12rem">
             <label style="display:block;font-size:0.75rem;font-weight:600;color:var(--text-mid);margin-bottom:4px">Cancellation note (optional)</label>
-            <input type="text" id="booking-admin-cancel-reason" placeholder="Reason shown if cancelling / expired" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border)" maxlength="500">
+            <input type="text" id="booking-admin-cancel-reason" placeholder="Reason shown if cancelling" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border)" maxlength="500">
           </div>
           <button type="button" class="btn btn-primary" id="booking-admin-apply">Apply</button>
         </div>

@@ -200,7 +200,7 @@
 
       'fees.title': 'Platform fees',
       'fees.subtitleHtml':
-        'Operational billing: each professional’s <strong>recorded</strong> vs <strong>confirmed</strong> totals, <strong>amount due</strong>, suspensions, and monthly <strong>invoice export</strong>. This is the place to collect and reconcile payments—not the same screen as booking analytics charts.',
+        'Operational billing: each professional’s <strong>recorded</strong> vs <strong>confirmed</strong> totals (online payments update automatically via Fawaterk), <strong>amount due</strong>, suspensions, and monthly <strong>invoice export</strong>. Visibility and exports—not the same screen as booking analytics charts.',
       'fees.invoicesLabel': 'Invoices',
       'fees.invoiceYearAria': 'Invoice year',
       'fees.invoiceMonthAria': 'Invoice month',
@@ -313,13 +313,13 @@
 
       'anl.title': '📈 Booking analytics',
       'anl.subtitleHtml':
-        'How many bookings completed, cancelled, or expired in the period you pick, plus <strong>revenue and fee totals as derived from bookings</strong> (reports &amp; trends). For <strong>who owes what</strong>, payment confirmation, and PDF/CSV invoices, use <strong>Platform fees</strong>.',
+        'How many bookings completed, cancelled, or expired in the period you pick, plus <strong>revenue and fee totals as derived from bookings</strong> (reports &amp; trends). For <strong>who owes what</strong>, dues, and PDF/CSV invoices, use <strong>Platform fees</strong>.',
       'anl.allTime': 'All time',
       'anl.year': 'Year',
       'anl.month': 'Month',
       'anl.wholeYear': 'Whole year',
       'anl.hintHtml':
-        '<strong>Why two screens?</strong> Numbers here follow <strong>booking activity</strong> for the selected period (good for trends and comparisons). <strong>Platform fees</strong> follows each professional’s <strong>ledger</strong> (recorded bookings, what they’ve paid, suspensions)—use it for day‑to‑day collections.',
+        '<strong>Why two screens?</strong> Numbers here follow <strong>booking activity</strong> for the selected period (good for trends and comparisons). <strong>Platform fees</strong> follows each professional’s <strong>ledger</strong> (recorded bookings, confirmed payments, suspensions)—use it for balances, exports, and suspensions.',
       'anl.chartTitle': 'Revenue & fees (trends from bookings)',
       'anl.topTitle': 'Top professionals (by activity in period)',
       'anl.thRank': 'Rank',
@@ -360,7 +360,6 @@
 
       'fees.emptyTable': 'No professionals with recorded fees yet',
       'fees.copyUidTitle': 'Copy UID',
-      'fees.btnConfirm': 'Confirm',
       'fees.btnRelease': 'Release',
       'fees.sumDue': 'Total Amount Due',
       'fees.sumProCount': '{n} professionals',
@@ -646,7 +645,7 @@
 
       'fees.title': 'رسوم المنصة',
       'fees.subtitleHtml':
-        'فوترة تشغيلية: لكل محترف إجمالي <strong>المسجّل</strong> مقابل <strong>المؤكد</strong>، و<strong>المبلغ المستحق</strong>، والتعليقات، و<strong>تصدير الفواتير</strong> الشهرية. هنا التحصيل والمطابقة—وليس نفس شاشة تحليلات الحجوزات.',
+        'فوترة تشغيلية: لكل محترف إجمالي <strong>المسجّل</strong> مقابل <strong>المؤكد</strong> (الدفع الإلكتروني يُحدّث المؤكد تلقائياً عبر فواتيرك)، و<strong>المبلغ المستحق</strong>، والتعليق، و<strong>تصدير الفواتير</strong> الشهرية. للمراجعة والتصدير—وليس نفس شاشة تحليلات الحجوزات.',
       'fees.invoicesLabel': 'الفواتير',
       'fees.invoiceYearAria': 'سنة الفاتورة',
       'fees.invoiceMonthAria': 'شهر الفاتورة',
@@ -759,13 +758,13 @@
 
       'anl.title': '📈 تحليلات الحجوزات',
       'anl.subtitleHtml':
-        'عدد الحجوزات المكتملة أو الملغاة أو المنتهية في الفترة التي تختارها، مع <strong>إيراد ورسوم محسوبة من الحجوزات</strong> (تقارير واتجاهات). لمعرفة <strong>من يدفع ماذا</strong> وتأكيد الدفع وفواتير PDF/CSV استخدم <strong>رسوم المنصة</strong>.',
+        'عدد الحجوزات المكتملة أو الملغاة أو المنتهية في الفترة التي تختارها، مع <strong>إيراد ورسوم محسوبة من الحجوزات</strong> (تقارير واتجاهات). لمعرفة <strong>من يدفع ماذا</strong> والمستحقات وفواتير PDF/CSV استخدم <strong>رسوم المنصة</strong>.',
       'anl.allTime': 'كل الفترات',
       'anl.year': 'السنة',
       'anl.month': 'الشهر',
       'anl.wholeYear': 'السنة كاملة',
       'anl.hintHtml':
-        '<strong>لماذا شاشتان؟</strong> الأرقام هنا من <strong>نشاط الحجوزات</strong> للفترة (مناسبة للاتجاهات). <strong>رسوم المنصة</strong> تتبع <strong>دفتر</strong> كل محترف (مسجّل، مدفوع، تعليق)—للتحصيل اليومي.',
+        '<strong>لماذا شاشتان؟</strong> الأرقام هنا من <strong>نشاط الحجوزات</strong> للفترة (مناسبة للاتجاهات). <strong>رسوم المنصة</strong> تتبع <strong>دفتر</strong> كل محترف (مسجّل، مدفوعات مؤكدة، تعليق)—للأرصدة والتصدير والتعليق.',
       'anl.chartTitle': 'الإيراد والرسوم (اتجاهات من الحجوزات)',
       'anl.topTitle': 'أبرز المحترفين (حسب النشاط في الفترة)',
       'anl.thRank': 'الترتيب',
@@ -806,7 +805,6 @@
 
       'fees.emptyTable': 'لا يوجد محترفون برسوم مسجّلة بعد',
       'fees.copyUidTitle': 'نسخ المعرف',
-      'fees.btnConfirm': 'تأكيد',
       'fees.btnRelease': 'إلغاء التعليق',
       'fees.sumDue': 'إجمالي المستحق',
       'fees.sumProCount': '{n} محترفًا',

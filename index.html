@@ -495,7 +495,7 @@
           <div class="page-header">
             <div>
               <h1 data-i18n="fees.title">Platform fees</h1>
-              <p data-i18n-html="fees.subtitleHtml">Operational billing: each professional’s <strong>recorded</strong> vs <strong>confirmed</strong> totals, <strong>amount due</strong>, suspensions, and monthly <strong>invoice export</strong>. This is the place to collect and reconcile payments—not the same screen as booking analytics charts.</p>
+              <p data-i18n-html="fees.subtitleHtml">Operational billing: each professional’s <strong>recorded</strong> vs <strong>confirmed</strong> totals (online payments update automatically via Fawaterk), <strong>amount due</strong>, suspensions, and monthly <strong>invoice export</strong>. Visibility and exports—not the same screen as booking analytics charts.</p>
             </div>
             <div class="toolbar" style="margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
               <label class="toolbar-time-label" style="margin:0" data-i18n="fees.invoicesLabel">Invoices</label>
@@ -808,7 +808,7 @@
           <div class="page-header">
             <div>
               <h1 data-i18n="anl.title">📈 Booking analytics</h1>
-              <p data-i18n-html="anl.subtitleHtml">How many bookings completed, cancelled, or expired in the period you pick, plus <strong>revenue and fee totals as derived from bookings</strong> (reports &amp; trends). For <strong>who owes what</strong>, payment confirmation, and PDF/CSV invoices, use <strong>Platform fees</strong>.</p>
+              <p data-i18n-html="anl.subtitleHtml">How many bookings completed, cancelled, or expired in the period you pick, plus <strong>revenue and fee totals as derived from bookings</strong> (reports &amp; trends). For <strong>who owes what</strong>, dues, and PDF/CSV invoices, use <strong>Platform fees</strong>.</p>
             </div>
             <div class="analytics-toolbar">
               <label class="analytics-period-label"><input type="checkbox" id="analytics-all-time"> <span data-i18n="anl.allTime">All time</span></label>
@@ -953,7 +953,7 @@
 
               <div class="role-card" data-role="finance_manager">
                 <div class="role-badge" style="background:#14B8A6">Platform Fees</div>
-                <div class="role-desc">Confirm payments, release suspensions, view financial dashboard.</div>
+                <div class="role-desc">View fee balances and exports, release suspensions, financial dashboard.</div>
                 <div class="role-access">
                   <strong>Access:</strong> Dashboard, Platform Fees only
                 </div>
@@ -1015,7 +1015,7 @@
 
     <div id="platform-fees-reset-modal" class="modal hidden" style="max-width:520px;width:100%">
       <h3>Clear recorded platform fees</h3>
-      <p style="color:var(--text-mid);font-size:0.92rem;line-height:1.45">This resets recorded fee counters on every professional and branch, removes stored platform-fee fields on booking matches, <strong>deletes all payment confirmation rows</strong> (<code>platform_fee_payments</code>), clears monthly clearances, and releases fee suspensions. Use only for <strong>testing</strong> — you will lose admin payment history in the panel.</p>
+      <p style="color:var(--text-mid);font-size:0.92rem;line-height:1.45">This resets recorded fee counters on every professional and branch, removes stored platform-fee fields on booking matches, <strong>deletes all rows in</strong> <code>platform_fee_payments</code> (the ledger of fees paid online, written automatically when checkout completes via Fawaterk), clears monthly clearances, and releases fee suspensions. Use only for <strong>testing</strong> — that payment history disappears from the admin panel and the database.</p>
       <p style="margin-top:12px;font-size:0.88rem">Type the phrase below exactly to confirm:</p>
       <p style="margin:6px 0;font-family:monospace;font-size:0.85rem;background:var(--surface-2, #f4f4f6);padding:8px 10px;border-radius:6px">RESET_ALL_RECORDED_FEES</p>
       <label style="display:block;margin-top:12px">
@@ -1096,48 +1096,6 @@
         <div class="modal-actions">
           <button type="button" id="acc-cancel">Cancel</button>
           <button type="submit" id="acc-submit">Create Admin</button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Confirm Payment Modal -->
-    <div id="payment-modal" class="modal hidden">
-      <h3>Confirm Payment Received</h3>
-      <form id="payment-form">
-        <input type="hidden" id="payment-professional-id">
-        <div style="background:#f0f9ff;border:1px solid #0ea5e9;border-radius:8px;padding:12px;margin-bottom:16px">
-          <p style="margin:0;font-size:0.9rem;color:#0369a1"><strong id="payment-professional-name"></strong></p>
-          <p style="margin:4px 0 0;font-size:0.85rem;color:#0c4a6e">Amount Due: <strong id="payment-amount-due"></strong></p>
-        </div>
-        <label>Payment Amount
-          <input type="number" id="payment-amount" required min="0" step="0.01" placeholder="e.g. 150.00">
-        </label>
-        <label>Period (Month)
-          <select id="payment-month">
-            <option value="">Select month</option>
-            <option value="1">January</option>
-            <option value="2">February</option>
-            <option value="3">March</option>
-            <option value="4">April</option>
-            <option value="5">May</option>
-            <option value="6">June</option>
-            <option value="7">July</option>
-            <option value="8">August</option>
-            <option value="9">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-        </label>
-        <label>Period (Year)
-          <input type="number" id="payment-year" min="2024" max="2030" placeholder="e.g. 2026">
-        </label>
-        <label>Notes (optional)
-          <textarea id="payment-notes" rows="2" placeholder="e.g. Bank transfer ref: 123456"></textarea>
-        </label>
-        <div class="modal-actions">
-          <button type="button" id="payment-cancel">Cancel</button>
-          <button type="submit" class="btn-primary">Confirm Payment</button>
         </div>
       </form>
     </div>

@@ -748,9 +748,6 @@
             </span>
           </td>
           <td class="actions-cell">
-            ${!p.is_suspended && amountDue > 0 ? `
-              <button class="btn-small btn-confirm" data-confirm-payment="${p.uid}">${escapeHtml(__('fees.btnConfirm'))}</button>
-            ` : ''}
             ${p.is_suspended ? `
               <button class="btn-small btn-release" data-release="${p.uid}">${escapeHtml(__('fees.btnRelease'))}</button>
             ` : ''}
@@ -758,14 +755,6 @@
         </tr>
       `;
     }).join('');
-    
-    el.querySelectorAll('[data-confirm-payment]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const uid = btn.dataset.confirmPayment;
-        const pro = professionals.find(p => p.uid === uid);
-        if (pro) showPaymentModal(pro);
-      });
-    });
     
     el.querySelectorAll('[data-release]').forEach(btn => {
       btn.addEventListener('click', () => releaseSuspension(btn.dataset.release));
@@ -905,23 +894,6 @@
     }
     
     renderFeesProfessionals(filtered);
-  }
-  
-  function showPaymentModal(pro) {
-    document.getElementById('payment-professional-id').value = pro.uid;
-    document.getElementById('payment-professional-name').textContent = 
-      pro.professional_name || pro.username || '—';
-    document.getElementById('payment-amount-due').textContent = 
-      `EGP ${pro.amount_due.toFixed(2)}`;
-    document.getElementById('payment-amount').value = pro.amount_due.toFixed(2);
-    
-    const now = new Date();
-    document.getElementById('payment-month').value = now.getMonth() + 1;
-    document.getElementById('payment-year').value = now.getFullYear();
-    document.getElementById('payment-notes').value = '';
-    
-    show(document.getElementById('modal-overlay'));
-    show(document.getElementById('payment-modal'));
   }
   
   async function releaseSuspension(uid) {
@@ -3259,38 +3231,6 @@
       toast('Admin account permanently deleted', 'success');
     } catch (err) { toast(err.message, 'error'); }
   }
-
-  // Payment modal handlers
-  document.getElementById('payment-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    
-    try {
-      const payload = {
-        professional_id: document.getElementById('payment-professional-id').value,
-        amount: parseFloat(document.getElementById('payment-amount').value),
-        period_month: parseInt(document.getElementById('payment-month').value) || null,
-        period_year: parseInt(document.getElementById('payment-year').value) || null,
-        notes: document.getElementById('payment-notes').value.trim()
-      };
-      
-      await api('/platform-fees/confirm', { method: 'POST', body: JSON.stringify(payload) });
-      toast('Payment confirmed successfully', 'success');
-      hide(document.getElementById('modal-overlay'));
-      hide(document.getElementById('payment-modal'));
-      window.loadPlatformFees();
-    } catch (err) {
-      toast(err.message, 'error');
-    } finally {
-      btn.disabled = false;
-    }
-  });
-  
-  document.getElementById('payment-cancel')?.addEventListener('click', () => {
-    hide(document.getElementById('modal-overlay'));
-    hide(document.getElementById('payment-modal'));
-  });
 
   // --- Modal overlay close on backdrop click ---
   document.getElementById('modal-overlay')?.addEventListener('click', (e) => {

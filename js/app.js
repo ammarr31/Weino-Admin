@@ -570,18 +570,44 @@
       console.error('Platform fees elements not found');
       return;
     }
-    
+
+    const feesFilterPreserve = {
+      country: document.getElementById('fees-filter-country')?.value ?? 'all',
+      gov: document.getElementById('fees-filter-governorate')?.value ?? 'all',
+      city: document.getElementById('fees-filter-city')?.value ?? 'all',
+      status: document.getElementById('fees-filter-status')?.value ?? 'all',
+      search: document.getElementById('fees-search')?.value ?? '',
+    };
+
     summaryEl.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text-mid);grid-column:1/-1">${escapeHtml(__('common.loading'))}</div>`;
     el.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px">${escapeHtml(__('common.loading'))}</td></tr>`;
-    
+
     try {
-      const res = await api('/platform-fees');
+      const yEl = document.getElementById('fees-invoices-year');
+      const mEl = document.getElementById('fees-invoices-month');
+      let feesPath = '/platform-fees';
+      if (yEl && mEl && yEl.value && yEl.value !== 'all' && mEl.value) {
+        feesPath = `/platform-fees?year=${encodeURIComponent(yEl.value)}&month=${encodeURIComponent(mEl.value)}`;
+      }
+      const res = await api(feesPath);
 
       feesData = res.data;
       const { summary, professionals } = feesData;
 
       const currency = 'EGP'; // Default currency
+      const bp = summary.billing_period;
+      const periodBanner = bp
+        ? `<div class="fees-summary-card" style="grid-column:1/-1;padding:12px 14px">
+            <span style="color:var(--text-mid);font-size:0.9rem;line-height:1.45">${escapeHtml(
+              __('fees.periodTableHint')
+                .replace('{y}', String(bp.year))
+                .replace('{m}', String(bp.month).padStart(2, '0')),
+            )}</span>
+          </div>`
+        : '';
+      const confirmedSub = bp ? __('fees.sumConfirmedSubPeriod') : __('fees.sumConfirmedSub');
       summaryEl.innerHTML = `
+        ${periodBanner}
         <div class="fees-summary-card highlight">
           <div class="label">${escapeHtml(__('fees.sumDue'))}</div>
           <div class="value">${currency} ${summary.total_due_all_time.toFixed(2)}</div>
@@ -595,7 +621,7 @@
         <div class="fees-summary-card">
           <div class="label">${escapeHtml(__('fees.sumConfirmed'))}</div>
           <div class="value">${currency} ${summary.total_confirmed_all_time.toFixed(2)}</div>
-          <div class="subtitle">${escapeHtml(__('fees.sumConfirmedSub'))}</div>
+          <div class="subtitle">${escapeHtml(confirmedSub)}</div>
         </div>
         <div class="fees-summary-card">
           <div class="label">${escapeHtml(__('fees.sumSuspended'))}</div>
@@ -611,7 +637,20 @@
       
       // Populate governorate and city filters
       await populateLocationFilters(professionals);
-      
+
+      const setSelIfHas = (id, val) => {
+        const sel = document.getElementById(id);
+        if (!sel || val == null) return;
+        if ([...sel.options].some((o) => o.value === val)) sel.value = val;
+      };
+      setSelIfHas('fees-filter-country', feesFilterPreserve.country);
+      syncFeesFilterFromScope();
+      setSelIfHas('fees-filter-governorate', feesFilterPreserve.gov);
+      setSelIfHas('fees-filter-city', feesFilterPreserve.city);
+      setSelIfHas('fees-filter-status', feesFilterPreserve.status);
+      const searchElRestore = document.getElementById('fees-search');
+      if (searchElRestore) searchElRestore.value = feesFilterPreserve.search;
+
       // Setup event listeners for all filters
       const searchEl = document.getElementById('fees-search');
       const filterStatusEl = document.getElementById('fees-filter-status');
@@ -639,6 +678,8 @@
         filterCityEl.removeEventListener('change', filterFees);
         filterCityEl.addEventListener('change', filterFees);
       }
+
+      filterFees();
     } catch (err) {
       console.error('Error loading platform fees:', err);
       summaryEl.innerHTML = `<div style="padding:40px;text-align:center;color:var(--red);grid-column:1/-1">${escapeHtml(err.message)}</div>`;
@@ -647,6 +688,17 @@
     }
   };
 
+  function relocalizeFeesInvoiceMonthSelect() {
+    const m = document.getElementById('fees-invoices-month');
+    if (!m) return;
+    const cur = m.value;
+    for (let i = 1; i <= 12; i += 1) {
+      const opt = m.querySelector(`option[value="${i}"]`);
+      if (opt) opt.textContent = __(`month.${i}`);
+    }
+    if (cur && [...m.options].some((o) => o.value === cur)) m.value = cur;
+  }
+
   function initPlatformFeesInvoiceExportControls() {
     const y = document.getElementById('fees-invoices-year');
     const m = document.getElementById('fees-invoices-month');
@@ -654,26 +706,48 @@
     const btnCsv = document.getElementById('fees-invoices-export-csv');
     if (!y || !m || (!btnPdf && !btnCsv)) return;
 
-    // Populate selects once.
     if (!y.dataset.inited) {
       const now = new Date();
       const cy = now.getUTCFullYear();
       const cm = now.getUTCMonth() + 1;
-      const years = [];
-      for (let yy = cy; yy >= cy - 4; yy -= 1) years.push(yy);
-      y.innerHTML = years.map((yy) => `<option value="${yy}">${yy}</option>`).join('');
-      y.value = String(cy);
+      const yearOpts = [`<option value="all">${escapeHtml(__('fees.periodAllTime'))}</option>`];
+      for (let yy = cy; yy >= cy - 10; yy -= 1) {
+        yearOpts.push(`<option value="${yy}">${yy}</option>`);
+      }
+      y.innerHTML = yearOpts.join('');
+      y.value = 'all';
 
-      const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      m.innerHTML = monthNames.map((label, i) => {
-        const mm = i + 1;
-        return `<option value="${mm}">${label}</option>`;
-      }).join('');
+      m.innerHTML = '';
+      for (let mm = 1; mm <= 12; mm += 1) {
+        m.innerHTML += `<option value="${mm}">${escapeHtml(__('month.' + mm))}</option>`;
+      }
       m.value = String(cm);
+      m.disabled = true;
+
+      const onPeriodChange = debounce(() => {
+        if (typeof window.loadPlatformFees === 'function') window.loadPlatformFees();
+      }, 400);
+      y.addEventListener('change', () => {
+        m.disabled = y.value === 'all';
+        onPeriodChange();
+      });
+      m.addEventListener('change', onPeriodChange);
+
       y.dataset.inited = '1';
+    } else {
+      relocalizeFeesInvoiceMonthSelect();
+      const allOpt = y.querySelector('option[value="all"]');
+      if (allOpt) allOpt.textContent = __('fees.periodAllTime');
     }
+    relocalizeFeesInvoiceMonthSelect();
+    if (y.value === 'all') m.disabled = true;
+    else m.disabled = false;
 
     async function exportInvoices(kind) {
+      if (y.value === 'all') {
+        toast(__('fees.exportNeedPeriod'), 'error');
+        return;
+      }
       const ext = kind === 'pdf' ? 'pdf' : 'csv';
       const path = kind === 'pdf' ? '/invoices/platform-fees.pdf' : '/invoices/platform-fees.csv';
       try {
@@ -1344,7 +1418,7 @@
       const chip = document.createElement('span');
       chip.className = 'settings-chip';
       chip.dataset.code = codeUpper;
-      chip.innerHTML = `${escapeHtml(codeUpper)} <button type="button" class="chip-remove" aria-label="Remove">×</button>`;
+      chip.innerHTML = `${escapeHtml(codeUpper)} <button type="button" class="chip-remove" aria-label="${escapeHtml(__('common.removeAria'))}">×</button>`;
       chip.querySelector('.chip-remove').addEventListener('click', () => chip.remove());
       el.appendChild(chip);
     });
@@ -1360,7 +1434,7 @@
 
   window.loadAppSettings = async function () {
     const statusEl = document.getElementById('settings-status');
-    if (statusEl) statusEl.textContent = 'Loading…';
+    if (statusEl) statusEl.textContent = __('common.loading');
     try {
       const res = await api('/config/app');
       const d = res.data || res;
@@ -1432,15 +1506,11 @@
         const src = d.auto_sync_min_source;
         const eff = d.auto_sync_min_effective === true;
         if (src === 'environment_on') {
-          autoHint.textContent =
-            '⚠️ Firebase: AUTO_SYNC_MIN_FROM_CLIENTS=true — Auto-sync minimum is enforced from the server environment and cannot be turned off here until you remove it from hosting / CI env vars.';
+          autoHint.textContent = __('sett.autoHintEnvOn');
         } else if (src === 'environment_off') {
-          autoHint.textContent =
-            'ℹ️ Firebase: AUTO_SYNC_MIN_FROM_CLIENTS=false — Server-side auto-sync is off until you enable the switch here.';
+          autoHint.textContent = __('sett.autoHintEnvOff');
         } else {
-          autoHint.textContent = eff
-            ? '✓ Auto-sync minimum is ON from the admin panel (disable with the switch and Save).'
-            : 'Auto-sync minimum is OFF — enable the switch only if you understand the risks.';
+          autoHint.textContent = eff ? __('sett.autoHintPanelOn') : __('sett.autoHintPanelOff');
         }
       }
       
@@ -1461,8 +1531,8 @@
       });
       if (statusEl) statusEl.textContent = '';
     } catch (err) {
-      toast(err.message || 'Failed to load settings', 'error');
-      if (statusEl) statusEl.textContent = 'Failed to load. ' + (err.message || '');
+      toast(err.message || __('sett.loadFail'), 'error');
+      if (statusEl) statusEl.textContent = `${__('sett.loadFail')} ${err.message || ''}`.trim();
     }
   };
 
@@ -1483,7 +1553,7 @@
       const chip = document.createElement('span');
       chip.className = 'settings-chip';
       chip.dataset.code = raw;
-      chip.innerHTML = `${escapeHtml(raw)} <button type="button" class="chip-remove" aria-label="Remove">×</button>`;
+      chip.innerHTML = `${escapeHtml(raw)} <button type="button" class="chip-remove" aria-label="${escapeHtml(__('common.removeAria'))}">×</button>`;
       chip.querySelector('.chip-remove').addEventListener('click', () => chip.remove());
       container.appendChild(chip);
       input.value = '';
@@ -1498,7 +1568,7 @@
     const countries_with_locations = getCodesFromChips('settings-locations-chips');
     const german_speaking_countries = getCodesFromChips('settings-german-chips');
     const statusEl = document.getElementById('settings-status');
-    if (statusEl) statusEl.textContent = 'Saving…';
+    if (statusEl) statusEl.textContent = __('sett.saving');
     try {
       await api('/config/app', {
         method: 'PUT',
@@ -1516,8 +1586,8 @@
           })(),
         })
       });
-      toast('Settings saved. The app will use these values on next fetch.', 'success');
-      if (statusEl) statusEl.textContent = 'Saved.';
+      toast(__('sett.toastConfigSaved'), 'success');
+      if (statusEl) statusEl.textContent = __('sett.savedOk');
     } catch (err) {
       toast(err.message || 'Failed to save', 'error');
       if (statusEl) statusEl.textContent = 'Error: ' + (err.message || '');
@@ -1526,7 +1596,7 @@
 
   document.getElementById('save-pro-news')?.addEventListener('click', async () => {
     const statusEl = document.getElementById('settings-status');
-    if (statusEl) statusEl.textContent = 'Saving…';
+    if (statusEl) statusEl.textContent = __('sett.saving');
     try {
       const raw = (document.getElementById('settings-pro-news')?.value || '');
       const professional_news_ticker = raw
@@ -1535,8 +1605,8 @@
         .filter(Boolean)
         .slice(0, 30);
       await api('/config/app', { method: 'PUT', body: JSON.stringify({ professional_news_ticker }) });
-      toast('News ticker saved', 'success');
-      if (statusEl) statusEl.textContent = 'Saved.';
+      toast(__('sett.toastNewsSaved'), 'success');
+      if (statusEl) statusEl.textContent = __('sett.savedOk');
     } catch (err) {
       toast(err.message || 'Failed to save', 'error');
       if (statusEl) statusEl.textContent = 'Error: ' + (err.message || '');
@@ -1568,8 +1638,8 @@
           auto_sync_min_from_clients: syncEl?.checked === true,
         }),
       });
-      toast('Version settings saved', 'success');
-      if (statusEl) statusEl.textContent = 'Saved.';
+      toast(__('sett.toastVersionSaved'), 'success');
+      if (statusEl) statusEl.textContent = __('sett.savedOk');
       await loadAppSettings();
     } catch (err) {
       toast(err.message || 'Failed to save', 'error');
@@ -2157,7 +2227,7 @@
     if (_catPhotoUrl) {
       preview.style.display = 'flex';
       previewImg.src = _catPhotoUrl;
-      status.textContent = 'Current image';
+      status.textContent = __('mCat.currentImg');
     } else {
       preview.style.display = 'none';
     }
@@ -2171,7 +2241,7 @@
       if (sel) {
         const roots = flat.filter((p) => !p.parent_id && (!cat?.id || p.id !== cat.id));
         sel.innerHTML =
-          '<option value="">— Top-level (shown on home) —</option>' +
+          `<option value="">${escapeHtml(__('mCat.parentTop'))}</option>` +
           roots
             .map(
               (p) =>
@@ -4390,6 +4460,9 @@
       }
       if (cur === 'platform-fees' && typeof window.loadPlatformFees === 'function') {
         window.loadPlatformFees();
+      }
+      if (cur === 'settings' && typeof window.loadAppSettings === 'function') {
+        void window.loadAppSettings();
       }
       if (cur === 'applications' && typeof loadApplications === 'function') void loadApplications();
       if (cur === 'users' && typeof loadUsers === 'function') void loadUsers();

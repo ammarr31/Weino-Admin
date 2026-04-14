@@ -224,161 +224,161 @@
 
           <nav class="admin-settings-toc" data-i18n-aria="sett.tocAria" aria-label="Jump to settings section">
             <span class="admin-settings-toc-label" data-i18n="sett.tocJump">Jump to</span>
-            <a href="#settings-sec-version">App version · الإصدار</a>
-            <a href="#settings-sec-fees-global">Platform fees · العمولات</a>
-            <a href="#settings-sec-booking-policies">Booking policies · سياسات الحجز</a>
-            <a href="#settings-sec-country-lists">Country lists · الدول</a>
+            <a href="#settings-sec-version" data-i18n="sett.tocLinkVersion">App version &amp; updates</a>
+            <a href="#settings-sec-fees-global" data-i18n="sett.tocLinkFees">Platform fees (global)</a>
+            <a href="#settings-sec-booking-policies" data-i18n="sett.tocLinkPolicies">Booking policies</a>
+            <a href="#settings-sec-country-lists" data-i18n="sett.tocLinkLists">Country lists</a>
           </nav>
 
           <div class="admin-settings-stack">
           <section class="admin-card admin-card--deep" id="settings-sec-version">
             <header class="admin-card__head">
-              <h2>إصدار التطبيق والتحديثات · App version</h2>
-              <p class="admin-card__lead"><strong>من Flutter تلقائياً:</strong> التطبيق يبعث <code>X-App-Version</code> مع الطلبات؛ السيرفر يسجّل أعلى إصدار ويحسب <strong>latest</strong> للـ API. <strong>Minimum</strong> تضبطيه هنا فقط عند إجبار التحديث؛ لا يتغيّر تلقائياً من Flutter.</p>
+              <h2 data-i18n="sett.verTitle">App version &amp; updates</h2>
+              <p class="admin-card__lead" data-i18n-html="sett.verLeadHtml"><strong>From Flutter automatically:</strong> the app sends <code>X-App-Version</code> with requests; the server records the highest version and computes <strong>latest</strong> for the API. Set <strong>minimum</strong> here only when forcing an update; it does not change automatically from Flutter.</p>
             </header>
             <div class="admin-card__body">
               <div class="admin-card__grid">
                 <div class="admin-field">
-                  <label for="settings-min-app-version">Minimum — أقل إصدار مسموح</label>
-                  <input type="text" id="settings-min-app-version" maxlength="32" placeholder="e.g. 1.5.1">
+                  <label for="settings-min-app-version" data-i18n="sett.verLblMin">Minimum allowed version</label>
+                  <input type="text" id="settings-min-app-version" maxlength="32" data-i18n-placeholder="sett.verPhMin" placeholder="e.g. 1.5.1">
                 </div>
                 <div class="admin-field">
-                  <label for="settings-latest-app-version">Latest — اختياري (تجاوز يدوي)</label>
-                  <input type="text" id="settings-latest-app-version" maxlength="32" placeholder="فاضي = تلقائي من العملاء">
+                  <label for="settings-latest-app-version" data-i18n="sett.verLblLatest">Latest (optional manual override)</label>
+                  <input type="text" id="settings-latest-app-version" maxlength="32" data-i18n-placeholder="sett.verPhLatest" placeholder="Leave blank = auto from clients">
                 </div>
                 <div class="admin-field">
-                  <label for="settings-highest-seen-version">أعلى إصدار وصل من العملاء (قراءة فقط)</label>
+                  <label for="settings-highest-seen-version" data-i18n="sett.verLblHighest">Highest version seen from clients (read-only)</label>
                   <input type="text" id="settings-highest-seen-version" readonly tabindex="-1">
                 </div>
               </div>
               <div class="admin-field" style="margin-bottom:14px">
-                <label for="settings-release-notes">ملاحظات الإصدار / Release notes</label>
-                <textarea id="settings-release-notes" rows="3" maxlength="2000" placeholder="نص قصير يظهر مع شاشة التحديث"></textarea>
+                <label for="settings-release-notes" data-i18n="sett.verLblRelease">Release notes</label>
+                <textarea id="settings-release-notes" rows="3" maxlength="2000" data-i18n-placeholder="sett.verPhRelease" placeholder="Short text shown with the update screen"></textarea>
               </div>
               <div class="admin-inset">
                 <label>
                   <input type="checkbox" id="settings-auto-sync-min">
-                  <span><strong>رفع الحد الأدنى تلقائياً</strong> عند فتح إصدار أحدث (بحذر في الإنتاج).</span>
+                  <span data-i18n-html="sett.verAutoSyncHtml"><strong>Raise minimum automatically</strong> when a newer client version is seen (use with care in production).</span>
                 </label>
                 <p id="settings-auto-sync-hint" style="color:#fbbf24;font-size:0.8rem;margin:10px 0 0 28px;line-height:1.4"></p>
               </div>
-              <button type="button" class="btn btn-primary" id="save-app-version-settings" style="margin-top:4px">حفظ إعدادات الإصدار · Save</button>
+              <button type="button" class="btn btn-primary" id="save-app-version-settings" style="margin-top:4px" data-i18n="sett.verSaveBtn">Save version settings</button>
               <div style="padding-top:20px;margin-top:20px;border-top:1px solid rgba(255,255,255,0.08)">
-                <h3 style="font-size:0.95rem;font-weight:700;margin:0 0 8px;color:#fafafa">إعدادات السيرفر (Firebase Console)</h3>
-                <p class="admin-card__lead" style="margin:0;font-size:0.8125rem">متغيرات البيئة: <strong>ALLOWED_ORIGINS</strong>, <strong>ALLOW_DEBUG_ROUTES</strong>, <strong>SENTRY_DSN</strong>, <strong>LOG_HTTP_INCOMING</strong>, <strong>DEFAULT_MIN_APP_VERSION</strong>, <strong>AUTO_SYNC_MIN_FROM_CLIENTS</strong>.</p>
+                <h3 style="font-size:0.95rem;font-weight:700;margin:0 0 8px;color:#fafafa" data-i18n="sett.verServerTitle">Server (Firebase Console)</h3>
+                <p class="admin-card__lead" style="margin:0;font-size:0.8125rem" data-i18n-html="sett.verServerBody">Environment variables: <strong>ALLOWED_ORIGINS</strong>, <strong>ALLOW_DEBUG_ROUTES</strong>, <strong>SENTRY_DSN</strong>, <strong>LOG_HTTP_INCOMING</strong>, <strong>DEFAULT_MIN_APP_VERSION</strong>, <strong>AUTO_SYNC_MIN_FROM_CLIENTS</strong>.</p>
               </div>
             </div>
           </section>
 
           <section class="admin-card admin-accent-bar" id="settings-sec-fees-global">
             <header class="admin-card__head">
-              <h2>Platform fees · Global</h2>
-              <p class="admin-card__lead">Hierarchy: Professional → City → Governorate → <strong>Country (Locations)</strong> → global default. Country % من جدول <strong>Locations → Countries</strong>.</p>
+              <h2 data-i18n="sett.feesTitle">Platform fees (global)</h2>
+              <p class="admin-card__lead" data-i18n-html="sett.feesLeadHtml">Hierarchy: Professional → City → Governorate → <strong>Country (Locations)</strong> → global default. Country % is edited under <strong>Locations → Countries</strong>.</p>
             </header>
             <div class="admin-card__body">
               <div class="admin-inset">
                 <label style="flex-direction:row;align-items:center;gap:10px">
                   <input type="checkbox" id="platform-fees-enabled" style="width:auto;margin:0">
-                  <span style="font-weight:600">Record platform fees (% on completed bookings)</span>
+                  <span style="font-weight:600" data-i18n="sett.feesEnableLabel">Record platform fees (% on completed bookings)</span>
                 </label>
-                <p class="admin-card__note" style="margin:8px 0 0 28px">
-                  تسجيل النسب والمبالغ على الحجوزات المكتملة + لوحة «Platform fees» في الأدمن. يمكن تشغيله بدون إظهار المحفظة للمحترف.
+                <p class="admin-card__note" style="margin:8px 0 0 28px" data-i18n="sett.feesEnableNote">
+                  Records percentages and amounts on completed bookings + the admin “Platform fees” view. Can be enabled without showing the wallet to professionals.
                 </p>
               </div>
               <div class="admin-inset" style="margin-top:12px">
                 <label style="flex-direction:row;align-items:center;gap:10px">
                   <input type="checkbox" id="professional-fee-wallet-portal-enabled" style="width:auto;margin:0">
-                  <span style="font-weight:600">Show wallet / billing portal to professionals (app)</span>
+                  <span style="font-weight:600" data-i18n="sett.feesWalletLabel">Show wallet / billing portal to professionals (app)</span>
                 </label>
-                <p class="admin-card__note" style="margin:8px 0 0 28px">
-                  أيقونة المحفظة في تطبيق المحترف + صفحة الفوترة/فواتيرك. عطّله لمتابعة النسب فقط دون دفع من التطبيق حالياً.
+                <p class="admin-card__note" style="margin:8px 0 0 28px" data-i18n="sett.feesWalletNote">
+                  Wallet icon in the professional app + billing / Fawaterk page. Turn off to track fees only without in-app payment for now.
                 </p>
               </div>
               <div class="admin-inset">
-                <p style="font-weight:700;margin:0 0 8px;font-size:0.9rem">Fee suspension (Firestore · not in public /app-config)</p>
-                <p class="admin-card__note">API cache ~45s. Use to pause enforcement without deploy.</p>
-                <label style="margin-top:10px"><input type="checkbox" id="enforce-platform-fee-suspension" style="width:auto;margin-right:8px"><strong>Enforce suspension</strong> — block API / booking when flagged unpaid</label>
-                <label style="margin-top:8px"><input type="checkbox" id="platform-fee-auto-suspend-job" style="width:auto;margin-right:8px"><strong>Daily auto-suspend</strong> — <code>is_suspended_for_fees</code> when due &gt; 0</label>
-                <label style="margin-top:8px"><input type="checkbox" id="platform-fee-monthly-billing-suspend" style="width:auto;margin-right:8px"><strong>Monthly billing suspend job</strong></label>
+                <p style="font-weight:700;margin:0 0 8px;font-size:0.9rem" data-i18n="sett.feesSuspTitle">Fee suspension (Firestore · not in public /app-config)</p>
+                <p class="admin-card__note" data-i18n="sett.feesSuspNote">API cache ~45s. Use to pause enforcement without deploy.</p>
+                <label style="margin-top:10px"><input type="checkbox" id="enforce-platform-fee-suspension" style="width:auto;margin-right:8px"><span data-i18n="sett.feesSuspEnforce">Enforce suspension — block API / booking when flagged unpaid</span></label>
+                <label style="margin-top:8px"><input type="checkbox" id="platform-fee-auto-suspend-job" style="width:auto;margin-right:8px"><span data-i18n="sett.feesSuspAuto">Daily auto-suspend — is_suspended_for_fees when due &gt; 0</span></label>
+                <label style="margin-top:8px"><input type="checkbox" id="platform-fee-monthly-billing-suspend" style="width:auto;margin-right:8px"><span data-i18n="sett.feesSuspMonthly">Monthly billing suspend job</span></label>
               </div>
               <div class="admin-card__grid">
                 <div class="admin-field">
-                  <label for="global-fee-percentage">Global default (%)</label>
+                  <label for="global-fee-percentage" data-i18n="sett.feesGlobalPct">Global default (%)</label>
                   <input type="number" id="global-fee-percentage" min="0" max="100" step="0.1" placeholder="e.g. 5">
-                  <small class="admin-hint">When no other tier is set</small>
+                  <small class="admin-hint" data-i18n="sett.feesGlobalPctHint">When no other tier is set</small>
                 </div>
               </div>
-              <p class="admin-card__note"><strong>Country fee %</strong> — عدّل من Locations → Countries. حفظ الإعدادات هنا يزيل خرائط الدول المكررة القديمة.</p>
+              <p class="admin-card__note" data-i18n-html="sett.feesCountryNoteHtml"><strong>Country fee %</strong> — edit under Locations → Countries. Saving settings here clears legacy duplicate country maps.</p>
               <div class="admin-card__grid admin-card__grid--2-1">
                 <div class="admin-field">
-                  <label for="transfer-phone">Payment phone</label>
-                  <input type="text" id="transfer-phone" maxlength="80" placeholder="+201234567890">
+                  <label for="transfer-phone" data-i18n="sett.feesPhone">Payment phone</label>
+                  <input type="text" id="transfer-phone" maxlength="80" data-i18n-placeholder="sett.feesPhonePh" placeholder="+201234567890">
                 </div>
                 <div class="admin-field">
-                  <label for="transfer-note">Payment note</label>
-                  <input type="text" id="transfer-note" maxlength="500" placeholder="e.g. Vodafone Cash">
+                  <label for="transfer-note" data-i18n="sett.feesTransferNote">Payment note</label>
+                  <input type="text" id="transfer-note" maxlength="500" data-i18n-placeholder="sett.feesTransferNotePh" placeholder="e.g. Vodafone Cash">
                 </div>
               </div>
-              <button type="button" class="btn btn-primary" id="save-global-fee">Save global fee settings</button>
+              <button type="button" class="btn btn-primary" id="save-global-fee" data-i18n="sett.feesSaveBtn">Save global fee settings</button>
             </div>
           </section>
 
           <section class="admin-card admin-accent-bar admin-accent-bar--sky" id="settings-sec-booking-policies">
             <header class="admin-card__head">
-              <h2>Booking policies</h2>
-              <p class="admin-card__lead">Thresholds and rules for no-shows, cancellations, and restrictions.</p>
+              <h2 data-i18n="sett.bpTitle">Booking policies</h2>
+              <p class="admin-card__lead" data-i18n="sett.bpLead">Thresholds and rules for no-shows, cancellations, and restrictions.</p>
             </header>
             <div class="admin-card__body">
               <div class="admin-card__grid">
                 <div class="admin-field">
-                  <label for="no-show-threshold">No-show threshold</label>
+                  <label for="no-show-threshold" data-i18n="sett.bpNoShow">No-show threshold</label>
                   <input type="number" id="no-show-threshold" min="1" max="10" step="1" placeholder="3">
-                  <small class="admin-hint">Restrict after this many no-shows</small>
+                  <small class="admin-hint" data-i18n="sett.bpNoShowHint">Restrict after this many no-shows</small>
                 </div>
                 <div class="admin-field">
-                  <label for="no-show-rate-threshold">No-show rate threshold (%)</label>
+                  <label for="no-show-rate-threshold" data-i18n="sett.bpNoShowRate">No-show rate threshold (%)</label>
                   <input type="number" id="no-show-rate-threshold" min="10" max="100" step="5" placeholder="40">
-                  <small class="admin-hint">Restrict if rate exceeds this %</small>
+                  <small class="admin-hint" data-i18n="sett.bpNoShowRateHint">Restrict if rate exceeds this %</small>
                 </div>
                 <div class="admin-field">
-                  <label for="no-show-rate-min-bookings">Min bookings for rate rule</label>
+                  <label for="no-show-rate-min-bookings" data-i18n="sett.bpNoShowMinBk">Min bookings for rate rule</label>
                   <input type="number" id="no-show-rate-min-bookings" min="1" max="50" step="1" placeholder="5">
-                  <small class="admin-hint">Apply % rule only after this many completed bookings</small>
+                  <small class="admin-hint" data-i18n="sett.bpNoShowMinBkHint">Apply % rule only after this many completed bookings</small>
                 </div>
                 <div class="admin-field">
-                  <label for="no-show-restriction-days">No-show restriction (days)</label>
+                  <label for="no-show-restriction-days" data-i18n="sett.bpNoShowDays">No-show restriction (days)</label>
                   <input type="number" id="no-show-restriction-days" min="1" max="365" step="1" placeholder="14">
                 </div>
                 <div class="admin-field">
-                  <label for="cancellation-threshold">Cancellation threshold</label>
+                  <label for="cancellation-threshold" data-i18n="sett.bpCancelTh">Cancellation threshold</label>
                   <input type="number" id="cancellation-threshold" min="1" max="20" step="1" placeholder="5">
                 </div>
                 <div class="admin-field">
-                  <label for="cancellation-window-hours">Cancellation window (hours)</label>
+                  <label for="cancellation-window-hours" data-i18n="sett.bpCancelWin">Cancellation window (hours)</label>
                   <input type="number" id="cancellation-window-hours" min="0" max="24" step="0.5" placeholder="1">
                 </div>
                 <div class="admin-field">
-                  <label for="cancellation-restriction-hours">Excessive-cancel restriction (hours)</label>
+                  <label for="cancellation-restriction-hours" data-i18n="sett.bpCancelRestrict">Excessive-cancel restriction (hours)</label>
                   <input type="number" id="cancellation-restriction-hours" min="1" max="720" step="1" placeholder="24">
-                  <small class="admin-hint">Max 720 = 30 days</small>
+                  <small class="admin-hint" data-i18n="sett.bpCancelRestrictHint">Max 720 = 30 days</small>
                 </div>
               </div>
-              <button type="button" class="btn btn-primary" id="save-booking-policies">Save booking policies</button>
+              <button type="button" class="btn btn-primary" id="save-booking-policies" data-i18n="sett.bpSave">Save booking policies</button>
             </div>
           </section>
 
           <section class="admin-card admin-accent-bar admin-accent-bar--sky" id="settings-sec-pro-news">
             <header class="admin-card__head">
-              <h2>Professional news ticker · شريط أخبار المحترفين</h2>
-              <p class="admin-card__lead">Each line is one news item. Shown only to professionals on the app dashboard. Hidden automatically when empty.</p>
+              <h2 data-i18n="sett.newsTitle">Professional news ticker</h2>
+              <p class="admin-card__lead" data-i18n="sett.newsLead">Each line is one news item. Shown only to professionals on the app dashboard. Hidden automatically when empty.</p>
             </header>
             <div class="admin-card__body">
               <div class="admin-field">
-                <label for="settings-pro-news">News items (one per line)</label>
-                <textarea id="settings-pro-news" rows="5" maxlength="6000" placeholder="Example:\nImportant: booking policy updated.\nNew feature: multi-slot booking now available."></textarea>
-                <small class="admin-hint">Max 30 lines. Each line trimmed to 160 characters.</small>
+                <label for="settings-pro-news" data-i18n="sett.newsLbl">News items (one per line)</label>
+                <textarea id="settings-pro-news" rows="5" maxlength="6000" data-i18n-placeholder="sett.newsPh" placeholder="Example:\nImportant: booking policy updated.\nNew feature: multi-slot booking now available."></textarea>
+                <small class="admin-hint" data-i18n="sett.newsHint">Max 30 lines. Each line trimmed to 160 characters.</small>
               </div>
-              <button type="button" class="btn btn-primary" id="save-pro-news">Save news ticker</button>
+              <button type="button" class="btn btn-primary" id="save-pro-news" data-i18n="sett.newsSave">Save news ticker</button>
             </div>
           </section>
           </div>
@@ -388,42 +388,42 @@
               <div class="settings-card-header">
                 <span class="settings-card-icon">👤</span>
                 <div>
-                  <h2 class="settings-card-title">Professional allowed</h2>
-                  <p class="settings-card-desc">Countries where users can become professionals and see Discover.</p>
+                  <h2 class="settings-card-title" data-i18n="sett.cardProTitle">Professional allowed</h2>
+                  <p class="settings-card-desc" data-i18n="sett.cardProDesc">Countries where users can become professionals and see Discover.</p>
                 </div>
               </div>
               <div id="settings-professional-chips" class="settings-chips"></div>
               <div class="settings-add-row">
-                <input type="text" id="settings-professional-input" class="settings-code-input" placeholder="e.g. EG" maxlength="2" autocomplete="off">
-                <button type="button" class="btn btn-secondary settings-add-btn" data-target="professional">Add</button>
+                <input type="text" id="settings-professional-input" class="settings-code-input" data-i18n-placeholder="sett.countryCodePh" placeholder="e.g. EG" maxlength="2" autocomplete="off">
+                <button type="button" class="btn btn-secondary settings-add-btn" data-target="professional" data-i18n="common.add">Add</button>
               </div>
             </div>
             <div class="settings-card">
               <div class="settings-card-header">
                 <span class="settings-card-icon">📍</span>
                 <div>
-                  <h2 class="settings-card-title">Countries with locations</h2>
-                  <p class="settings-card-desc">Area picker (governorate + city). Add governorates/cities in Locations first.</p>
+                  <h2 class="settings-card-title" data-i18n="sett.cardLocTitle">Countries with locations</h2>
+                  <p class="settings-card-desc" data-i18n="sett.cardLocDesc">Area picker (governorate + city). Add governorates/cities in Locations first.</p>
                 </div>
               </div>
               <div id="settings-locations-chips" class="settings-chips"></div>
               <div class="settings-add-row">
-                <input type="text" id="settings-locations-input" class="settings-code-input" placeholder="e.g. AT" maxlength="2" autocomplete="off">
-                <button type="button" class="btn btn-secondary settings-add-btn" data-target="locations">Add</button>
+                <input type="text" id="settings-locations-input" class="settings-code-input" data-i18n-placeholder="sett.countryCodePh" placeholder="e.g. EG" maxlength="2" autocomplete="off">
+                <button type="button" class="btn btn-secondary settings-add-btn" data-target="locations" data-i18n="common.add">Add</button>
               </div>
             </div>
             <div class="settings-card">
               <div class="settings-card-header">
                 <span class="settings-card-icon">🇩🇪</span>
                 <div>
-                  <h2 class="settings-card-title">German-speaking (Deutsch option)</h2>
-                  <p class="settings-card-desc">Countries where the Deutsch language option is shown in the app.</p>
+                  <h2 class="settings-card-title" data-i18n="sett.cardDeTitle">German-speaking (Deutsch option)</h2>
+                  <p class="settings-card-desc" data-i18n="sett.cardDeDesc">Countries where the Deutsch language option is shown in the app.</p>
                 </div>
               </div>
               <div id="settings-german-chips" class="settings-chips"></div>
               <div class="settings-add-row">
-                <input type="text" id="settings-german-input" class="settings-code-input" placeholder="e.g. DE" maxlength="2" autocomplete="off">
-                <button type="button" class="btn btn-secondary settings-add-btn" data-target="german">Add</button>
+                <input type="text" id="settings-german-input" class="settings-code-input" data-i18n-placeholder="sett.countryCodePh" placeholder="e.g. EG" maxlength="2" autocomplete="off">
+                <button type="button" class="btn btn-secondary settings-add-btn" data-target="german" data-i18n="common.add">Add</button>
               </div>
             </div>
           </div>
@@ -459,7 +459,7 @@
           <div class="toolbar" style="margin-bottom:20px">
             <button type="button" id="gov-add" class="btn btn-primary" data-i18n="loc.govAdd">+ Add Governorate</button>
             <select id="loc-gov-filter" style="margin-left:12px;padding:8px 12px;border-radius:8px;border:1px solid var(--border)">
-              <option value="">All governorates</option>
+              <option value="" data-i18n="loc.filterGovAll">All governorates</option>
             </select>
             <button type="button" id="city-add" class="btn btn-secondary" style="margin-left:12px" disabled data-i18n="loc.cityAdd">+ Add City</button>
           </div>
@@ -498,7 +498,7 @@
               <p data-i18n-html="fees.subtitleHtml">Operational billing: each professional’s <strong>recorded</strong> vs <strong>confirmed</strong> totals (online payments update automatically via Fawaterk), <strong>amount due</strong>, suspensions, and monthly <strong>invoice export</strong>. Visibility and exports—not the same screen as booking analytics charts.</p>
             </div>
             <div class="toolbar" style="margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <label class="toolbar-time-label" style="margin:0" data-i18n="fees.invoicesLabel">Invoices</label>
+              <label class="toolbar-time-label" style="margin:0" data-i18n="fees.invoicesLabel">Period & export</label>
               <select id="fees-invoices-year" data-i18n-aria="fees.invoiceYearAria" aria-label="Invoice year"></select>
               <select id="fees-invoices-month" data-i18n-aria="fees.invoiceMonthAria" aria-label="Invoice month"></select>
               <button type="button" class="btn" id="fees-invoices-export-pdf" data-i18n="fees.exportPdf">Export invoices PDF</button>
@@ -521,13 +521,13 @@
           <option value="active" data-i18n="fees.optActive">Active (No Dues)</option>
         </select>
         <select id="fees-filter-country">
-          <option value="all">All Countries</option>
+          <option value="all" data-i18n="fees.allCountries">All Countries</option>
         </select>
         <select id="fees-filter-governorate">
-          <option value="all">All Governorates</option>
+          <option value="all" data-i18n="fees.allGovernorates">All Governorates</option>
         </select>
         <select id="fees-filter-city">
-          <option value="all">All Cities</option>
+          <option value="all" data-i18n="fees.allCities">All Cities</option>
         </select>
         <button type="button" class="btn" onclick="clearFeesFilters()" data-i18n="fees.clearFilters">Clear Filters</button>
       </div>
@@ -875,128 +875,90 @@
   <div id="roles-guide-modal" class="modal-overlay hidden roles-guide-overlay">
     <div class="modal roles-guide-modal-panel" style="max-width:920px;width:100%;max-height:90vh;overflow-y:auto">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
-        <h3 style="margin:0;font-size:1.05rem">📋 Admin Roles Guide</h3>
-        <button type="button" class="modal-close" id="close-roles-modal" aria-label="Close" style="background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--text-2)">&times;</button>
+        <h3 style="margin:0;font-size:1.05rem" data-i18n="rg.title">📋 Admin roles guide</h3>
+        <button type="button" class="modal-close" id="close-roles-modal" data-i18n-aria="rg.closeAria" aria-label="Close" style="background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--text-2)">&times;</button>
       </div>
-      <p style="color:var(--text-mid);margin-bottom:20px;font-size:0.9rem">Choose the right role for each team member. You can assign multiple roles to combine access.</p>
+      <p style="color:var(--text-mid);margin-bottom:20px;font-size:0.9rem" data-i18n="rg.intro">Choose the right role for each team member. You can assign multiple roles to combine access.</p>
             <div class="roles-grid">
               <div class="role-card" data-role="super_admin">
-                <div class="role-badge" style="background:#7C3AED">Super Admin</div>
-                <div class="role-desc">Full system access including managing admin accounts. Only one super admin exists.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Everything
-                </div>
+                <div class="role-badge" style="background:#7C3AED" data-i18n="role.super_admin">Super Admin</div>
+                <div class="role-desc" data-i18n="rg.super_admin.desc">Full system access including managing admin accounts. Only one super admin exists.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.super_admin.access">Everything</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.super_admin.best">Platform owner / initial setup</span></div>
               </div>
 
               <div class="role-card" data-role="admin">
-                <div class="role-badge" style="background:#8B5CF6">Admin (full)</div>
-                <div class="role-desc">Full operational access to all platform features except managing other admins.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> All sections except Admin Accounts
-                </div>
+                <div class="role-badge" style="background:#8B5CF6" data-i18n="role.admin">Admin (full)</div>
+                <div class="role-desc" data-i18n="rg.admin.desc">Full operational access to all platform features except managing other admins.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.admin.access">All sections except Admin Accounts</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.admin.best">Operations lead without admin-account management</span></div>
               </div>
 
               <div class="role-card" data-role="bookings_manager">
-                <div class="role-badge" style="background:#10B981">Bookings & Fees</div>
-                <div class="role-desc">Manage all bookings, lifecycle, archive, booking analytics, platform fees (billing), and professional applications.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Bookings, Lifecycle, Archive, Booking analytics, Platform fees, Applications
-                </div>
-                <div class="role-use-case">
-                  <strong>Best for:</strong> Operations manager handling bookings and revenue
-                </div>
+                <div class="role-badge" style="background:#10B981" data-i18n="role.bookings_manager">Bookings &amp; fees</div>
+                <div class="role-desc" data-i18n="rg.bookings_manager.desc">Bookings, lifecycle, archive, analytics, platform fees (billing), and professional applications.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.bookings_manager.access">Dashboard, Bookings, Lifecycle, Archive, Booking analytics, Platform fees, Applications</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.bookings_manager.best">Operations manager handling bookings and revenue</span></div>
               </div>
 
               <div class="role-card" data-role="locations_manager">
-                <div class="role-badge" style="background:#F59E0B">Locations</div>
-                <div class="role-desc">Manage countries, governorates, and cities. Perfect for expansion team.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Locations only
-                </div>
-                <div class="role-use-case">
-                  <strong>Best for:</strong> Geographic expansion specialist
-                </div>
+                <div class="role-badge" style="background:#F59E0B" data-i18n="role.locations_manager">Locations</div>
+                <div class="role-desc" data-i18n="rg.locations_manager.desc">Manage countries, governorates, and cities. For expansion teams.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.locations_manager.access">Dashboard, Locations only</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.locations_manager.best">Geographic expansion specialist</span></div>
               </div>
 
               <div class="role-card" data-role="tickets_support">
-                <div class="role-badge" style="background:#EC4899">Tickets</div>
-                <div class="role-desc">Handle support tickets, respond to users, close resolved issues.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Tickets only
-                </div>
-                <div class="role-use-case">
-                  <strong>Best for:</strong> Customer support agent (tickets only)
-                </div>
+                <div class="role-badge" style="background:#EC4899" data-i18n="role.tickets_support">Tickets</div>
+                <div class="role-desc" data-i18n="rg.tickets_support.desc">Handle support tickets, respond to users, close resolved issues.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.tickets_support.access">Dashboard, Tickets only</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.tickets_support.best">Customer support agent (tickets only)</span></div>
               </div>
 
               <div class="role-card" data-role="content_editor">
-                <div class="role-badge" style="background:#3B82F6">Categories & Media</div>
-                <div class="role-desc">Manage service categories, upload images, bulk operations.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Categories only
-                </div>
-                <div class="role-use-case">
-                  <strong>Best for:</strong> Content manager for service catalog
-                </div>
+                <div class="role-badge" style="background:#3B82F6" data-i18n="role.content_editor">Categories &amp; media</div>
+                <div class="role-desc" data-i18n="rg.content_editor.desc">Manage service categories, upload images, bulk operations.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.content_editor.access">Dashboard, Categories only</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.content_editor.best">Content manager for the service catalog</span></div>
               </div>
 
               <div class="role-card" data-role="users_moderator">
-                <div class="role-badge" style="background:#06B6D4">Users</div>
-                <div class="role-desc">Manage user accounts, ban/unban users, view user details.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Users only
-                </div>
-                <div class="role-use-case">
-                  <strong>Best for:</strong> Community moderator
-                </div>
+                <div class="role-badge" style="background:#06B6D4" data-i18n="role.users_moderator">Users</div>
+                <div class="role-desc" data-i18n="rg.users_moderator.desc">Manage user accounts, ban/unban users, view user details.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.users_moderator.access">Dashboard, Users only</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.users_moderator.best">Community moderator</span></div>
               </div>
 
               <div class="role-card" data-role="finance_manager">
-                <div class="role-badge" style="background:#14B8A6">Platform Fees</div>
-                <div class="role-desc">View fee balances and exports, release suspensions, financial dashboard.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Platform Fees only
-                </div>
-                <div class="role-use-case">
-                  <strong>Best for:</strong> Finance/accounting team member
-                </div>
+                <div class="role-badge" style="background:#14B8A6" data-i18n="role.finance_manager">Platform fees</div>
+                <div class="role-desc" data-i18n="rg.finance_manager.desc">View fee balances and exports, release suspensions, financial dashboard.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.finance_manager.access">Dashboard, Platform Fees only</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.finance_manager.best">Finance / accounting team member</span></div>
               </div>
 
               <div class="role-card" data-role="notifications_manager">
-                <div class="role-badge" style="background:#F97316">Notifications</div>
-                <div class="role-desc">Send push notifications to users, professionals, or specific individuals.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Push Notifications only
-                </div>
-                <div class="role-use-case">
-                  <strong>Best for:</strong> Marketing/communications specialist
-                </div>
+                <div class="role-badge" style="background:#F97316" data-i18n="role.notifications_manager">Notifications</div>
+                <div class="role-desc" data-i18n="rg.notifications_manager.desc">Send push notifications to users, professionals, or specific individuals.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.notifications_manager.access">Dashboard, Push Notifications only</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.notifications_manager.best">Marketing / communications specialist</span></div>
               </div>
 
               <div class="role-card" data-role="support_lead">
-                <div class="role-badge" style="background:#8B5CF6">Support Lead</div>
-                <div class="role-desc">Handle tickets and manage users. Combined role for senior support staff.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Tickets, Users
-                </div>
-                <div class="role-use-case">
-                  <strong>Best for:</strong> Senior support lead managing both tickets and user issues
-                </div>
+                <div class="role-badge" style="background:#8B5CF6" data-i18n="role.support_lead">Support Lead</div>
+                <div class="role-desc" data-i18n="rg.support_lead.desc">Handle tickets and manage users. Combined role for senior support staff.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.support_lead.access">Dashboard, Tickets, Users</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.support_lead.best">Senior support lead for tickets and user issues</span></div>
               </div>
 
               <div class="role-card" data-role="verifier">
-                <div class="role-badge" style="background:#6366F1">Verifier</div>
-                <div class="role-desc">Review and approve professional applications only.</div>
-                <div class="role-access">
-                  <strong>Access:</strong> Dashboard, Applications only
-                </div>
-                <div class="role-use-case">
-                  <strong>Best for:</strong> Application reviewer (verifying professional sign-ups)
-                </div>
+                <div class="role-badge" style="background:#6366F1" data-i18n="role.verifier">Verifier</div>
+                <div class="role-desc" data-i18n="rg.verifier.desc">Review and approve professional applications only.</div>
+                <div class="role-access"><strong data-i18n="rg.access">Access:</strong> <span data-i18n="rg.verifier.access">Dashboard, Applications only</span></div>
+                <div class="role-use-case"><strong data-i18n="rg.best">Best for:</strong> <span data-i18n="rg.verifier.best">Application reviewer (verifying professional sign-ups)</span></div>
               </div>
             </div>
       <div class="modal-actions" style="margin-top:16px">
-        <button type="button" class="btn btn-secondary" id="close-roles-modal-btn">Close</button>
+        <button type="button" class="btn btn-secondary" id="close-roles-modal-btn" data-i18n="rg.close">Close</button>
       </div>
     </div>
   </div>
@@ -1006,71 +968,71 @@
 
     <!-- Booking Detail Modal -->
     <div id="booking-detail-modal" class="modal hidden" style="max-width:720px;width:100%">
-      <h3 id="booking-detail-modal-title">Booking Details</h3>
+      <h3 id="booking-detail-modal-title" data-i18n="mBk.title">Booking details</h3>
       <div id="booking-detail-modal-body"></div>
       <div class="modal-actions">
-        <button type="button" id="booking-detail-modal-close">Close</button>
+        <button type="button" id="booking-detail-modal-close" data-i18n="mBk.close">Close</button>
       </div>
     </div>
 
     <div id="platform-fees-reset-modal" class="modal hidden" style="max-width:520px;width:100%">
-      <h3>Clear recorded platform fees</h3>
-      <p style="color:var(--text-mid);font-size:0.92rem;line-height:1.45">This resets recorded fee counters on every professional and branch, removes stored platform-fee fields on booking matches, <strong>deletes all rows in</strong> <code>platform_fee_payments</code> (the ledger of fees paid online, written automatically when checkout completes via Fawaterk), clears monthly clearances, and releases fee suspensions. Use only for <strong>testing</strong> — that payment history disappears from the admin panel and the database.</p>
-      <p style="margin-top:12px;font-size:0.88rem">Type the phrase below exactly to confirm:</p>
+      <h3 data-i18n="mFees.title">Clear recorded platform fees</h3>
+      <p style="color:var(--text-mid);font-size:0.92rem;line-height:1.45" data-i18n-html="mFees.bodyHtml">This resets recorded fee counters on every professional and branch, removes stored platform-fee fields on booking matches, <strong>deletes all rows in</strong> <code>platform_fee_payments</code> (the ledger of fees paid online, written automatically when checkout completes via Fawaterk), clears monthly clearances, and releases fee suspensions. Use only for <strong>testing</strong> — that payment history disappears from the admin panel and the database.</p>
+      <p style="margin-top:12px;font-size:0.88rem" data-i18n="mFees.typePhrase">Type the phrase below exactly to confirm:</p>
       <p style="margin:6px 0;font-family:monospace;font-size:0.85rem;background:var(--surface-2, #f4f4f6);padding:8px 10px;border-radius:6px">RESET_ALL_RECORDED_FEES</p>
       <label style="display:block;margin-top:12px">
-        <span style="font-size:0.85rem;color:var(--text-mid)">Confirmation</span>
-        <input type="text" id="platform-fees-reset-confirm-input" autocomplete="off" placeholder="RESET_ALL_RECORDED_FEES" style="width:100%;margin-top:6px;font-family:monospace;font-size:0.9rem">
+        <span style="font-size:0.85rem;color:var(--text-mid)" data-i18n="mFees.confirmLbl">Confirmation</span>
+        <input type="text" id="platform-fees-reset-confirm-input" autocomplete="off" data-i18n-placeholder="mFees.confirmPh" placeholder="RESET_ALL_RECORDED_FEES" style="width:100%;margin-top:6px;font-family:monospace;font-size:0.9rem">
       </label>
       <div class="modal-actions" style="margin-top:18px">
-        <button type="button" class="btn btn-danger" id="platform-fees-reset-submit">Clear recorded fees</button>
-        <button type="button" class="btn btn-secondary" id="platform-fees-reset-cancel">Cancel</button>
+        <button type="button" class="btn btn-danger" id="platform-fees-reset-submit" data-i18n="mFees.btnClear">Clear recorded fees</button>
+        <button type="button" class="btn btn-secondary" id="platform-fees-reset-cancel" data-i18n="common.cancel">Cancel</button>
       </div>
     </div>
 
     <!-- Category Modal -->
     <div id="category-modal" class="modal hidden" style="max-width:480px;width:100%">
-      <h3>Category</h3>
+      <h3 data-i18n="mCat.title">Category</h3>
       <form id="category-form">
         <input type="hidden" id="cat-id">
-        <label>Name (default)
-          <input type="text" id="cat-name" required placeholder="e.g. Healthcare">
+        <label><span data-i18n="mCat.nameDefault">Name (default)</span>
+          <input type="text" id="cat-name" required data-i18n-placeholder="mCat.namePh" placeholder="e.g. Healthcare">
         </label>
-        <label>Parent category (optional — subcategory)
+        <label><span data-i18n="mCat.parentLbl">Parent category (optional — subcategory)</span>
           <select id="cat-parent-id">
-            <option value="">— Top-level (shown on home) —</option>
+            <option value="" data-i18n="mCat.parentTop">— Top-level (shown on home) —</option>
           </select>
-          <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.78rem">Choose a top-level category to create a text-only specialization under it.</small>
+          <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.78rem" data-i18n="mCat.parentHint">Choose a top-level category to create a text-only specialization under it.</small>
         </label>
         <div id="cat-photo-label-wrap">
-        <label>Category image
+        <label><span data-i18n="mCat.imageLbl">Category image</span>
           <input type="file" id="cat-photo-file" accept="image/jpeg,image/png,image/webp" style="font-size:0.9rem">
-          <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.78rem">Upload from your PC. Stored in Firebase Storage. Recommend 256×256 px.</small>
+          <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.78rem" data-i18n="mCat.imageHint">Upload from your PC. Stored in Firebase Storage. Recommend 256×256 px.</small>
           <div id="cat-photo-preview" style="margin-top:8px;display:none;flex-wrap:wrap;align-items:center;gap:8px">
             <img id="cat-photo-preview-img" src="" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--border)">
             <span id="cat-photo-status" style="font-size:0.82rem;color:var(--purple)"></span>
-            <button type="button" id="cat-photo-clear" class="btn btn-secondary" style="font-size:0.78rem;padding:4px 10px">Remove</button>
+            <button type="button" id="cat-photo-clear" class="btn btn-secondary" style="font-size:0.78rem;padding:4px 10px" data-i18n="mCat.removePhoto">Remove</button>
           </div>
         </label>
         </div>
-        <label>Display order
-          <input type="number" id="cat-order" min="0" placeholder="e.g. 1 = first, 2 = second (lower = appears first on home)">
+        <label><span data-i18n="mCat.orderLbl">Display order</span>
+          <input type="number" id="cat-order" min="0" data-i18n-placeholder="mCat.orderPh" placeholder="e.g. 1 = first (lower = appears first on home)">
         </label>
         <div style="border-top:1px solid var(--border);margin:12px 0 8px;padding-top:12px">
-          <p style="margin:0 0 10px;font-size:0.78rem;color:var(--text-mid);text-transform:uppercase;letter-spacing:.05em;font-weight:600">Translations (optional)</p>
-          <label>English 🇬🇧
-            <input type="text" id="cat-name-en" placeholder="e.g. Healthcare">
+          <p style="margin:0 0 10px;font-size:0.78rem;color:var(--text-mid);text-transform:uppercase;letter-spacing:.05em;font-weight:600" data-i18n="mCat.transBlock">Translations (optional)</p>
+          <label><span data-i18n="mCat.en">English 🇬🇧</span>
+            <input type="text" id="cat-name-en" data-i18n-placeholder="mCat.enPh" placeholder="e.g. Healthcare">
           </label>
-          <label>Arabic 🇸🇦
-            <input type="text" id="cat-name-ar" placeholder="e.g. الرعاية الصحية" dir="rtl">
+          <label><span data-i18n="mCat.ar">Arabic 🇸🇦</span>
+            <input type="text" id="cat-name-ar" data-i18n-placeholder="mCat.arPh" placeholder="e.g. الرعاية الصحية" dir="rtl">
           </label>
-          <label>German 🇩🇪
-            <input type="text" id="cat-name-de" placeholder="e.g. Gesundheitswesen">
+          <label><span data-i18n="mCat.de">German 🇩🇪</span>
+            <input type="text" id="cat-name-de" data-i18n-placeholder="mCat.dePh" placeholder="e.g. Gesundheitswesen">
           </label>
         </div>
         <div class="modal-actions">
-          <button type="button" id="cat-cancel">Cancel</button>
-          <button type="submit">Save</button>
+          <button type="button" id="cat-cancel" data-i18n="common.cancel">Cancel</button>
+          <button type="submit" data-i18n="common.save">Save</button>
         </div>
       </form>
     </div>

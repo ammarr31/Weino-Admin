@@ -1399,6 +1399,15 @@
       const toggleEl = document.getElementById('platform-fees-enabled');
       if (toggleEl) toggleEl.checked = platformFeesEnabled;
 
+      const walletPortalEl = document.getElementById('professional-fee-wallet-portal-enabled');
+      if (walletPortalEl) {
+        const w =
+          d.professional_fee_wallet_portal_enabled === undefined
+            ? platformFeesEnabled
+            : d.professional_fee_wallet_portal_enabled === true;
+        walletPortalEl.checked = w;
+      }
+
       const enforceSuspEl = document.getElementById('enforce-platform-fee-suspension');
       if (enforceSuspEl) enforceSuspEl.checked = d.enforce_platform_fee_suspension !== false;
       const autoSusJobEl = document.getElementById('platform-fee-auto-suspend-job');
@@ -1635,6 +1644,7 @@
     bindFeeSuspensionToggle('enforce-platform-fee-suspension', 'enforce_platform_fee_suspension');
     bindFeeSuspensionToggle('platform-fee-auto-suspend-job', 'platform_fee_auto_suspend_enabled');
     bindFeeSuspensionToggle('platform-fee-monthly-billing-suspend', 'platform_fee_monthly_billing_suspend_enabled');
+    bindFeeSuspensionToggle('professional-fee-wallet-portal-enabled', 'professional_fee_wallet_portal_enabled');
   }, 500);
   
   // Global fee type toggle

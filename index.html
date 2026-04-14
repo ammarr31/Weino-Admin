@@ -279,9 +279,20 @@
               <div class="admin-inset">
                 <label style="flex-direction:row;align-items:center;gap:10px">
                   <input type="checkbox" id="platform-fees-enabled" style="width:auto;margin:0">
-                  <span style="font-weight:600">Enable platform fees system</span>
+                  <span style="font-weight:600">Record platform fees (% on completed bookings)</span>
                 </label>
-                <p class="admin-card__note" style="margin:8px 0 0 28px">When disabled, no fees on completed bookings (dev/testing).</p>
+                <p class="admin-card__note" style="margin:8px 0 0 28px">
+                  تسجيل النسب والمبالغ على الحجوزات المكتملة + لوحة «Platform fees» في الأدمن. يمكن تشغيله بدون إظهار المحفظة للمحترف.
+                </p>
+              </div>
+              <div class="admin-inset" style="margin-top:12px">
+                <label style="flex-direction:row;align-items:center;gap:10px">
+                  <input type="checkbox" id="professional-fee-wallet-portal-enabled" style="width:auto;margin:0">
+                  <span style="font-weight:600">Show wallet / billing portal to professionals (app)</span>
+                </label>
+                <p class="admin-card__note" style="margin:8px 0 0 28px">
+                  أيقونة المحفظة في تطبيق المحترف + صفحة الفوترة/فواتيرك. عطّله لمتابعة النسب فقط دون دفع من التطبيق حالياً.
+                </p>
               </div>
               <div class="admin-inset">
                 <p style="font-weight:700;margin:0 0 8px;font-size:0.9rem">Fee suspension (Firestore · not in public /app-config)</p>

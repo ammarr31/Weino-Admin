@@ -1108,6 +1108,13 @@
             <small style="display:block;margin-top:4px;color:var(--text-mid);font-size:0.75rem">Highest priority - overrides city, governorate, country, and global. Leave empty to use location-based fee.</small>
           </label>
         </div>
+        <div id="user-branch-fees-wrap" class="hidden" style="margin-top:12px">
+          <div style="background:rgba(124,58,237,0.04);padding:12px;border-radius:8px;border:1px solid rgba(124,58,237,0.12)">
+            <div style="font-weight:600;color:var(--purple);margin-bottom:8px">🏢 Branch Platform Fee Percentage (%)</div>
+            <div id="user-branch-fees-list" style="display:flex;flex-direction:column;gap:10px"></div>
+            <small style="display:block;margin-top:8px;color:var(--text-mid);font-size:0.75rem">Branch override is below professional custom fee and above city/governorate/country/global. New branches default to the first main branch fee.</small>
+          </div>
+        </div>
         <div class="modal-actions" style="justify-content:space-between">
           <button type="button" id="user-delete" class="btn btn-danger">Delete User</button>
           <div style="display:flex;gap:8px">

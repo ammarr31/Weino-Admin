@@ -2752,6 +2752,8 @@
     // Platform fee percentage for professionals
     const feeWrap = document.getElementById('user-platform-fee-wrap');
     const feeInput = document.getElementById('user-platform-fee-percentage');
+    const branchWrap = document.getElementById('user-branch-fees-wrap');
+    const branchList = document.getElementById('user-branch-fees-list');
     if (feeWrap && feeInput) {
       if (user.is_professional) {
         show(feeWrap);
@@ -2759,6 +2761,30 @@
       } else {
         hide(feeWrap);
         feeInput.value = '';
+      }
+    }
+    if (branchWrap && branchList) {
+      if (user.is_professional && Array.isArray(user.branches) && user.branches.length > 0) {
+        show(branchWrap);
+        branchList.innerHTML = user.branches
+          .slice()
+          .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0))
+          .map((b, idx) => {
+            const loc = [b.professional_city || '', b.professional_governorate || ''].filter(Boolean).join(', ');
+            return `
+              <label style="display:block;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg)">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+                  <strong>${escapeHtml(b.name || `Branch ${idx + 1}`)}</strong>
+                  ${idx === 0 ? '<span class="badge badge-purple">Main default</span>' : ''}
+                </div>
+                ${loc ? `<div style="font-size:0.76rem;color:var(--text-mid);margin-bottom:6px">📍 ${escapeHtml(loc)}</div>` : ''}
+                <input type="number" class="user-branch-fee-input" data-branch-id="${escapeHtml(String(b.id))}" min="0" max="100" step="0.1" placeholder="${idx === 0 ? 'e.g. 5' : 'empty = use location/default'}" value="${b.platform_fee_percentage != null ? escapeHtml(String(b.platform_fee_percentage)) : ''}">
+              </label>
+            `;
+          }).join('');
+      } else {
+        hide(branchWrap);
+        branchList.innerHTML = '';
       }
     }
     
@@ -2785,6 +2811,20 @@
     btn.disabled = true;
     try {
       await api(`/users/${uid}`, { method: 'PUT', body: JSON.stringify(payload) });
+      const branchInputs = [...document.querySelectorAll('.user-branch-fee-input')];
+      if (branchInputs.length > 0) {
+        await Promise.all(branchInputs.map((input) => {
+          const branchId = input.getAttribute('data-branch-id');
+          if (!branchId) return Promise.resolve();
+          const raw = input.value.trim();
+          return api(`/users/${uid}/branches/${encodeURIComponent(branchId)}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              platform_fee_percentage: raw === '' ? null : parseFloat(raw),
+            }),
+          });
+        }));
+      }
       hide(document.getElementById('modal-overlay'));
       hide(document.getElementById('user-modal'));
       loadUsers();

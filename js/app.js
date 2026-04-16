@@ -792,17 +792,70 @@
       const displayName = p.professional_name || p.username || '—';
       const amountDue = p.amount_due || 0;
       const amountClass = amountDue > 100 ? 'amount-due high' : 'amount-due';
+      const hasBranches = Array.isArray(p.branches_fees) && p.branches_fees.length > 0;
       
       const cityName = p.professional_city_name || p.professional_city || '';
       const govName = p.professional_governorate_name || p.professional_governorate || '';
       const location = [cityName, govName].filter(Boolean).join(', ') || '—';
       
+      const pctLabel = (p.fee_percentage_effective != null && Number(p.fee_percentage_effective) > 0)
+        ? `${Number(p.fee_percentage_effective)}%`
+        : '—';
+      const pctSub = p.fee_source_effective ? ` · ${escapeHtml(String(p.fee_source_effective))}` : '';
+
+      const branchesRow = hasBranches ? `
+        <tr class="fees-branches-row hidden" data-branches-row="${escapeHtml(p.uid)}">
+          <td colspan="8" style="padding:0 0 14px 0">
+            <div style="margin:6px 10px 0 10px;padding:12px 12px;border-radius:12px;border:1px solid rgba(139,92,246,0.18);background:rgba(139,92,246,0.04)">
+              <div style="font-weight:800;margin-bottom:10px;font-size:0.9rem;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+                <span>Branches</span>
+                <span style="font-weight:600;color:var(--text-mid)">Current fee: ${escapeHtml(pctLabel)}${pctSub}</span>
+              </div>
+              <div style="overflow:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.9rem">
+                  <thead>
+                    <tr style="text-align:left;color:var(--text-mid);font-size:0.8rem">
+                      <th style="padding:6px 8px">Branch</th>
+                      <th style="padding:6px 8px">Fee %</th>
+                      <th style="padding:6px 8px">Recorded bookings</th>
+                      <th style="padding:6px 8px">Recorded total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${p.branches_fees.map((b) => {
+                      const bl = [b.professional_city_name || b.professional_city || '', b.professional_governorate_name || b.professional_governorate || '']
+                        .filter(Boolean)
+                        .join(', ');
+                      const bName = b.name || b.id || '—';
+                      const bPct = (b.fee_percentage != null && Number(b.fee_percentage) > 0) ? `${Number(b.fee_percentage)}%` : '—';
+                      const bPctSub = b.fee_source ? ` · ${escapeHtml(String(b.fee_source))}` : '';
+                      return `
+                        <tr>
+                          <td style="padding:6px 8px">
+                            <div style="font-weight:700">${escapeHtml(String(bName))}</div>
+                            ${bl ? `<div style="font-size:0.8rem;color:var(--text-mid);margin-top:2px">📍 ${escapeHtml(bl)}</div>` : ''}
+                          </td>
+                          <td style="padding:6px 8px;white-space:nowrap">${escapeHtml(bPct)}${bPctSub}</td>
+                          <td style="padding:6px 8px">${escapeHtml(String(b.recorded_bookings ?? 0))}</td>
+                          <td style="padding:6px 8px">${escapeHtml(String((Number(b.recorded_total) || 0).toFixed(2)))}</td>
+                        </tr>
+                      `;
+                    }).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>
+      ` : '';
+
       return `
         <tr class="${p.is_suspended ? 'suspended' : ''}">
           <td class="professional-cell">
             <div>${escapeHtml(displayName)}</div>
             <div class="username">@${escapeHtml(p.username || '—')}</div>
             <div style="font-size:0.75rem;color:var(--text-light);margin-top:2px">📍 ${escapeHtml(location)}</div>
+            <div style="font-size:0.75rem;color:var(--text-light);margin-top:2px">💸 ${escapeHtml(pctLabel)}${pctSub}</div>
             ${p.uid ? `<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap">
               <code style="font-size:0.65rem;background:var(--gray-50);padding:2px 6px;border-radius:4px;color:var(--gray-500);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(p.uid)}">${escapeHtml(p.uid)}</code>
               <button type="button" class="btn-copy-fee-uid" data-uid="${escapeHtml(p.uid)}" title="${escapeHtml(__('fees.copyUidTitle'))}" style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:12px;padding:2px">&#10697;</button>
@@ -822,16 +875,28 @@
             </span>
           </td>
           <td class="actions-cell">
+            ${hasBranches ? `<button class="btn-small btn-secondary" data-toggle-branches="${escapeHtml(p.uid)}">${escapeHtml(__('common.details') || 'Details')}</button>` : ''}
             ${p.is_suspended ? `
               <button class="btn-small btn-release" data-release="${p.uid}">${escapeHtml(__('fees.btnRelease'))}</button>
             ` : ''}
           </td>
         </tr>
+        ${branchesRow}
       `;
     }).join('');
     
     el.querySelectorAll('[data-release]').forEach(btn => {
       btn.addEventListener('click', () => releaseSuspension(btn.dataset.release));
+    });
+    el.querySelectorAll('[data-toggle-branches]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const uid = btn.getAttribute('data-toggle-branches');
+        if (!uid) return;
+        const row = el.querySelector(`[data-branches-row="${CSS.escape(uid)}"]`);
+        if (!row) return;
+        row.classList.toggle('hidden');
+      });
     });
     el.querySelectorAll('.btn-copy-fee-uid').forEach((b) => {
       b.addEventListener('click', (e) => {

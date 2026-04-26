@@ -1179,6 +1179,17 @@
     }
 
     bindSidebarNavOnce();
+    try {
+      if (localStorage.getItem('weino_admin_sidebar_collapsed') === '1') {
+        document.getElementById('main-view')?.classList.add('desktop-sidebar-collapsed');
+        const cbtn = document.getElementById('sidebar-desktop-collapse');
+        if (cbtn) cbtn.setAttribute('aria-expanded', 'false');
+      } else {
+        document.getElementById('main-view')?.classList.remove('desktop-sidebar-collapsed');
+        const cbtn = document.getElementById('sidebar-desktop-collapse');
+        if (cbtn) cbtn.setAttribute('aria-expanded', 'true');
+      }
+    } catch (_) {}
     const perms = admin
       ? (admin.permissions
         || (Array.isArray(admin.roles) && admin.roles.length
@@ -1514,7 +1525,7 @@
       if (walletPortalEl) {
         const w =
           d.professional_fee_wallet_portal_enabled === undefined
-            ? platformFeesEnabled
+            ? true
             : d.professional_fee_wallet_portal_enabled === true;
         walletPortalEl.checked = w;
       }
@@ -2472,6 +2483,7 @@
         el.innerHTML = list.map(a => {
           const isAreaChange = a.type === 'area_change';
           const isAccountDeletion = a.type === 'account_deletion';
+          const isProfessionalLeave = a.type === 'professional_leave';
           const areaDisplay = a.professional_area_display || [a.professional_governorate, a.professional_city].filter(Boolean).join(', ') || '—';
           const oldAreaDisplay = a.old_area_display || [a.old_governorate, a.old_city].filter(Boolean).join(', ') || '—';
           const field = (labelKey, value, isLink) =>
@@ -2483,6 +2495,17 @@
             parts.push(`<div style="padding:12px 14px;background:rgba(239,68,68,0.1);border-radius:10px;border:1px solid rgba(239,68,68,0.3);font-size:0.9rem;margin-bottom:14px">
               <div class="app-field"><span class="app-field-label">${escapeHtml(__('apps.lblProfessional'))}:</span> ${escapeHtml(a.professional_name || a.user?.username || '—')}</div>
               <div class="app-field" style="margin-top:6px"><span class="app-field-label">${escapeHtml(__('apps.lblCategory'))}:</span> ${escapeHtml(a.professional_category || '—')}</div>
+            </div>`);
+          } else if (isProfessionalLeave) {
+            const snapAcct = (a.leave_snapshot_account_phone && String(a.leave_snapshot_account_phone).trim()) || '—';
+            const snapPlat = (a.platform_contact_phone && String(a.platform_contact_phone).trim()) || '—';
+            parts.push(`<div style="padding:12px 14px;background:rgba(245,158,11,0.1);border-radius:10px;border:1px solid rgba(245,158,11,0.35);font-size:0.9rem;margin-bottom:14px">
+              <div style="margin-bottom:10px;color:var(--text-2);line-height:1.45">${escapeHtml(__('apps.lblLeaveIntro'))}</div>
+              <div class="app-field"><span class="app-field-label">${escapeHtml(__('apps.lblProfessional'))}:</span> ${escapeHtml(a.professional_name || a.user?.username || '—')}</div>
+              <div class="app-field" style="margin-top:6px"><span class="app-field-label">${escapeHtml(__('apps.lblCategory'))}:</span> ${escapeHtml(a.professional_category || '—')}</div>
+              ${a.professional_subcategory ? `<div class="app-field" style="margin-top:6px"><span class="app-field-label">${escapeHtml(__('apps.lblSubcategory'))}:</span> ${escapeHtml(a.professional_subcategory)}</div>` : ''}
+              <div class="app-field" style="margin-top:8px"><span class="app-field-label">${escapeHtml(__('apps.lblSnapAccount'))}:</span> ${escapeHtml(snapAcct)}</div>
+              <div class="app-field" style="margin-top:6px"><span class="app-field-label">${escapeHtml(__('apps.lblSnapPlatform'))}:</span> ${escapeHtml(snapPlat)}</div>
             </div>`);
           } else if (isAreaChange) {
             parts.push(`<div style="padding:12px 14px;background:var(--purple-pale);border-radius:10px;border:1px solid rgba(139,92,246,0.25);font-size:0.9rem;margin-bottom:14px">
@@ -2507,10 +2530,12 @@
           const bodyHtml = parts.join('');
           const badgeHtml = isAccountDeletion
             ? `<span class="badge" style="background:rgba(239,68,68,0.2);color:#ef4444">${escapeHtml(__('apps.badgeDelete'))}</span>`
+            : isProfessionalLeave
+              ? `<span class="badge" style="background:rgba(245,158,11,0.2);color:#b45309">${escapeHtml(__('apps.badgeLeave'))}</span>`
             : isAreaChange
               ? `<span class="badge badge-blue">${escapeHtml(__('apps.badgeArea'))}</span>`
               : `<span class="badge badge-purple">${escapeHtml(__('apps.badgeNew'))}</span>`;
-          const approveLabel = isAccountDeletion ? __('apps.approveDelete') : isAreaChange ? __('apps.approveArea') : __('apps.approve');
+          const approveLabel = isAccountDeletion ? __('apps.approveDelete') : isProfessionalLeave ? __('apps.approveLeave') : isAreaChange ? __('apps.approveArea') : __('apps.approve');
           return `
           <div class="card app-card">
             <div class="card-row" style="align-items:flex-start;gap:16px">
@@ -4479,6 +4504,29 @@
       hideRolesModal();
     }
   });
+
+  // --- Desktop: collapse sidebar (full-width tables) ---
+  (function initDesktopSidebarCollapse() {
+    const mv = document.getElementById('main-view');
+    const collapseBtn = document.getElementById('sidebar-desktop-collapse');
+    const openBtn = document.getElementById('sidebar-floating-open');
+    if (!mv || !collapseBtn || !openBtn) return;
+    const LS_KEY = 'weino_admin_sidebar_collapsed';
+    function setCollapsed(collapsed) {
+      mv.classList.toggle('desktop-sidebar-collapsed', collapsed);
+      collapseBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      try {
+        localStorage.setItem(LS_KEY, collapsed ? '1' : '0');
+      } catch (_) {}
+      if (typeof globalThis.AdminI18n !== 'undefined' && globalThis.AdminI18n.applyDom) {
+        globalThis.AdminI18n.applyDom();
+      }
+    }
+    collapseBtn.addEventListener('click', () => {
+      setCollapsed(!mv.classList.contains('desktop-sidebar-collapsed'));
+    });
+    openBtn.addEventListener('click', () => setCollapsed(false));
+  })();
 
   // --- Mobile sidebar toggle ---
   (function initMobileSidebar() {

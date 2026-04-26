@@ -52,6 +52,10 @@
       'nav.users': 'Users',
       'nav.notifications': 'Push Notifications',
       'nav.accounts': 'Admin Accounts',
+      'nav.sidebarCollapseTitle': 'Hide side menu',
+      'nav.sidebarCollapseAria': 'Hide side menu',
+      'nav.sidebarOpenTitle': 'Show side menu',
+      'nav.sidebarOpenAria': 'Show side menu',
 
       'scope.regionAria': 'Country scope',
       'scope.label': 'Country scope',
@@ -350,7 +354,7 @@
       'mBk.close': 'Close',
 
       'apps.title': 'Applications',
-      'apps.subtitle': 'Pending professional sign-ups, area changes, and account deletion requests.',
+      'apps.subtitle': 'Pending sign-ups, area changes, account deletion, and requests to leave professional status.',
       'apps.searchPh': 'Search by name, username or category...',
 
       'fees.title': 'Platform fees',
@@ -564,6 +568,11 @@
       'apps.approveArea': 'Approve area change',
       'apps.approveDelete': 'Approve & delete account',
       'apps.reject': 'Reject',
+      'apps.badgeLeave': 'Leave professional',
+      'apps.approveLeave': 'Approve (remove professional)',
+      'apps.lblLeaveIntro': 'The user asked to stop being a professional. Phones below are snapshots from the request (and current profile).',
+      'apps.lblSnapAccount': 'Account phone (snapshot)',
+      'apps.lblSnapPlatform': 'Platform contact (snapshot)',
 
       'tk.loading': 'Loading tickets...',
       'tk.empty': 'No tickets found',
@@ -664,6 +673,10 @@
       'nav.users': 'المستخدمون',
       'nav.notifications': 'إشعارات الدفع',
       'nav.accounts': 'حسابات المشرفين',
+      'nav.sidebarCollapseTitle': 'إخفاء القائمة',
+      'nav.sidebarCollapseAria': 'إخفاء القائمة الجانبية',
+      'nav.sidebarOpenTitle': 'إظهار القائمة',
+      'nav.sidebarOpenAria': 'إظهار القائمة الجانبية',
 
       'scope.regionAria': 'نطاق الدولة',
       'scope.label': 'نطاق الدولة',
@@ -962,7 +975,7 @@
       'common.to': 'إلى',
 
       'apps.title': 'الطلبات',
-      'apps.subtitle': 'تسجيلات محترفين قيد المراجعة، تغييرات المنطقة، وطلبات حذف الحساب.',
+      'apps.subtitle': 'تسجيلات جديدة، تغيير منطقة، حذف حساب، وطلبات إلغاء صفة المحترف.',
       'apps.searchPh': 'ابحث بالاسم أو اسم المستخدم أو التصنيف...',
 
       'fees.title': 'رسوم المنصة',
@@ -1176,6 +1189,11 @@
       'apps.approveArea': 'قبول تغيير المنطقة',
       'apps.approveDelete': 'قبول وحذف الحساب',
       'apps.reject': 'رفض',
+      'apps.badgeLeave': 'إلغاء صفة محترف',
+      'apps.approveLeave': 'قبول (إزالة صفة المحترف)',
+      'apps.lblLeaveIntro': 'المستخدم طلب عدم الاستمرار كمحترف. أرقام الجوال أدناه لقطة عند الطلب (وملفه الحالي).',
+      'apps.lblSnapAccount': 'جوال الحساب (لقطة)',
+      'apps.lblSnapPlatform': 'جهة اتصال المنصة (لقطة)',
 
       'tk.loading': 'جاري تحميل التذاكر...',
       'tk.empty': 'لا توجد تذاكر',

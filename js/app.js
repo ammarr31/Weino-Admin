@@ -1601,6 +1601,11 @@
         const items = Array.isArray(d.professional_news_ticker) ? d.professional_news_ticker : [];
         newsEl.value = items.map((x) => String(x || '').trim()).filter(Boolean).join('\n');
       }
+      const promoEl = document.getElementById('settings-home-promo-slides');
+      if (promoEl) {
+        const slides = Array.isArray(d.home_promo_slide_urls) ? d.home_promo_slide_urls : [];
+        promoEl.value = slides.map((x) => String(x || '').trim()).filter(Boolean).join('\n');
+      }
       ['settings-professional-input', 'settings-locations-input', 'settings-german-input'].forEach((id) => {
         const input = document.getElementById(id);
         if (input) input.value = '';
@@ -1660,6 +1665,14 @@
               .filter(Boolean)
               .slice(0, 30);
           })(),
+          home_promo_slide_urls: (() => {
+            const raw = (document.getElementById('settings-home-promo-slides')?.value || '');
+            return raw
+              .split('\n')
+              .map((x) => x.trim())
+              .filter(Boolean)
+              .slice(0, 12);
+          })(),
         })
       });
       toast(__('sett.toastConfigSaved'), 'success');
@@ -1682,6 +1695,25 @@
         .slice(0, 30);
       await api('/config/app', { method: 'PUT', body: JSON.stringify({ professional_news_ticker }) });
       toast(__('sett.toastNewsSaved'), 'success');
+      if (statusEl) statusEl.textContent = __('sett.savedOk');
+    } catch (err) {
+      toast(err.message || 'Failed to save', 'error');
+      if (statusEl) statusEl.textContent = 'Error: ' + (err.message || '');
+    }
+  });
+
+  document.getElementById('save-home-promo-slides')?.addEventListener('click', async () => {
+    const statusEl = document.getElementById('settings-status');
+    if (statusEl) statusEl.textContent = __('sett.saving');
+    try {
+      const raw = (document.getElementById('settings-home-promo-slides')?.value || '');
+      const home_promo_slide_urls = raw
+        .split('\n')
+        .map((x) => x.trim())
+        .filter(Boolean)
+        .slice(0, 12);
+      await api('/config/app', { method: 'PUT', body: JSON.stringify({ home_promo_slide_urls }) });
+      toast(__('sett.toastPromoSaved'), 'success');
       if (statusEl) statusEl.textContent = __('sett.savedOk');
     } catch (err) {
       toast(err.message || 'Failed to save', 'error');

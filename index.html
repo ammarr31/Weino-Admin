@@ -230,6 +230,7 @@
             <a href="#settings-sec-fees-global" data-i18n="sett.tocLinkFees">Platform fees (global)</a>
             <a href="#settings-sec-booking-policies" data-i18n="sett.tocLinkPolicies">Booking policies</a>
             <a href="#settings-sec-country-lists" data-i18n="sett.tocLinkLists">Country lists</a>
+            <a href="#settings-sec-home-promo" data-i18n="sett.tocLinkPromo">Home promo banner</a>
           </nav>
 
           <div class="admin-settings-stack">
@@ -381,6 +382,21 @@
                 <small class="admin-hint" data-i18n="sett.newsHint">Max 30 lines. Each line trimmed to 160 characters.</small>
               </div>
               <button type="button" class="btn btn-primary" id="save-pro-news" data-i18n="sett.newsSave">Save news ticker</button>
+            </div>
+          </section>
+
+          <section class="admin-card admin-accent-bar admin-accent-bar--sky" id="settings-sec-home-promo">
+            <header class="admin-card__head">
+              <h2 data-i18n="sett.promoTitle">Client home — promo carousel</h2>
+              <p class="admin-card__lead" data-i18n="sett.promoLead">Images under Discover categories (non-professional users). One HTTPS image URL per line. Auto-rotates in the app about every 2 seconds. Hidden when empty.</p>
+            </header>
+            <div class="admin-card__body">
+              <div class="admin-field">
+                <label for="settings-home-promo-slides" data-i18n="sett.promoLbl">Image URLs (one per line)</label>
+                <textarea id="settings-home-promo-slides" rows="6" maxlength="24000" data-i18n-placeholder="sett.promoPh" placeholder="https://firebasestorage.googleapis.com/.../banner1.png&#10;https://..."></textarea>
+                <small class="admin-hint" data-i18n="sett.promoHint">Max 12 URLs. Only http(s) links. Host your files on Firebase Storage or any CDN.</small>
+              </div>
+              <button type="button" class="btn btn-primary" id="save-home-promo-slides" data-i18n="sett.promoSave">Save promo slides</button>
             </div>
           </section>
           </div>

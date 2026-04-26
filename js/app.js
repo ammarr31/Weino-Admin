@@ -1508,6 +1508,61 @@
       .filter((c) => c.length === 2);
   }
 
+  const HOME_PROMO_ALLOWED_MIMES = [
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/webp',
+    'image/gif',
+    'image/bmp'
+  ];
+
+  function getHomePromoSlideUrls() {
+    const ta = document.getElementById('settings-home-promo-slides');
+    if (!ta) return [];
+    return ta.value
+      .split('\n')
+      .map((x) => x.trim())
+      .filter(Boolean)
+      .slice(0, 12);
+  }
+
+  function setHomePromoSlideUrls(urls) {
+    const ta = document.getElementById('settings-home-promo-slides');
+    if (ta) ta.value = urls.slice(0, 12).join('\n');
+    syncHomePromoPreviewStrip();
+  }
+
+  function syncHomePromoPreviewStrip() {
+    const strip = document.getElementById('settings-home-promo-preview-strip');
+    if (!strip) return;
+    const urls = getHomePromoSlideUrls();
+    strip.innerHTML = '';
+    const countEl = document.getElementById('settings-home-promo-count');
+    if (countEl) countEl.textContent = String(urls.length);
+    urls.forEach((url, idx) => {
+      const item = document.createElement('div');
+      item.className = 'home-promo-strip-item';
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = '';
+      img.loading = 'lazy';
+      item.appendChild(img);
+      const rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'home-promo-strip-remove';
+      rm.setAttribute('aria-label', __('common.removeAria'));
+      rm.textContent = '×';
+      rm.addEventListener('click', () => {
+        const next = getHomePromoSlideUrls();
+        next.splice(idx, 1);
+        setHomePromoSlideUrls(next);
+      });
+      item.appendChild(rm);
+      strip.appendChild(item);
+    });
+  }
+
   window.loadAppSettings = async function () {
     const statusEl = document.getElementById('settings-status');
     if (statusEl) statusEl.textContent = __('common.loading');
@@ -1606,6 +1661,7 @@
         const slides = Array.isArray(d.home_promo_slide_urls) ? d.home_promo_slide_urls : [];
         promoEl.value = slides.map((x) => String(x || '').trim()).filter(Boolean).join('\n');
       }
+      syncHomePromoPreviewStrip();
       ['settings-professional-input', 'settings-locations-input', 'settings-german-input'].forEach((id) => {
         const input = document.getElementById(id);
         if (input) input.value = '';
@@ -1718,6 +1774,86 @@
     } catch (err) {
       toast(err.message || 'Failed to save', 'error');
       if (statusEl) statusEl.textContent = 'Error: ' + (err.message || '');
+    }
+  });
+
+  document.getElementById('settings-home-promo-slides')?.addEventListener('input', () => {
+    syncHomePromoPreviewStrip();
+  });
+
+  document.getElementById('settings-home-promo-clear-all')?.addEventListener('click', () => {
+    setHomePromoSlideUrls([]);
+    const fin = document.getElementById('settings-home-promo-file');
+    if (fin) fin.value = '';
+  });
+
+  document.getElementById('settings-home-promo-file')?.addEventListener('change', async (e) => {
+    const input = e.target;
+    const picked = input.files;
+    if (!picked?.length) return;
+    const status = document.getElementById('settings-home-promo-upload-status');
+    const room = 12 - getHomePromoSlideUrls().length;
+    if (room <= 0) {
+      toast(__('sett.promoNoRoom'), 'error');
+      input.value = '';
+      return;
+    }
+    const list = Array.from(picked).slice(0, room);
+    let ok = 0;
+    if (status) status.textContent = __('common.loading');
+    const extToMime = (ext) => {
+      if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
+      if (ext === 'png') return 'image/png';
+      if (ext === 'webp') return 'image/webp';
+      if (ext === 'gif') return 'image/gif';
+      if (ext === 'bmp') return 'image/bmp';
+      return '';
+    };
+    for (const file of list) {
+      let mt = (file.type || '').toLowerCase();
+      if (!mt && file.name) {
+        const ext = file.name.split('.').pop().toLowerCase();
+        mt = extToMime(ext);
+      }
+      if (!HOME_PROMO_ALLOWED_MIMES.includes(mt)) {
+        toast(__('sett.promoBadType'), 'error');
+        continue;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast(__('sett.promoTooBig'), 'error');
+        continue;
+      }
+      try {
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const b = reader.result.indexOf(',');
+            resolve(reader.result.substring(b + 1));
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const res = await api('/storage/upload-home-promo-slide', {
+          method: 'POST',
+          body: JSON.stringify({ file: base64, mimeType: mt })
+        });
+        if (res.success && res.data?.url) {
+          const cur = getHomePromoSlideUrls();
+          if (cur.length >= 12) break;
+          cur.push(res.data.url);
+          setHomePromoSlideUrls(cur);
+          ok += 1;
+        } else {
+          throw new Error('Upload failed');
+        }
+      } catch (err) {
+        toast(err.message || 'Upload failed', 'error');
+      }
+    }
+    if (status) status.textContent = '';
+    input.value = '';
+    if (ok > 0) {
+      toast(__('sett.promoUploadedN').replace('{n}', String(ok)), 'success');
     }
   });
 

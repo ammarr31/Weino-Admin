@@ -388,14 +388,26 @@
           <section class="admin-card admin-accent-bar admin-accent-bar--sky" id="settings-sec-home-promo">
             <header class="admin-card__head">
               <h2 data-i18n="sett.promoTitle">Client home — promo carousel</h2>
-              <p class="admin-card__lead" data-i18n="sett.promoLead">Images under Discover categories (non-professional users). One HTTPS image URL per line. Auto-rotates in the app about every 2 seconds. Hidden when empty.</p>
+              <p class="admin-card__lead" data-i18n="sett.promoLead">Images under Discover categories (non-professional users). Upload files from your computer; they are stored on Firebase Storage. Auto-rotates in the app about every 2 seconds. Hidden when empty.</p>
             </header>
             <div class="admin-card__body">
               <div class="admin-field">
-                <label for="settings-home-promo-slides" data-i18n="sett.promoLbl">Image URLs (one per line)</label>
-                <textarea id="settings-home-promo-slides" rows="6" maxlength="24000" data-i18n-placeholder="sett.promoPh" placeholder="https://firebasestorage.googleapis.com/.../banner1.png&#10;https://..."></textarea>
-                <small class="admin-hint" data-i18n="sett.promoHint">Max 12 URLs. Only http(s) links. Host your files on Firebase Storage or any CDN.</small>
+                <label for="settings-home-promo-file" data-i18n="sett.promoUploadLbl">Upload images</label>
+                <input type="file" id="settings-home-promo-file" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/bmp,.jpg,.jpeg,.png,.webp,.gif,.bmp" multiple>
+                <span id="settings-home-promo-upload-status" class="admin-hint home-promo-upload-status" aria-live="polite"></span>
+                <small class="admin-hint" data-i18n="sett.promoUploadHint">JPEG, PNG, WebP, GIF or BMP, max 5 MB each, up to 12 slides.</small>
               </div>
+              <div id="settings-home-promo-preview-strip" class="home-promo-preview-strip"></div>
+              <p class="admin-hint home-promo-count-line"><span id="settings-home-promo-count">0</span> / 12 <span data-i18n="sett.promoCountSuffix">slides</span></p>
+              <p class="admin-hint"><button type="button" class="btn btn-secondary btn-small" id="settings-home-promo-clear-all" data-i18n="sett.promoClearAll">Remove all slides</button></p>
+              <details class="home-promo-advanced">
+                <summary data-i18n="sett.promoAdvanced">Advanced: paste image URLs (one per line)</summary>
+                <div class="admin-field">
+                  <label for="settings-home-promo-slides" data-i18n="sett.promoLbl">Image URLs (one per line)</label>
+                  <textarea id="settings-home-promo-slides" rows="4" maxlength="24000" data-i18n-placeholder="sett.promoPh" placeholder="https://…/banner1.png"></textarea>
+                  <small class="admin-hint" data-i18n="sett.promoHint">Max 12 URLs. Only http(s) links if you paste here.</small>
+                </div>
+              </details>
               <button type="button" class="btn btn-primary" id="save-home-promo-slides" data-i18n="sett.promoSave">Save promo slides</button>
             </div>
           </section>

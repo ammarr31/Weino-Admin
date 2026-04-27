@@ -277,7 +277,7 @@
       'sett.tocLinkPromo': 'Home promo banner',
       'sett.promoTitle': 'Client home — promo carousel',
       'sett.promoLead':
-        'Images under Discover categories (non-professional users). Upload files from your computer (stored on Firebase Storage). Set how long each slide shows below; hidden when there are no slides.',
+        'Images under Discover categories (non-professional users). Upload from your computer (Firebase Storage), or use Advanced to paste URLs. In the app the carousel is display-only — taps do not open links. Set slide duration below; the block hides when there are no slides.',
       'sett.promoIntervalLbl': 'Time on each slide (seconds)',
       'sett.promoIntervalHint': '2–60 seconds. Used only when there are at least two slides.',
       'sett.promoDimensionsTitle': 'Recommended image size for ads',
@@ -293,22 +293,21 @@
       'sett.promoHint': 'Max 12 URLs. Only http(s) links if you paste here.',
       'sett.promoSave': 'Save promo slides',
       'sett.promoTargetCascadeHint':
-        'Priority: if the client has a city and you configured slides for that governorate + city, those are shown. Otherwise, if you configured slides for the client’s governorate only, those are shown. Otherwise the global list (upload / paste above) is used — same cascade idea as platform booking fees: city → governorate → default.',
+        'Priority: if the client has a city and you configured slides for that governorate + city, those are shown. Otherwise governorate-only rows if configured. Otherwise the global slides above — same cascade as platform booking fees: city → governorate → default.',
       'sett.promoTargetGovTitle': 'Governorate-specific slides',
       'sett.promoTargetGovHint':
-        'Pick a governorate and paste up to 12 HTTPS image URLs (one per line). Shown when the client’s governorate matches and no city-specific row applies.',
+        'Pick a governorate, then add slides with Choose file or Add slide (up to 12). Shown when the client’s governorate matches and no city-specific row applies.',
       'sett.promoTargetAddGov': 'Add governorate row',
       'sett.promoTargetCityTitle': 'City-specific slides',
       'sett.promoTargetCityHint':
-        'Choose governorate and city, then paste URLs. Highest priority when the client’s governorate and city both match.',
+        'Choose governorate and city, then add slides the same way (Choose file / Add slide). Highest priority when the client’s governorate and city both match.',
       'sett.promoTargetAddCity': 'Add city row',
       'sett.promoTargetGovSourceHint': 'Keys must match Locations (same keys as the user’s area in the app).',
       'sett.promoGovLbl': 'Governorate',
       'sett.promoCityGovLbl': 'Governorate',
       'sett.promoCityLbl': 'City',
-      'sett.promoTargetUrlsLbl': 'Image URLs (one per line, max 12)',
       'sett.promoEditorIntro':
-        'Each slide: image URL, optional end date (or “Show forever”), and optional ad price. Higher price is shown first in the app after saving. Slides past the end date are hidden automatically on the public app (no manual delete needed). Drag the grip on the left to reorder (top = first among equal ad prices). Governorate and city rows can use Choose file to upload like global.',
+        'Each slide: image URL, optional expiry, optional ad amount (higher shows first in the app). After the end date, expired slides are removed from saved config automatically. Drag ⋮⋮ to reorder (top = first among equal ad amounts). Governorate and city rows use the same slide cards and Choose file as global.',
       'sett.promoChooseFile': 'Choose file',
       'sett.promoDragHandleAria': 'Drag to reorder slides',
       'sett.promoAddSlide': 'Add slide',
@@ -881,7 +880,7 @@
       'sett.tocLinkPromo': 'بانر ترويجي للهوم',
       'sett.promoTitle': 'الهوم للعميل — سلايدر ترويجي',
       'sett.promoLead':
-        'صور تحت فئات الاستكشاف (للمستخدمين غير المحترفين). ارفع الملفات من جهازك (تُخزَّن على Firebase Storage). حدّد مدة عرض كل شريحة أدناه؛ يُخفى السلايدر عند عدم وجود صور.',
+        'صور تحت فئات الاستكشاف (للمستخدمين غير المحترفين). ارفع من جهازك (Firebase Storage) أو استخدم «متقدم» للصق الروابط. في التطبيق السلايدر للعرض فقط — الضغط لا يفتح روابطاً خارجية. حدّد مدة العرض أدناه؛ القسم يختفي عند عدم وجود شرائح.',
       'sett.promoIntervalLbl': 'مدة عرض كل شريحة (بالثواني)',
       'sett.promoIntervalHint': 'من ٢ إلى ٦٠ ثانية. يُستخدم فقط عند وجود شريحتين أو أكثر.',
       'sett.promoDimensionsTitle': 'مقاس الصورة المُقترح للإعلان',
@@ -897,22 +896,21 @@
       'sett.promoHint': '١٢ رابطاً كحد أقصى. روابط http أو https فقط عند اللصق هنا.',
       'sett.promoSave': 'حفظ شرائح البانر',
       'sett.promoTargetCascadeHint':
-        'الأولوية: إذا كان للعميل مدينة وضبطت شرائح لنفس المحافظة + المدينة، تُعرض هذه. وإلا إذا ضبطت شرائح للمحافظة فقط، تُعرض عند تطابق محافظة العميل. وإلا تُستخدم القائمة العامة أعلاه (رفع/لصق) — نفس فكرة تدرج رسوم المنصة على الحجز: مدينة → محافظة → افتراضي.',
+        'الأولوية: إذا كان للعميل مدينة وضبطت شرائح لنفس المحافظة + المدينة، تُعرض. وإلا صف المحافظة إن وُجد. وإلا الشرائح العامة أعلاه — نفس تدرج رسوم المنصة: مدينة → محافظة → افتراضي.',
       'sett.promoTargetGovTitle': 'شرائح حسب المحافظة',
       'sett.promoTargetGovHint':
-        'اختر محافظة والصق حتى ١٢ رابط صورة https (سطر لكل رابط). تُعرض عندما تطابق محافظة العميل ولا يوجد صف مدينة أدق.',
+        'اختر محافظة ثم أضف الشرائح بـ «اختيار ملف» أو «إضافة شريحة» (حتى ١٢). تُعرض عند تطابق محافظة العميل ولا يوجد صف مدينة أدق.',
       'sett.promoTargetAddGov': 'إضافة صف محافظة',
       'sett.promoTargetCityTitle': 'شرائح حسب المدينة',
       'sett.promoTargetCityHint':
-        'اختر المحافظة والمدينة ثم الصق الروابط. أعلى أولوية عندما تطابق محافظة ومدينة العميل معاً.',
+        'اختر المحافظة والمدينة ثم أضف الشرائح بنفس الطريقة (اختيار ملف / إضافة شريحة). أعلى أولوية عند تطابق المحافظة والمدينة معاً.',
       'sett.promoTargetAddCity': 'إضافة صف مدينة',
       'sett.promoTargetGovSourceHint': 'المفاتيح يجب أن تطابق «المواقع» في لوحة التحكم (نفس مفاتيح منطقة المستخدم في التطبيق).',
       'sett.promoGovLbl': 'المحافظة',
       'sett.promoCityGovLbl': 'المحافظة',
       'sett.promoCityLbl': 'المدينة',
-      'sett.promoTargetUrlsLbl': 'روابط الصور (سطر لكل رابط، ١٢ كحد أقصى)',
       'sett.promoEditorIntro':
-        'كل شريحة: رابط الصورة، وتاريخ انتهاء اختياري (أو «تظهر للأبد»)، ومبلغ إعلان اختياري. الأعلى مبلغاً يظهر أولاً في التطبيق بعد الحفظ. الشرائح بعد تاريخ الانتهاء تُخفى تلقائياً في التطبيق للعملاء دون حذف يدوي منك. اسحب المقبض على اليسار لإعادة الترتيب (الأعلى = الأول بين نفس سعر الإعلان). صفوف المحافظة والمدينة تدعم «اختيار ملف» للرفع مثل الشرائح العامة.',
+        'كل شريحة: رابط الصورة، وتاريخ انتهاء اختياري، ومبلغ إعلان اختياري (الأعلى يظهر أولاً في التطبيق). بعد انتهاء الصلاحية تُحذف الشرائح من الإعدادات المحفوظة تلقائياً. اسحب ⋮⋮ لإعادة الترتيب (الأعلى = الأول بين نفس مبلغ الإعلان). صفوف المحافظة والمدينة تستخدم نفس البطاقات و«اختيار ملف» مثل العامة.',
       'sett.promoChooseFile': 'اختيار ملف',
       'sett.promoDragHandleAria': 'اسحب لإعادة ترتيب الشرائح',
       'sett.promoAddSlide': 'إضافة شريحة',

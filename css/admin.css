@@ -2604,12 +2604,6 @@
      max-width: 420px;
      margin-top: 4px;
    }
-   .home-promo-target-row .promo-target-urls {
-     width: 100%;
-     max-width: 720px;
-     font-family: ui-monospace, monospace;
-     font-size: 0.82rem;
-   }
    .home-promo-global-cards,
    .home-promo-nested-slides {
      display: flex;

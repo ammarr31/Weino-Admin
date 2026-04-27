@@ -1533,6 +1533,13 @@
     syncHomePromoPreviewStrip();
   }
 
+  function readHomePromoIntervalSeconds() {
+    const el = document.getElementById('settings-home-promo-interval');
+    let n = parseInt(String(el?.value ?? '').trim(), 10);
+    if (!Number.isFinite(n)) n = 2;
+    return Math.max(2, Math.min(60, n));
+  }
+
   function syncHomePromoPreviewStrip() {
     const strip = document.getElementById('settings-home-promo-preview-strip');
     if (!strip) return;
@@ -1662,6 +1669,11 @@
         promoEl.value = slides.map((x) => String(x || '').trim()).filter(Boolean).join('\n');
       }
       syncHomePromoPreviewStrip();
+      const promoIntEl = document.getElementById('settings-home-promo-interval');
+      if (promoIntEl) {
+        const iv = Number(d.home_promo_slide_interval_seconds);
+        promoIntEl.value = String(Math.max(2, Math.min(60, Number.isFinite(iv) ? Math.round(iv) : 2)));
+      }
       ['settings-professional-input', 'settings-locations-input', 'settings-german-input'].forEach((id) => {
         const input = document.getElementById(id);
         if (input) input.value = '';
@@ -1729,6 +1741,7 @@
               .filter(Boolean)
               .slice(0, 12);
           })(),
+          home_promo_slide_interval_seconds: readHomePromoIntervalSeconds(),
         })
       });
       toast(__('sett.toastConfigSaved'), 'success');
@@ -1768,7 +1781,13 @@
         .map((x) => x.trim())
         .filter(Boolean)
         .slice(0, 12);
-      await api('/config/app', { method: 'PUT', body: JSON.stringify({ home_promo_slide_urls }) });
+      await api('/config/app', {
+        method: 'PUT',
+        body: JSON.stringify({
+          home_promo_slide_urls,
+          home_promo_slide_interval_seconds: readHomePromoIntervalSeconds(),
+        }),
+      });
       toast(__('sett.toastPromoSaved'), 'success');
       if (statusEl) statusEl.textContent = __('sett.savedOk');
     } catch (err) {

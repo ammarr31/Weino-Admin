@@ -388,7 +388,7 @@
           <section class="admin-card admin-accent-bar admin-accent-bar--sky" id="settings-sec-home-promo">
             <header class="admin-card__head">
               <h2 data-i18n="sett.promoTitle">Client home — promo carousel</h2>
-              <p class="admin-card__lead" data-i18n="sett.promoLead">Images under Discover categories (non-professional users). Upload files from your computer; they are stored on Firebase Storage. Auto-rotates in the app about every 2 seconds. Hidden when empty.</p>
+              <p class="admin-card__lead" data-i18n="sett.promoLead">Images under Discover categories (non-professional users). Upload files from your computer; they are stored on Firebase Storage. Set slide duration below; hidden when there are no slides.</p>
             </header>
             <div class="admin-card__body">
               <div class="admin-field">
@@ -400,6 +400,15 @@
               <div id="settings-home-promo-preview-strip" class="home-promo-preview-strip"></div>
               <p class="admin-hint home-promo-count-line"><span id="settings-home-promo-count">0</span> / 12 <span data-i18n="sett.promoCountSuffix">slides</span></p>
               <p class="admin-hint"><button type="button" class="btn btn-secondary btn-small" id="settings-home-promo-clear-all" data-i18n="sett.promoClearAll">Remove all slides</button></p>
+              <div class="admin-field">
+                <label for="settings-home-promo-interval" data-i18n="sett.promoIntervalLbl">Time on each slide (seconds)</label>
+                <input type="number" id="settings-home-promo-interval" min="2" max="60" step="1" value="2" class="settings-code-input" style="max-width: 120px" inputmode="numeric">
+                <small class="admin-hint" data-i18n="sett.promoIntervalHint">2–60 seconds. Used only when there are at least two slides.</small>
+              </div>
+              <div class="admin-field">
+                <label data-i18n="sett.promoDimensionsTitle">Recommended image size for ads</label>
+                <p class="admin-hint admin-hint--block" data-i18n="sett.promoDimensions">Use a wide banner: aspect ratio about 2.15 to 1 (width divided by height), for example 1080×502 px, 1290×600 px, or 1500×698 px. Use at least 1000 px width for sharp results. On phones the visible height is capped (about 118–188 px depending on screen); images use center crop (cover) without stretching.</p>
+              </div>
               <details class="home-promo-advanced">
                 <summary data-i18n="sett.promoAdvanced">Advanced: paste image URLs (one per line)</summary>
                 <div class="admin-field">

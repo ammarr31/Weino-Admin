@@ -277,7 +277,12 @@
       'sett.tocLinkPromo': 'Home promo banner',
       'sett.promoTitle': 'Client home — promo carousel',
       'sett.promoLead':
-        'Images under Discover categories (non-professional users). Upload files from your computer (stored on Firebase Storage). Auto-rotates in the app about every 2 seconds. Hidden when empty.',
+        'Images under Discover categories (non-professional users). Upload files from your computer (stored on Firebase Storage). Set how long each slide shows below; hidden when there are no slides.',
+      'sett.promoIntervalLbl': 'Time on each slide (seconds)',
+      'sett.promoIntervalHint': '2–60 seconds. Used only when there are at least two slides.',
+      'sett.promoDimensionsTitle': 'Recommended image size for ads',
+      'sett.promoDimensions':
+        'Use a wide banner: aspect ratio about 2.15 to 1 (width ÷ height), for example 1080×502 px, 1290×600 px, or 1500×698 px. Use at least 1000 px width for sharp results. On phones the visible height is capped (about 118–188 px depending on screen); images use center crop (cover) without stretching.',
       'sett.promoUploadLbl': 'Upload images from your computer',
       'sett.promoUploadHint': 'JPEG, PNG, WebP, GIF or BMP, max 5 MB each, up to 12 slides.',
       'sett.promoCountSuffix': 'slides',
@@ -850,7 +855,12 @@
       'sett.tocLinkPromo': 'بانر ترويجي للهوم',
       'sett.promoTitle': 'الهوم للعميل — سلايدر ترويجي',
       'sett.promoLead':
-        'صور تحت فئات الاستكشاف (للمستخدمين غير المحترفين). ارفع الملفات من جهازك (تُخزَّن على Firebase Storage). يتبدّل تلقائياً في التطبيق كل نحو ثانيتين. يُخفى عند الفراغ.',
+        'صور تحت فئات الاستكشاف (للمستخدمين غير المحترفين). ارفع الملفات من جهازك (تُخزَّن على Firebase Storage). حدّد مدة عرض كل شريحة أدناه؛ يُخفى السلايدر عند عدم وجود صور.',
+      'sett.promoIntervalLbl': 'مدة عرض كل شريحة (بالثواني)',
+      'sett.promoIntervalHint': 'من ٢ إلى ٦٠ ثانية. يُستخدم فقط عند وجود شريحتين أو أكثر.',
+      'sett.promoDimensionsTitle': 'مقاس الصورة المُقترح للإعلان',
+      'sett.promoDimensions':
+        'بانر عريض: نسبة العرض إلى الارتفاع تقريباً ٢٫١٥ إلى ١ (العرض ÷ الارتفاع)، مثلاً ١٠٨٠×٥٠٢ بكسل أو ١٢٩٠×٦٠٠ أو ١٥٠٠×٦٩٨. يُفضّل عرض ١٠٠٠ بكسل فأكثر للوضوح. على الهاتف يُعرض الارتفاع ضمن حدّ (نحو ١١٨–١٨٨ بكسل حسب الشاشة) مع قصّ من المنتصف (cover) دون تشويه النسبة.',
       'sett.promoUploadLbl': 'رفع صور من جهازك',
       'sett.promoUploadHint': 'JPEG أو PNG أو WebP أو GIF أو BMP، حتى ٥ ميجابايت لكل ملف، حتى ١٢ شريحة.',
       'sett.promoCountSuffix': 'شرائح',

@@ -2574,3 +2574,10 @@
    .home-promo-advanced .admin-field {
      margin-top: 12px;
    }
+   .admin-hint--block {
+     display: block;
+     white-space: normal;
+     max-width: 100%;
+     line-height: 1.45;
+     margin-top: 4px;
+   }

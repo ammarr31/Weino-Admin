@@ -1517,6 +1517,141 @@
     'image/bmp'
   ];
 
+  function extToMimeHomePromo(ext) {
+    const e = String(ext || '').toLowerCase();
+    if (e === 'jpg' || e === 'jpeg') return 'image/jpeg';
+    if (e === 'png') return 'image/png';
+    if (e === 'webp') return 'image/webp';
+    if (e === 'gif') return 'image/gif';
+    if (e === 'bmp') return 'image/bmp';
+    return '';
+  }
+
+  function getDragAfterPromoCard(container, y) {
+    const draggableElements = [...container.querySelectorAll('.home-promo-slide-card')].filter(
+      (c) => !c.classList.contains('home-promo-slide-card--dragging'),
+    );
+    return draggableElements.reduce(
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        }
+        return closest;
+      },
+      { offset: Number.NEGATIVE_INFINITY, element: null },
+    ).element;
+  }
+
+  /** Drag handle on each card; top-to-bottom order is saved order (before app-side ad-price sort). */
+  function wireHomePromoSlideListDnD(container) {
+    if (!container || container.dataset.promoDndWired === '1') return;
+    container.dataset.promoDndWired = '1';
+    let draggedCard = null;
+    container.addEventListener('dragstart', (e) => {
+      const handle = e.target.closest('.home-promo-slide-drag');
+      if (!handle || !container.contains(handle)) return;
+      draggedCard = handle.closest('.home-promo-slide-card');
+      if (!draggedCard || !container.contains(draggedCard)) return;
+      draggedCard.classList.add('home-promo-slide-card--dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      try {
+        e.dataTransfer.setData('text/plain', 'promo-slide');
+      } catch (_) {
+        /* ignore */
+      }
+    });
+    container.addEventListener('dragend', () => {
+      if (draggedCard) draggedCard.classList.remove('home-promo-slide-card--dragging');
+      draggedCard = null;
+      if (container.id === 'settings-home-promo-global-cards') {
+        syncHomePromoPreviewStrip();
+      }
+    });
+    container.addEventListener('dragover', (e) => {
+      if (!draggedCard || !container.contains(draggedCard)) return;
+      e.preventDefault();
+      const afterElement = getDragAfterPromoCard(container, e.clientY);
+      if (afterElement == null) {
+        container.appendChild(draggedCard);
+      } else {
+        container.insertBefore(draggedCard, afterElement);
+      }
+    });
+  }
+
+  async function processHomePromoFileInput(fileInput, cardsWrap, statusEl) {
+    const picked = fileInput?.files;
+    if (!picked?.length || !cardsWrap) return;
+    const room = 12 - cardsWrap.querySelectorAll('.home-promo-slide-card').length;
+    if (room <= 0) {
+      toast(__('sett.promoNoRoom'), 'error');
+      if (fileInput) fileInput.value = '';
+      return;
+    }
+    const list = Array.from(picked).slice(0, room);
+    let ok = 0;
+    if (statusEl) statusEl.textContent = __('common.loading');
+    for (const file of list) {
+      let mt = (file.type || '').toLowerCase();
+      if (!mt && file.name) {
+        const ext = file.name.split('.').pop();
+        mt = extToMimeHomePromo(ext);
+      }
+      if (!HOME_PROMO_ALLOWED_MIMES.includes(mt)) {
+        toast(__('sett.promoBadType'), 'error');
+        continue;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast(__('sett.promoTooBig'), 'error');
+        continue;
+      }
+      try {
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const b = reader.result.indexOf(',');
+            resolve(reader.result.substring(b + 1));
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const res = await api('/storage/upload-home-promo-slide', {
+          method: 'POST',
+          body: JSON.stringify({ file: base64, mimeType: mt }),
+        });
+        if (res.success && res.data?.url) {
+          if (cardsWrap.querySelectorAll('.home-promo-slide-card').length >= 12) break;
+          appendSlideCard(cardsWrap, { url: res.data.url, expires_at: null, price: null }, { silent: true });
+          ok += 1;
+        } else {
+          throw new Error('Upload failed');
+        }
+      } catch (err) {
+        toast(err.message || 'Upload failed', 'error');
+      }
+    }
+    if (statusEl) statusEl.textContent = '';
+    if (fileInput) fileInput.value = '';
+    if (ok > 0 && cardsWrap.id === 'settings-home-promo-global-cards') {
+      syncHomePromoPreviewStrip();
+    }
+    if (ok > 0) {
+      toast(__('sett.promoUploadedN').replace('{n}', String(ok)), 'success');
+    }
+  }
+
+  function wireNestedPromoFileRow(row, nest) {
+    const fileInp = row.querySelector('.promo-nested-home-promo-file');
+    const chooseBtn = row.querySelector('.promo-nested-choose-file');
+    const statusMini = row.querySelector('.promo-nested-upload-status');
+    chooseBtn?.addEventListener('click', () => fileInp?.click());
+    fileInp?.addEventListener('change', (ev) => {
+      processHomePromoFileInput(ev.target, nest, statusMini).catch(() => {});
+    });
+  }
+
   function getGlobalPromoCardsWrap() {
     return document.getElementById('settings-home-promo-global-cards');
   }
@@ -1540,7 +1675,9 @@
         : '';
     const card = document.createElement('div');
     card.className = 'home-promo-slide-card';
+    const dragLabel = escapeHtml(__('sett.promoDragHandleAria'));
     card.innerHTML = `
+      <span class="home-promo-slide-drag" draggable="true" role="button" tabindex="0" aria-label="${dragLabel}" title="${dragLabel}">⋮⋮</span>
       <div class="home-promo-slide-card__main">
         <div class="home-promo-slide-card__thumb"><img class="promo-thumb-img" alt="" src="${escapeHtml(url)}" /></div>
         <div class="home-promo-slide-card__fields">
@@ -1585,6 +1722,7 @@
       syncHomePromoPreviewStrip();
     });
     container.appendChild(card);
+    wireHomePromoSlideListDnD(container);
     if (!opts.silent) syncHomePromoPreviewStrip();
   }
 
@@ -1797,9 +1935,12 @@
         <select class="promo-gov-key home-promo-select">${homePromoGovOptionsHtml(govKey || '')}</select>
       </div>
       <div class="promo-nested-slide-list home-promo-nested-slides"></div>
-      <p>
-        <button type="button" class="btn btn-secondary btn-small promo-nested-add-slide">${escapeHtml(__('sett.promoAddSlide'))}</button>
-        <button type="button" class="btn btn-secondary btn-small promo-target-remove">${escapeHtml(__('common.removeAria'))}</button>
+      <p class="home-promo-nested-actions">
+        <input type="file" class="promo-nested-home-promo-file" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/bmp,.jpg,.jpeg,.png,.webp,.gif,.bmp" multiple tabindex="-1" />
+        <button type="button" class="btn btn-secondary btn-small promo-nested-choose-file" data-i18n="sett.promoChooseFile"></button>
+        <button type="button" class="btn btn-secondary btn-small promo-nested-add-slide" data-i18n="sett.promoAddSlide"></button>
+        <button type="button" class="btn btn-secondary btn-small promo-target-remove" data-i18n="common.removeAria"></button>
+        <span class="admin-hint promo-nested-upload-status" aria-live="polite"></span>
       </p>
     `;
     const nest = row.querySelector('.promo-nested-slide-list');
@@ -1811,8 +1952,13 @@
       appendSlideCard(nest, {}, { silent: true });
     });
     row.querySelector('.promo-target-remove')?.addEventListener('click', () => row.remove());
+    wireNestedPromoFileRow(row, nest);
+    wireHomePromoSlideListDnD(nest);
     coerceSlidesArray(slidesArr).forEach((s) => appendSlideCard(nest, s, { silent: true }));
     wrap.appendChild(row);
+    if (typeof globalThis.AdminI18n !== 'undefined' && typeof globalThis.AdminI18n.applyDom === 'function') {
+      globalThis.AdminI18n.applyDom();
+    }
   }
 
   function addHomePromoCityRow(govKey, cityKey, slidesArr) {
@@ -1830,9 +1976,12 @@
         <select class="promo-city-key home-promo-select"><option value="">—</option></select>
       </div>
       <div class="promo-nested-slide-list home-promo-nested-slides"></div>
-      <p>
-        <button type="button" class="btn btn-secondary btn-small promo-nested-add-slide">${escapeHtml(__('sett.promoAddSlide'))}</button>
-        <button type="button" class="btn btn-secondary btn-small promo-target-remove">${escapeHtml(__('common.removeAria'))}</button>
+      <p class="home-promo-nested-actions">
+        <input type="file" class="promo-nested-home-promo-file" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/bmp,.jpg,.jpeg,.png,.webp,.gif,.bmp" multiple tabindex="-1" />
+        <button type="button" class="btn btn-secondary btn-small promo-nested-choose-file" data-i18n="sett.promoChooseFile"></button>
+        <button type="button" class="btn btn-secondary btn-small promo-nested-add-slide" data-i18n="sett.promoAddSlide"></button>
+        <button type="button" class="btn btn-secondary btn-small promo-target-remove" data-i18n="common.removeAria"></button>
+        <span class="admin-hint promo-nested-upload-status" aria-live="polite"></span>
       </p>
     `;
     const govSel = row.querySelector('.promo-city-gov-key');
@@ -1849,9 +1998,14 @@
       appendSlideCard(nest, {}, { silent: true });
     });
     row.querySelector('.promo-target-remove')?.addEventListener('click', () => row.remove());
+    wireNestedPromoFileRow(row, nest);
+    wireHomePromoSlideListDnD(nest);
     wrap.appendChild(row);
     if (govKey) fillCitySelectForGovRow(citySel, govKey, cityKey || '').catch(() => {});
     coerceSlidesArray(slidesArr).forEach((s) => appendSlideCard(nest, s, { silent: true }));
+    if (typeof globalThis.AdminI18n !== 'undefined' && typeof globalThis.AdminI18n.applyDom === 'function') {
+      globalThis.AdminI18n.applyDom();
+    }
   }
 
   function renderHomePromoGovernorateRowsFromConfig(map) {
@@ -2139,74 +2293,12 @@
     syncHomePromoPreviewStrip();
   });
 
-  document.getElementById('settings-home-promo-file')?.addEventListener('change', async (e) => {
+  wireHomePromoSlideListDnD(getGlobalPromoCardsWrap());
+
+  document.getElementById('settings-home-promo-file')?.addEventListener('change', (e) => {
     const input = e.target;
-    const picked = input.files;
-    if (!picked?.length) return;
     const status = document.getElementById('settings-home-promo-upload-status');
-    const room = 12 - getHomePromoPreviewUrlsFromGlobal().length;
-    if (room <= 0) {
-      toast(__('sett.promoNoRoom'), 'error');
-      input.value = '';
-      return;
-    }
-    const list = Array.from(picked).slice(0, room);
-    let ok = 0;
-    if (status) status.textContent = __('common.loading');
-    const extToMime = (ext) => {
-      if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
-      if (ext === 'png') return 'image/png';
-      if (ext === 'webp') return 'image/webp';
-      if (ext === 'gif') return 'image/gif';
-      if (ext === 'bmp') return 'image/bmp';
-      return '';
-    };
-    for (const file of list) {
-      let mt = (file.type || '').toLowerCase();
-      if (!mt && file.name) {
-        const ext = file.name.split('.').pop().toLowerCase();
-        mt = extToMime(ext);
-      }
-      if (!HOME_PROMO_ALLOWED_MIMES.includes(mt)) {
-        toast(__('sett.promoBadType'), 'error');
-        continue;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        toast(__('sett.promoTooBig'), 'error');
-        continue;
-      }
-      try {
-        const base64 = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const b = reader.result.indexOf(',');
-            resolve(reader.result.substring(b + 1));
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-        const res = await api('/storage/upload-home-promo-slide', {
-          method: 'POST',
-          body: JSON.stringify({ file: base64, mimeType: mt })
-        });
-        if (res.success && res.data?.url) {
-          const wrap = getGlobalPromoCardsWrap();
-          if (!wrap || wrap.querySelectorAll('.home-promo-slide-card').length >= 12) break;
-          appendSlideCard(wrap, { url: res.data.url, expires_at: null, price: null }, { silent: true });
-          ok += 1;
-        } else {
-          throw new Error('Upload failed');
-        }
-      } catch (err) {
-        toast(err.message || 'Upload failed', 'error');
-      }
-    }
-    if (status) status.textContent = '';
-    input.value = '';
-    if (ok > 0) syncHomePromoPreviewStrip();
-    if (ok > 0) {
-      toast(__('sett.promoUploadedN').replace('{n}', String(ok)), 'success');
-    }
+    processHomePromoFileInput(input, getGlobalPromoCardsWrap(), status).catch(() => {});
   });
 
   document.getElementById('settings-refresh')?.addEventListener('click', () => loadAppSettings());

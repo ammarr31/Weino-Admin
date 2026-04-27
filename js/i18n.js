@@ -308,7 +308,9 @@
       'sett.promoCityLbl': 'City',
       'sett.promoTargetUrlsLbl': 'Image URLs (one per line, max 12)',
       'sett.promoEditorIntro':
-        'Each slide: image URL, optional end date (or “Show forever”), and optional ad price. Higher price is shown first in the app after saving. Slides past the end date are hidden automatically on the public app (no manual delete needed).',
+        'Each slide: image URL, optional end date (or “Show forever”), and optional ad price. Higher price is shown first in the app after saving. Slides past the end date are hidden automatically on the public app (no manual delete needed). Drag the grip on the left to reorder (top = first among equal ad prices). Governorate and city rows can use Choose file to upload like global.',
+      'sett.promoChooseFile': 'Choose file',
+      'sett.promoDragHandleAria': 'Drag to reorder slides',
       'sett.promoAddSlide': 'Add slide',
       'sett.promoSlideUrlLbl': 'Image URL (https)',
       'sett.promoExpiresLbl': 'Show until (date)',
@@ -910,7 +912,9 @@
       'sett.promoCityLbl': 'المدينة',
       'sett.promoTargetUrlsLbl': 'روابط الصور (سطر لكل رابط، ١٢ كحد أقصى)',
       'sett.promoEditorIntro':
-        'كل شريحة: رابط الصورة، وتاريخ انتهاء اختياري (أو «تظهر للأبد»)، ومبلغ إعلان اختياري. الأعلى مبلغاً يظهر أولاً في التطبيق بعد الحفظ. الشرائح بعد تاريخ الانتهاء تُخفى تلقائياً في التطبيق للعملاء دون حذف يدوي منك.',
+        'كل شريحة: رابط الصورة، وتاريخ انتهاء اختياري (أو «تظهر للأبد»)، ومبلغ إعلان اختياري. الأعلى مبلغاً يظهر أولاً في التطبيق بعد الحفظ. الشرائح بعد تاريخ الانتهاء تُخفى تلقائياً في التطبيق للعملاء دون حذف يدوي منك. اسحب المقبض على اليسار لإعادة الترتيب (الأعلى = الأول بين نفس سعر الإعلان). صفوف المحافظة والمدينة تدعم «اختيار ملف» للرفع مثل الشرائح العامة.',
+      'sett.promoChooseFile': 'اختيار ملف',
+      'sett.promoDragHandleAria': 'اسحب لإعادة ترتيب الشرائح',
       'sett.promoAddSlide': 'إضافة شريحة',
       'sett.promoSlideUrlLbl': 'رابط الصورة (https)',
       'sett.promoExpiresLbl': 'تظهر حتى (تاريخ)',

@@ -2627,6 +2627,59 @@
      border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.12));
      background: var(--surface, #fff);
    }
+   .home-promo-slide-drag {
+     flex-shrink: 0;
+     align-self: stretch;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     width: 28px;
+     min-height: 44px;
+     margin: -4px 0 -4px -4px;
+     padding: 4px 2px;
+     border-radius: 8px;
+     cursor: grab;
+     color: var(--text-mid, #71717a);
+     user-select: none;
+     -webkit-user-select: none;
+     touch-action: none;
+     line-height: 1;
+     font-size: 1rem;
+     letter-spacing: -0.12em;
+   }
+   .home-promo-slide-drag:active {
+     cursor: grabbing;
+   }
+   .home-promo-slide-drag:focus-visible {
+     outline: 2px solid var(--accent, #0ea5e9);
+     outline-offset: 2px;
+   }
+   .home-promo-slide-card--dragging {
+     opacity: 0.5;
+   }
+   .home-promo-nested-actions {
+     position: relative;
+     display: flex;
+     flex-wrap: wrap;
+     align-items: center;
+     gap: 8px 10px;
+     margin: 8px 0 0;
+   }
+   .home-promo-nested-actions .promo-nested-upload-status {
+     flex-basis: 100%;
+     margin: 0;
+   }
+   .promo-nested-home-promo-file {
+     position: absolute;
+     width: 1px;
+     height: 1px;
+     padding: 0;
+     margin: -1px;
+     overflow: hidden;
+     clip: rect(0, 0, 0, 0);
+     white-space: nowrap;
+     border: 0;
+   }
    .home-promo-slide-card__main {
      display: flex;
      gap: 14px;

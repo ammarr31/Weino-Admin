@@ -1517,19 +1517,133 @@
     'image/bmp'
   ];
 
-  function getHomePromoSlideUrls() {
-    const ta = document.getElementById('settings-home-promo-slides');
-    if (!ta) return [];
-    return ta.value
-      .split('\n')
-      .map((x) => x.trim())
-      .filter(Boolean)
-      .slice(0, 12);
+  function getGlobalPromoCardsWrap() {
+    return document.getElementById('settings-home-promo-global-cards');
+  }
+
+  function expiresMsToDateInput(ms) {
+    if (ms == null || !Number.isFinite(Number(ms))) return '';
+    const d = new Date(Number(ms));
+    if (!Number.isFinite(d.getTime())) return '';
+    return d.toISOString().slice(0, 10);
+  }
+
+  /** @param {{ silent?: boolean }} opts */
+  function appendSlideCard(container, slide, opts = {}) {
+    if (!container) return;
+    const url = slide && slide.url ? String(slide.url).trim() : '';
+    const exp = slide && slide.expires_at != null ? expiresMsToDateInput(slide.expires_at) : '';
+    const forever = !(slide && slide.expires_at != null && Number.isFinite(Number(slide.expires_at)));
+    const price =
+      slide && slide.price != null && Number.isFinite(Number(slide.price)) && Number(slide.price) > 0
+        ? String(slide.price)
+        : '';
+    const card = document.createElement('div');
+    card.className = 'home-promo-slide-card';
+    card.innerHTML = `
+      <div class="home-promo-slide-card__main">
+        <div class="home-promo-slide-card__thumb"><img class="promo-thumb-img" alt="" src="${escapeHtml(url)}" /></div>
+        <div class="home-promo-slide-card__fields">
+          <label class="home-promo-slide-label">${escapeHtml(__('sett.promoSlideUrlLbl'))}</label>
+          <input type="url" class="promo-slide-url" value="${escapeHtml(url)}" maxlength="2048" placeholder="https://…" />
+          <div class="home-promo-slide-meta">
+            <div class="home-promo-meta-field">
+              <label>${escapeHtml(__('sett.promoExpiresLbl'))}</label>
+              <input type="date" class="promo-slide-expires" value="${escapeHtml(exp)}" ${forever ? 'disabled' : ''} />
+            </div>
+            <label class="home-promo-forever">
+              <input type="checkbox" class="promo-slide-forever" ${forever ? 'checked' : ''} />
+              <span>${escapeHtml(__('sett.promoForeverLbl'))}</span>
+            </label>
+            <div class="home-promo-meta-field home-promo-meta-field--price">
+              <label>${escapeHtml(__('sett.promoAdPriceLbl'))}</label>
+              <input type="number" class="promo-slide-price" min="0" step="0.01" placeholder="0" value="${escapeHtml(price)}" />
+            </div>
+          </div>
+          <p class="admin-hint home-promo-slide-sort-hint">${escapeHtml(__('sett.promoSortHint'))}</p>
+        </div>
+      </div>
+      <button type="button" class="btn btn-secondary btn-small home-promo-slide-remove" aria-label="${escapeHtml(__('common.removeAria'))}">×</button>
+    `;
+    const urlInp = card.querySelector('.promo-slide-url');
+    const thumb = card.querySelector('.promo-thumb-img');
+    const expInp = card.querySelector('.promo-slide-expires');
+    const foreverCb = card.querySelector('.promo-slide-forever');
+    foreverCb?.addEventListener('change', () => {
+      const on = foreverCb.checked === true;
+      if (expInp) {
+        expInp.disabled = on;
+        if (on) expInp.value = '';
+      }
+    });
+    urlInp?.addEventListener('input', () => {
+      const u = (urlInp.value || '').trim();
+      if (thumb) thumb.src = u || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    });
+    card.querySelector('.home-promo-slide-remove')?.addEventListener('click', () => {
+      card.remove();
+      syncHomePromoPreviewStrip();
+    });
+    container.appendChild(card);
+    if (!opts.silent) syncHomePromoPreviewStrip();
+  }
+
+  function collectSlidesFromContainer(container) {
+    if (!container) return [];
+    const slides = [];
+    for (const card of container.querySelectorAll('.home-promo-slide-card')) {
+      if (slides.length >= 12) break;
+      const url = (card.querySelector('.promo-slide-url')?.value || '').trim();
+      if (!url) continue;
+      let expires_at = null;
+      const forever = card.querySelector('.promo-slide-forever')?.checked === true;
+      if (!forever) {
+        const ds = (card.querySelector('.promo-slide-expires')?.value || '').trim();
+        if (ds) expires_at = ds;
+      }
+      const priceRaw = (card.querySelector('.promo-slide-price')?.value || '').trim();
+      const price = priceRaw ? Number(priceRaw) : null;
+      slides.push({
+        url,
+        expires_at,
+        price: price != null && Number.isFinite(price) && price > 0 ? price : null,
+      });
+    }
+    return slides;
+  }
+
+  function getHomePromoPreviewUrlsFromGlobal() {
+    return collectSlidesFromContainer(getGlobalPromoCardsWrap())
+      .map((s) => s.url)
+      .filter(Boolean);
   }
 
   function setHomePromoSlideUrls(urls) {
+    const wrap = getGlobalPromoCardsWrap();
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    (urls || []).slice(0, 12).forEach((u) => appendSlideCard(wrap, { url: u, expires_at: null, price: null }, { silent: true }));
+    syncHomePromoPreviewStrip();
+  }
+
+  function renderGlobalPromoFromConfig(d) {
+    const wrap = getGlobalPromoCardsWrap();
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    let slides = [];
+    if (Array.isArray(d.home_promo_slides_global) && d.home_promo_slides_global.length > 0) {
+      slides = d.home_promo_slides_global;
+    } else if (Array.isArray(d.home_promo_slide_urls)) {
+      slides = d.home_promo_slide_urls
+        .map((u) => ({ url: String(u || '').trim(), expires_at: null, price: null }))
+        .filter((s) => s.url);
+    }
+    slides.forEach((s) => {
+      const o = typeof s === 'string' ? { url: s } : s;
+      appendSlideCard(wrap, o, { silent: true });
+    });
     const ta = document.getElementById('settings-home-promo-slides');
-    if (ta) ta.value = urls.slice(0, 12).join('\n');
+    if (ta) ta.value = slides.map((x) => (typeof x === 'string' ? x : x.url || '')).filter(Boolean).join('\n');
     syncHomePromoPreviewStrip();
   }
 
@@ -1543,7 +1657,7 @@
   function syncHomePromoPreviewStrip() {
     const strip = document.getElementById('settings-home-promo-preview-strip');
     if (!strip) return;
-    const urls = getHomePromoSlideUrls();
+    const urls = getHomePromoPreviewUrlsFromGlobal();
     strip.innerHTML = '';
     const countEl = document.getElementById('settings-home-promo-count');
     if (countEl) countEl.textContent = String(urls.length);
@@ -1561,13 +1675,207 @@
       rm.setAttribute('aria-label', __('common.removeAria'));
       rm.textContent = '×';
       rm.addEventListener('click', () => {
-        const next = getHomePromoSlideUrls();
-        next.splice(idx, 1);
-        setHomePromoSlideUrls(next);
+        const cards = getGlobalPromoCardsWrap()?.querySelectorAll('.home-promo-slide-card');
+        const card = cards && cards[idx];
+        card?.remove();
+        syncHomePromoPreviewStrip();
       });
       item.appendChild(rm);
       strip.appendChild(item);
     });
+  }
+
+  /** Governorate docs for home promo targeting (same keys as user profile area). */
+  async function ensureGovernoratesForHomePromo() {
+    try {
+      const chips = getCodesFromChips('settings-locations-chips');
+      const country = (chips[0] || 'EG').trim().toUpperCase() || 'EG';
+      const res = await api(`/governorates?active=false&country=${encodeURIComponent(country)}`);
+      window._homePromoGovernorates = res.data || [];
+    } catch {
+      window._homePromoGovernorates = window._homePromoGovernorates || [];
+    }
+  }
+
+  function homePromoGovOptionsHtml(selectedKey) {
+    const list = window._homePromoGovernorates || [];
+    const sk = String(selectedKey || '').trim();
+    const opts = ['<option value="">—</option>'].concat(
+      list.map((g) => {
+        const k = String(g.key || '').trim();
+        const sel = k && k === sk ? ' selected' : '';
+        return `<option value="${escapeHtml(k)}"${sel}>${escapeHtml(g.name || k || '—')}</option>`;
+      }),
+    );
+    return opts.join('');
+  }
+
+  function parseHomePromoUrlsFromMultiline(text) {
+    const raw = String(text || '')
+      .split('\n')
+      .map((x) => x.trim())
+      .filter(Boolean)
+      .slice(0, 12);
+    const next = [];
+    for (const s of raw) {
+      try {
+        const u = new URL(s);
+        if (u.protocol !== 'http:' && u.protocol !== 'https:') continue;
+      } catch {
+        continue;
+      }
+      if (s.length > 2048) continue;
+      next.push(s);
+      if (next.length >= 12) break;
+    }
+    return next;
+  }
+
+  function collectHomePromoByGovernorate() {
+    const out = {};
+    document.querySelectorAll('#settings-home-promo-gov-targets .home-promo-target-row').forEach((row) => {
+      const key = (row.querySelector('.promo-gov-key')?.value || '').trim();
+      const nest = row.querySelector('.promo-nested-slide-list');
+      const slides = collectSlidesFromContainer(nest);
+      if (key && slides.length) out[key] = slides;
+    });
+    return out;
+  }
+
+  function collectHomePromoByCity() {
+    const out = {};
+    document.querySelectorAll('#settings-home-promo-city-targets .home-promo-city-row').forEach((row) => {
+      const gk = (row.querySelector('.promo-city-gov-key')?.value || '').trim();
+      const ck = (row.querySelector('.promo-city-key')?.value || '').trim();
+      const nest = row.querySelector('.promo-nested-slide-list');
+      const slides = collectSlidesFromContainer(nest);
+      if (gk && ck && slides.length) out[`${gk}|${ck}`] = slides;
+    });
+    return out;
+  }
+
+  async function fillCitySelectForGovRow(selectEl, governorateKey, selectedCityKey) {
+    selectEl.innerHTML = '<option value="">—</option>';
+    const gk = String(governorateKey || '').trim();
+    if (!gk) return;
+    const list = window._homePromoGovernorates || [];
+    const gov = list.find((g) => String(g.key || '').trim() === gk);
+    if (!gov || !gov.id) return;
+    try {
+      const res = await api(`/cities?governorate_id=${encodeURIComponent(gov.id)}`);
+      const cities = res.data || [];
+      for (const c of cities) {
+        const ck = String(c.key || '').trim();
+        if (!ck) continue;
+        const opt = document.createElement('option');
+        opt.value = ck;
+        opt.textContent = c.name || ck;
+        selectEl.appendChild(opt);
+      }
+      const want = String(selectedCityKey || '').trim();
+      if (want && [...selectEl.options].some((o) => o.value === want)) selectEl.value = want;
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function coerceSlidesArray(v) {
+    if (!Array.isArray(v)) return [];
+    return v
+      .map((x) => (typeof x === 'string' ? { url: x, expires_at: null, price: null } : x))
+      .filter((s) => s && String(s.url || '').trim().length > 0);
+  }
+
+  function addHomePromoGovRow(govKey, slidesArr) {
+    const wrap = document.getElementById('settings-home-promo-gov-targets');
+    if (!wrap) return;
+    const row = document.createElement('div');
+    row.className = 'home-promo-target-row';
+    row.innerHTML = `
+      <div class="admin-field">
+        <label>${escapeHtml(__('sett.promoGovLbl'))}</label>
+        <select class="promo-gov-key home-promo-select">${homePromoGovOptionsHtml(govKey || '')}</select>
+      </div>
+      <div class="promo-nested-slide-list home-promo-nested-slides"></div>
+      <p>
+        <button type="button" class="btn btn-secondary btn-small promo-nested-add-slide">${escapeHtml(__('sett.promoAddSlide'))}</button>
+        <button type="button" class="btn btn-secondary btn-small promo-target-remove">${escapeHtml(__('common.removeAria'))}</button>
+      </p>
+    `;
+    const nest = row.querySelector('.promo-nested-slide-list');
+    row.querySelector('.promo-nested-add-slide')?.addEventListener('click', () => {
+      if (nest.querySelectorAll('.home-promo-slide-card').length >= 12) {
+        toast(__('sett.promoNoRoom'), 'error');
+        return;
+      }
+      appendSlideCard(nest, {}, { silent: true });
+    });
+    row.querySelector('.promo-target-remove')?.addEventListener('click', () => row.remove());
+    coerceSlidesArray(slidesArr).forEach((s) => appendSlideCard(nest, s, { silent: true }));
+    wrap.appendChild(row);
+  }
+
+  function addHomePromoCityRow(govKey, cityKey, slidesArr) {
+    const wrap = document.getElementById('settings-home-promo-city-targets');
+    if (!wrap) return;
+    const row = document.createElement('div');
+    row.className = 'home-promo-target-row home-promo-city-row';
+    row.innerHTML = `
+      <div class="admin-field">
+        <label>${escapeHtml(__('sett.promoCityGovLbl'))}</label>
+        <select class="promo-city-gov-key home-promo-select">${homePromoGovOptionsHtml(govKey || '')}</select>
+      </div>
+      <div class="admin-field">
+        <label>${escapeHtml(__('sett.promoCityLbl'))}</label>
+        <select class="promo-city-key home-promo-select"><option value="">—</option></select>
+      </div>
+      <div class="promo-nested-slide-list home-promo-nested-slides"></div>
+      <p>
+        <button type="button" class="btn btn-secondary btn-small promo-nested-add-slide">${escapeHtml(__('sett.promoAddSlide'))}</button>
+        <button type="button" class="btn btn-secondary btn-small promo-target-remove">${escapeHtml(__('common.removeAria'))}</button>
+      </p>
+    `;
+    const govSel = row.querySelector('.promo-city-gov-key');
+    const citySel = row.querySelector('.promo-city-key');
+    const nest = row.querySelector('.promo-nested-slide-list');
+    govSel?.addEventListener('change', () => {
+      fillCitySelectForGovRow(citySel, govSel.value, '').catch(() => {});
+    });
+    row.querySelector('.promo-nested-add-slide')?.addEventListener('click', () => {
+      if (nest.querySelectorAll('.home-promo-slide-card').length >= 12) {
+        toast(__('sett.promoNoRoom'), 'error');
+        return;
+      }
+      appendSlideCard(nest, {}, { silent: true });
+    });
+    row.querySelector('.promo-target-remove')?.addEventListener('click', () => row.remove());
+    wrap.appendChild(row);
+    if (govKey) fillCitySelectForGovRow(citySel, govKey, cityKey || '').catch(() => {});
+    coerceSlidesArray(slidesArr).forEach((s) => appendSlideCard(nest, s, { silent: true }));
+  }
+
+  function renderHomePromoGovernorateRowsFromConfig(map) {
+    const wrap = document.getElementById('settings-home-promo-gov-targets');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    const m = map && typeof map === 'object' && !Array.isArray(map) ? map : {};
+    for (const k of Object.keys(m)) {
+      addHomePromoGovRow(k, coerceSlidesArray(m[k]));
+    }
+  }
+
+  function renderHomePromoCityRowsFromConfig(map) {
+    const wrap = document.getElementById('settings-home-promo-city-targets');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    const m = map && typeof map === 'object' && !Array.isArray(map) ? map : {};
+    for (const composite of Object.keys(m)) {
+      const pipe = composite.indexOf('|');
+      if (pipe <= 0) continue;
+      const gk = composite.slice(0, pipe);
+      const ck = composite.slice(pipe + 1);
+      addHomePromoCityRow(gk, ck, coerceSlidesArray(m[composite]));
+    }
   }
 
   window.loadAppSettings = async function () {
@@ -1663,12 +1971,10 @@
         const items = Array.isArray(d.professional_news_ticker) ? d.professional_news_ticker : [];
         newsEl.value = items.map((x) => String(x || '').trim()).filter(Boolean).join('\n');
       }
-      const promoEl = document.getElementById('settings-home-promo-slides');
-      if (promoEl) {
-        const slides = Array.isArray(d.home_promo_slide_urls) ? d.home_promo_slide_urls : [];
-        promoEl.value = slides.map((x) => String(x || '').trim()).filter(Boolean).join('\n');
-      }
-      syncHomePromoPreviewStrip();
+      renderGlobalPromoFromConfig(d);
+      await ensureGovernoratesForHomePromo();
+      renderHomePromoGovernorateRowsFromConfig(d.home_promo_by_governorate);
+      renderHomePromoCityRowsFromConfig(d.home_promo_by_city);
       const promoIntEl = document.getElementById('settings-home-promo-interval');
       if (promoIntEl) {
         const iv = Number(d.home_promo_slide_interval_seconds);
@@ -1733,14 +2039,9 @@
               .filter(Boolean)
               .slice(0, 30);
           })(),
-          home_promo_slide_urls: (() => {
-            const raw = (document.getElementById('settings-home-promo-slides')?.value || '');
-            return raw
-              .split('\n')
-              .map((x) => x.trim())
-              .filter(Boolean)
-              .slice(0, 12);
-          })(),
+          home_promo_slides_global: collectSlidesFromContainer(getGlobalPromoCardsWrap()),
+          home_promo_by_governorate: collectHomePromoByGovernorate(),
+          home_promo_by_city: collectHomePromoByCity(),
           home_promo_slide_interval_seconds: readHomePromoIntervalSeconds(),
         })
       });
@@ -1775,16 +2076,12 @@
     const statusEl = document.getElementById('settings-status');
     if (statusEl) statusEl.textContent = __('sett.saving');
     try {
-      const raw = (document.getElementById('settings-home-promo-slides')?.value || '');
-      const home_promo_slide_urls = raw
-        .split('\n')
-        .map((x) => x.trim())
-        .filter(Boolean)
-        .slice(0, 12);
       await api('/config/app', {
         method: 'PUT',
         body: JSON.stringify({
-          home_promo_slide_urls,
+          home_promo_slides_global: collectSlidesFromContainer(getGlobalPromoCardsWrap()),
+          home_promo_by_governorate: collectHomePromoByGovernorate(),
+          home_promo_by_city: collectHomePromoByCity(),
           home_promo_slide_interval_seconds: readHomePromoIntervalSeconds(),
         }),
       });
@@ -1796,14 +2093,50 @@
     }
   });
 
-  document.getElementById('settings-home-promo-slides')?.addEventListener('input', () => {
+  document.getElementById('settings-home-promo-add-slide-global')?.addEventListener('click', () => {
+    const wrap = getGlobalPromoCardsWrap();
+    if (!wrap) return;
+    if (wrap.querySelectorAll('.home-promo-slide-card').length >= 12) {
+      toast(__('sett.promoNoRoom'), 'error');
+      return;
+    }
+    appendSlideCard(wrap, {}, {});
+  });
+
+  document.getElementById('settings-home-promo-import-lines')?.addEventListener('click', () => {
+    const ta = document.getElementById('settings-home-promo-slides');
+    const wrap = getGlobalPromoCardsWrap();
+    if (!ta || !wrap) return;
+    const urls = parseHomePromoUrlsFromMultiline(ta.value);
+    if (!urls.length) return;
+    let room = 12 - wrap.querySelectorAll('.home-promo-slide-card').length;
+    for (const u of urls) {
+      if (room <= 0) break;
+      appendSlideCard(wrap, { url: u, expires_at: null, price: null }, { silent: true });
+      room -= 1;
+    }
+    ta.value = '';
     syncHomePromoPreviewStrip();
   });
 
+  document.getElementById('settings-home-promo-add-gov')?.addEventListener('click', async () => {
+    await ensureGovernoratesForHomePromo();
+    addHomePromoGovRow('', '');
+  });
+
+  document.getElementById('settings-home-promo-add-city')?.addEventListener('click', async () => {
+    await ensureGovernoratesForHomePromo();
+    addHomePromoCityRow('', '', '');
+  });
+
   document.getElementById('settings-home-promo-clear-all')?.addEventListener('click', () => {
-    setHomePromoSlideUrls([]);
+    const wrap = getGlobalPromoCardsWrap();
+    if (wrap) wrap.innerHTML = '';
+    const ta = document.getElementById('settings-home-promo-slides');
+    if (ta) ta.value = '';
     const fin = document.getElementById('settings-home-promo-file');
     if (fin) fin.value = '';
+    syncHomePromoPreviewStrip();
   });
 
   document.getElementById('settings-home-promo-file')?.addEventListener('change', async (e) => {
@@ -1811,7 +2144,7 @@
     const picked = input.files;
     if (!picked?.length) return;
     const status = document.getElementById('settings-home-promo-upload-status');
-    const room = 12 - getHomePromoSlideUrls().length;
+    const room = 12 - getHomePromoPreviewUrlsFromGlobal().length;
     if (room <= 0) {
       toast(__('sett.promoNoRoom'), 'error');
       input.value = '';
@@ -1857,10 +2190,9 @@
           body: JSON.stringify({ file: base64, mimeType: mt })
         });
         if (res.success && res.data?.url) {
-          const cur = getHomePromoSlideUrls();
-          if (cur.length >= 12) break;
-          cur.push(res.data.url);
-          setHomePromoSlideUrls(cur);
+          const wrap = getGlobalPromoCardsWrap();
+          if (!wrap || wrap.querySelectorAll('.home-promo-slide-card').length >= 12) break;
+          appendSlideCard(wrap, { url: res.data.url, expires_at: null, price: null }, { silent: true });
           ok += 1;
         } else {
           throw new Error('Upload failed');
@@ -1871,6 +2203,7 @@
     }
     if (status) status.textContent = '';
     input.value = '';
+    if (ok > 0) syncHomePromoPreviewStrip();
     if (ok > 0) {
       toast(__('sett.promoUploadedN').replace('{n}', String(ok)), 'success');
     }

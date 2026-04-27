@@ -397,6 +397,9 @@
                 <span id="settings-home-promo-upload-status" class="admin-hint home-promo-upload-status" aria-live="polite"></span>
                 <small class="admin-hint" data-i18n="sett.promoUploadHint">JPEG, PNG, WebP, GIF or BMP, max 5 MB each, up to 12 slides.</small>
               </div>
+              <p class="admin-hint admin-hint--block" data-i18n="sett.promoEditorIntro"></p>
+              <div id="settings-home-promo-global-cards" class="home-promo-global-cards"></div>
+              <p><button type="button" class="btn btn-secondary btn-small" id="settings-home-promo-add-slide-global" data-i18n="sett.promoAddSlide"></button></p>
               <div id="settings-home-promo-preview-strip" class="home-promo-preview-strip"></div>
               <p class="admin-hint home-promo-count-line"><span id="settings-home-promo-count">0</span> / 12 <span data-i18n="sett.promoCountSuffix">slides</span></p>
               <p class="admin-hint"><button type="button" class="btn btn-secondary btn-small" id="settings-home-promo-clear-all" data-i18n="sett.promoClearAll">Remove all slides</button></p>
@@ -404,6 +407,18 @@
                 <label for="settings-home-promo-interval" data-i18n="sett.promoIntervalLbl">Time on each slide (seconds)</label>
                 <input type="number" id="settings-home-promo-interval" min="2" max="60" step="1" value="2" class="settings-code-input" style="max-width: 120px" inputmode="numeric">
                 <small class="admin-hint" data-i18n="sett.promoIntervalHint">2–60 seconds. Used only when there are at least two slides.</small>
+              </div>
+              <div class="admin-field home-promo-targeting">
+                <p class="admin-hint admin-hint--block" data-i18n="sett.promoTargetCascadeHint"></p>
+                <p class="home-promo-target-heading" data-i18n="sett.promoTargetGovTitle"></p>
+                <p class="admin-hint" data-i18n="sett.promoTargetGovHint"></p>
+                <div id="settings-home-promo-gov-targets" class="home-promo-targets-wrap"></div>
+                <p><button type="button" class="btn btn-secondary btn-small" id="settings-home-promo-add-gov" data-i18n="sett.promoTargetAddGov"></button></p>
+                <p class="home-promo-target-heading home-promo-target-city-heading" data-i18n="sett.promoTargetCityTitle"></p>
+                <p class="admin-hint" data-i18n="sett.promoTargetCityHint"></p>
+                <div id="settings-home-promo-city-targets" class="home-promo-targets-wrap"></div>
+                <p><button type="button" class="btn btn-secondary btn-small" id="settings-home-promo-add-city" data-i18n="sett.promoTargetAddCity"></button></p>
+                <p class="admin-hint" data-i18n="sett.promoTargetGovSourceHint"></p>
               </div>
               <div class="admin-field">
                 <label data-i18n="sett.promoDimensionsTitle">Recommended image size for ads</label>
@@ -415,6 +430,7 @@
                   <label for="settings-home-promo-slides" data-i18n="sett.promoLbl">Image URLs (one per line)</label>
                   <textarea id="settings-home-promo-slides" rows="4" maxlength="24000" data-i18n-placeholder="sett.promoPh" placeholder="https://…/banner1.png"></textarea>
                   <small class="admin-hint" data-i18n="sett.promoHint">Max 12 URLs. Only http(s) links if you paste here.</small>
+                  <p><button type="button" class="btn btn-secondary btn-small" id="settings-home-promo-import-lines" data-i18n="sett.promoImportLines"></button></p>
                 </div>
               </details>
               <button type="button" class="btn btn-primary" id="save-home-promo-slides" data-i18n="sett.promoSave">Save promo slides</button>

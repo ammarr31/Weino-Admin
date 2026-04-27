@@ -2574,6 +2574,135 @@
    .home-promo-advanced .admin-field {
      margin-top: 12px;
    }
+   .home-promo-targeting {
+     margin-top: 18px;
+     padding-top: 14px;
+     border-top: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.1));
+   }
+   .home-promo-target-heading {
+     margin: 16px 0 8px;
+     font-size: 1rem;
+     font-weight: 600;
+     color: var(--text, #18181b);
+   }
+   .home-promo-target-city-heading {
+     margin-top: 20px;
+   }
+   .home-promo-targets-wrap {
+     display: flex;
+     flex-direction: column;
+     gap: 14px;
+   }
+   .home-promo-target-row {
+     padding: 12px;
+     border-radius: 10px;
+     border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.12));
+     background: var(--surface-muted, rgba(0, 0, 0, 0.02));
+   }
+   .home-promo-target-row .home-promo-select {
+     width: 100%;
+     max-width: 420px;
+     margin-top: 4px;
+   }
+   .home-promo-target-row .promo-target-urls {
+     width: 100%;
+     max-width: 720px;
+     font-family: ui-monospace, monospace;
+     font-size: 0.82rem;
+   }
+   .home-promo-global-cards,
+   .home-promo-nested-slides {
+     display: flex;
+     flex-direction: column;
+     gap: 12px;
+     margin: 10px 0 4px;
+   }
+   .home-promo-slide-card {
+     display: flex;
+     flex-direction: row;
+     gap: 12px;
+     align-items: flex-start;
+     padding: 12px 14px;
+     border-radius: 12px;
+     border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.12));
+     background: var(--surface, #fff);
+   }
+   .home-promo-slide-card__main {
+     display: flex;
+     gap: 14px;
+     flex: 1;
+     min-width: 0;
+   }
+   .home-promo-slide-card__thumb {
+     flex-shrink: 0;
+   }
+   .home-promo-slide-card .promo-thumb-img {
+     width: 96px;
+     height: 56px;
+     object-fit: cover;
+     border-radius: 8px;
+     background: var(--gray-200, #e5e7eb);
+     display: block;
+   }
+   .home-promo-slide-card__fields {
+     flex: 1;
+     min-width: 0;
+   }
+   .home-promo-slide-label {
+     display: block;
+     font-size: 0.78rem;
+     font-weight: 600;
+     margin-bottom: 4px;
+     color: var(--text-mid, #52525b);
+   }
+   .home-promo-slide-card .promo-slide-url {
+     width: 100%;
+     max-width: 100%;
+     box-sizing: border-box;
+     padding: 8px 10px;
+     border-radius: 8px;
+     border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.15));
+     font-size: 0.82rem;
+   }
+   .home-promo-slide-meta {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+     gap: 10px 14px;
+     align-items: end;
+     margin-top: 10px;
+   }
+   .home-promo-meta-field label {
+     display: block;
+     font-size: 0.75rem;
+     font-weight: 600;
+     margin-bottom: 4px;
+     color: var(--text-mid, #52525b);
+   }
+   .home-promo-meta-field .promo-slide-expires,
+   .home-promo-meta-field .promo-slide-price {
+     width: 100%;
+     box-sizing: border-box;
+     padding: 7px 8px;
+     border-radius: 8px;
+     border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.15));
+     font-size: 0.85rem;
+   }
+   .home-promo-forever {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     font-size: 0.88rem;
+     margin-bottom: 2px;
+   }
+   .home-promo-slide-sort-hint {
+     margin: 8px 0 0;
+     font-size: 0.78rem;
+     line-height: 1.35;
+   }
+   .home-promo-slide-remove {
+     flex-shrink: 0;
+     min-width: 36px;
+   }
    .admin-hint--block {
      display: block;
      white-space: normal;
